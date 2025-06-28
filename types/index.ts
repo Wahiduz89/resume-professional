@@ -32,14 +32,26 @@ export interface PersonalInfo {
     description: string
   }
   
-  export interface ResumeData {
-    personalInfo: PersonalInfo
-    professionalSummary: string
-    education: Education[]
-    experience: Experience[]
-    skills: string[]
-    template: 'corporate' | 'technical' | 'general'
-  }
+  
+export interface Project {
+  name: string
+  description: string
+  technologies?: string[]
+  link?: string
+}
+
+export interface ResumeData {
+  personalInfo: PersonalInfo
+  professionalSummary: string
+  education: Education[]
+  experience: Experience[]
+  skills: string[]
+  projects?: Project[]
+  certifications?: string[]
+  achievements?: string[]
+  coursework?: string[]
+  template: 'corporate' | 'technical' | 'general' | 'fresher' | 'internship'
+}
   
   export interface Resume {
     id: string

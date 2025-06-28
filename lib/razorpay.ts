@@ -20,16 +20,31 @@ export function verifyPaymentSignature(
 }
 
 export const SUBSCRIPTION_PLANS = {
-  monthly: {
-    name: 'Monthly Plan',
-    amount: 99900, // ₹999 in paise
+  student_monthly: {
+    name: 'Student Plan',
+    amount: 9900, // ₹99 only for students
     currency: 'INR',
-    description: 'Create unlimited resumes for 30 days',
+    description: 'Perfect for students and freshers',
     features: [
-      'Unlimited Resume Creation',
-      'All Templates Access',
+      '3 Resume Templates',
       'AI Content Enhancement',
+      'ATS-Friendly Formats',
       'PDF Export',
+      'Cover Letter Templates',
+      'LinkedIn Profile Tips'
+    ]
+  },
+  professional_monthly: {
+    name: 'Professional Plan',
+    amount: 29900, // ₹299 for working professionals
+    currency: 'INR',
+    description: 'For experienced professionals',
+    features: [
+      'All Student Features',
+      'Unlimited Templates',
+      'Priority AI Enhancement',
+      'Multiple Export Formats',
+      'Resume Analytics',
       'Priority Support'
     ]
   }
