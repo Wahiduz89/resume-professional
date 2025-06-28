@@ -1,0 +1,152 @@
+'use client'
+
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { Button } from '@/components/ui/button'
+import { PersonalInfoStep } from '@/components/resume/form-steps/personal-info'
+import { EducationStep } from '@/components/resume/form-steps/education'
+import { ExperienceStep } from '@/components/resume/form-steps/experience'
+import { SkillsStep } from '@/components/resume/form-steps/skills'
+import { CorporateTemplate } from '@/components/resume/templates/corporate'
+import { ResumeData } from '@/types'
+import toast from 'react-hot-toast'
+
+const INITIAL_DATA: ResumeData = {
+  personalInfo: {
+    fullName: '',
+    email: '',
+    phone: '',
+    address: '',
+    city: '',
+    state: '',
+    pincode: '',
+  },
+  professionalSummary: '',
+  education: [],
+  experience: [],
+  skills: [],
+  template: 'corporate'
+}
+
+export default function NewResumePage() {
+  const router = useRouter()
+  const [currentStep, setCurrentStep] = useState(0)
+  const [resumeData, setResumeData] = useState<ResumeData>(INITIAL_DATA)
+  const [loading, setLoading] = useState(false)
+
+  const steps = [
+    { title: 'Personal Info', component: PersonalInfoStep },
+    { title: 'Education', component: EducationStep },
+    { title: 'Experience', component: ExperienceStep },
+    { title: 'Skills', component: SkillsStep },
+  ]
+
+  const handleNext = () => {
+    if (currentStep < steps.length - 1) {
+      setCurrentStep(currentStep + 1)
+    }
+  }
+
+  const handlePrevious = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1)
+    }
+  }
+
+  const handleSave = async () => {
+    setLoading(true)
+    try {
+      const response = await fetch('/api/resume', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(resumeData)
+      })
+
+      if (response.ok) {
+        const { id } = await response.json()
+        toast.success('Resume saved successfully!')
+        router.push(`/builder/${id}`)
+      }
+    } catch (error) {
+      toast.error('Failed to save resume')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const CurrentStepComponent = steps[currentStep].component
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Mobile-first layout */}
+      <div className="lg:grid lg:grid-cols-2 min-h-screen">
+        {/* Form Section */}
+        <div className="p-4 lg:p-8 overflow-y-auto">
+          {/* Progress Bar */}
+          <div className="mb-8">
+            <div className="flex justify-between mb-2">
+              {steps.map((step, index) => (
+                <div 
+                  key={index}
+                  className={`text-sm ${
+                    index <= currentStep ? 'text-blue-600' : 'text-gray-400'
+                  }`}
+                >
+                  {step.title}
+                </div>
+              ))}
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div 
+                className="bg-blue-600 h-2 rounded-full transition-all"
+                style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Form Content */}
+          <div className="bg-white rounded-lg p-6 shadow-sm">
+            <CurrentStepComponent
+              data={resumeData}
+              onChange={(data) => setResumeData({ ...resumeData, ...data })}
+            />
+
+            {/* Navigation Buttons */}
+            <div className="flex justify-between mt-8">
+              <Button
+                variant="outline"
+                onClick={handlePrevious}
+                disabled={currentStep === 0}
+              >
+                Previous
+              </Button>
+
+              {currentStep === steps.length - 1 ? (
+                <Button
+                  onClick={handleSave}
+                  disabled={loading}
+                >
+                  {loading ? 'Saving...' : 'Save Resume'}
+                </Button>
+              ) : (
+                <Button onClick={handleNext}>
+                  Next
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Preview Section - Hidden on mobile, visible on desktop */}
+        <div className="hidden lg:block bg-gray-100 p-8 overflow-y-auto">
+          <div className="sticky top-0">
+            <h3 className="text-xl font-semibold mb-4">Live Preview</h3>
+            <div className="transform scale-75 origin-top">
+              <CorporateTemplate data={resumeData} />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
