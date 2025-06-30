@@ -1,11 +1,31 @@
+// app/page.tsx
 'use client'
 
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { GraduationCap, Briefcase, CheckCircle, Star } from 'lucide-react'
+import { Navbar } from '@/components/layout/navbar'
+import { GraduationCap, Briefcase, CheckCircle, Star, FileText, Upload, ArrowRight, Sparkles } from 'lucide-react'
 
 export default function HomePage() {
   const router = useRouter()
+
+  const features = [
+    {
+      title: 'ATS-Optimized Templates',
+      description: 'Resume templates designed to pass Applicant Tracking Systems',
+      icon: FileText,
+    },
+    {
+      title: 'AI-Powered Enhancement',
+      description: 'Let AI improve your content with professional language',
+      icon: Sparkles,
+    },
+    {
+      title: 'One-Click Export',
+      description: 'Download your resume in PDF format instantly',
+      icon: Upload,
+    },
+  ]
 
   const studentFeatures = [
     'ATS-friendly templates designed for campus placements',
@@ -18,8 +38,10 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+      <Navbar />
+      
       {/* Hero Section */}
-      <div className="max-w-6xl mx-auto px-4 pt-20 pb-16">
+      <div className="max-w-6xl mx-auto px-4 pt-32 pb-16">
         <div className="text-center">
           <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-800 px-4 py-2 rounded-full mb-6">
             <GraduationCap className="w-5 h-5" />
@@ -39,31 +61,58 @@ export default function HomePage() {
             <Button 
               size="lg" 
               onClick={() => router.push('/register')}
-              className="bg-blue-600 hover:bg-blue-700"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-8"
             >
-              <GraduationCap className="w-5 h-5 mr-2" />
-              Start Free - Student Plan
+              <FileText className="w-5 h-5 mr-2" />
+              Create New Resume
+              <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
             <Button 
               size="lg" 
               variant="outline"
-              onClick={() => router.push('/login')}
+              onClick={() => router.push('/dashboard')}
+              className="border-blue-600 text-blue-600 hover:bg-blue-50 px-8"
             >
-              Already have an account? Login
+              <Upload className="w-5 h-5 mr-2" />
+              Upload Resume
             </Button>
           </div>
 
           <p className="text-sm text-gray-500">
-            ✨ Special student pricing: Only ₹99/month
+            ✨ Special student pricing: Only ₹99/month • No credit card required
           </p>
         </div>
       </div>
 
-      {/* Features Section */}
-      <div className="bg-white py-16">
+      {/* Quick Features Section */}
+      <div id="features" className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">
-            Why Students Choose Our Resume Maker
+            Everything You Need to Get Hired
+          </h2>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            {features.map((feature, index) => {
+              const Icon = feature.icon
+              return (
+                <div key={index} className="text-center">
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 text-blue-600 rounded-full mb-4">
+                    <Icon className="w-8 h-8" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+                  <p className="text-gray-600">{feature.description}</p>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* Student Features Section */}
+      <div className="py-16 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-12">
+            Why Students Choose ResumeAI Pro
           </h2>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -78,7 +127,7 @@ export default function HomePage() {
       </div>
 
       {/* Templates Preview */}
-      <div className="py-16 bg-gray-50">
+      <div id="templates" className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-4">
             Templates Designed for Campus Placements
@@ -88,7 +137,7 @@ export default function HomePage() {
           </p>
           
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-white p-6 rounded-lg shadow-sm border">
+            <div className="bg-white p-6 rounded-lg shadow-sm border hover:shadow-md transition-shadow">
               <h3 className="font-semibold mb-2">Fresher Template</h3>
               <p className="text-sm text-gray-600 mb-4">
                 Perfect for students with limited work experience. 
@@ -100,7 +149,7 @@ export default function HomePage() {
               </div>
             </div>
             
-            <div className="bg-white p-6 rounded-lg shadow-sm border">
+            <div className="bg-white p-6 rounded-lg shadow-sm border hover:shadow-md transition-shadow">
               <h3 className="font-semibold mb-2">Internship Template</h3>
               <p className="text-sm text-gray-600 mb-4">
                 Ideal for internship applications. 
@@ -108,12 +157,80 @@ export default function HomePage() {
               </p>
             </div>
             
-            <div className="bg-white p-6 rounded-lg shadow-sm border">
+            <div className="bg-white p-6 rounded-lg shadow-sm border hover:shadow-md transition-shadow">
               <h3 className="font-semibold mb-2">Technical Template</h3>
               <p className="text-sm text-gray-600 mb-4">
                 For engineering and tech students. 
                 Showcases technical skills and projects prominently.
               </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Pricing Section */}
+      <div id="pricing" className="py-16 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-12">
+            Simple, Student-Friendly Pricing
+          </h2>
+          
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Student Plan */}
+            <div className="bg-white p-8 rounded-lg shadow-sm border-2 border-blue-500">
+              <div className="text-center mb-6">
+                <h3 className="text-2xl font-bold mb-2">Student Plan</h3>
+                <div className="text-4xl font-bold text-blue-600">
+                  ₹99
+                  <span className="text-lg text-gray-600 font-normal">/month</span>
+                </div>
+                <p className="text-gray-600 mt-2">Perfect for students & freshers</p>
+              </div>
+              
+              <ul className="space-y-3 mb-8">
+                {['3 Resume Templates', 'AI Content Enhancement', 'ATS-Friendly Formats', 'PDF Export', 'Cover Letter Templates', 'Email Support'].map((feature, index) => (
+                  <li key={index} className="flex items-center gap-2">
+                    <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+              
+              <Button 
+                className="w-full bg-blue-600 hover:bg-blue-700"
+                onClick={() => router.push('/register')}
+              >
+                Start Free Trial
+              </Button>
+            </div>
+
+            {/* Professional Plan */}
+            <div className="bg-white p-8 rounded-lg shadow-sm border">
+              <div className="text-center mb-6">
+                <h3 className="text-2xl font-bold mb-2">Professional Plan</h3>
+                <div className="text-4xl font-bold">
+                  ₹299
+                  <span className="text-lg text-gray-600 font-normal">/month</span>
+                </div>
+                <p className="text-gray-600 mt-2">For experienced professionals</p>
+              </div>
+              
+              <ul className="space-y-3 mb-8">
+                {['Everything in Student Plan', 'Unlimited Templates', 'Priority AI Enhancement', 'Multiple Export Formats', 'Resume Analytics', 'Priority Support'].map((feature, index) => (
+                  <li key={index} className="flex items-center gap-2">
+                    <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+              
+              <Button 
+                variant="outline"
+                className="w-full"
+                onClick={() => router.push('/register')}
+              >
+                Start Free Trial
+              </Button>
             </div>
           </div>
         </div>
@@ -128,15 +245,40 @@ export default function HomePage() {
           <p className="text-xl mb-8 opacity-90">
             Join thousands of students who landed their dream jobs
           </p>
-          <Button 
-            size="lg" 
-            onClick={() => router.push('/register')}
-            className="bg-white text-blue-600 hover:bg-gray-100"
-          >
-            Create Your Resume Now - ₹99/month
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button 
+              size="lg" 
+              onClick={() => router.push('/register')}
+              className="bg-white text-blue-600 hover:bg-gray-100"
+            >
+              Create Your Resume Now
+            </Button>
+            <Button 
+              size="lg" 
+              variant="outline"
+              onClick={() => router.push('/dashboard')}
+              className="border-white text-white hover:bg-white hover:text-blue-600"
+            >
+              Upload Existing Resume
+            </Button>
+          </div>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-gray-300 py-8">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center space-x-2 mb-4 md:mb-0">
+              <FileText className="w-6 h-6 text-blue-400" />
+              <span className="text-lg font-semibold">ResumeAI Pro</span>
+            </div>
+            <p className="text-sm">
+              © 2025 ResumeAI Pro. Made with ❤️ for Indian students.
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }

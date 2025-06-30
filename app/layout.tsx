@@ -1,8 +1,8 @@
+// app/layout.tsx
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { Toaster } from 'react-hot-toast'
-import { MobileNav } from '@/components/layout/mobile-nav'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -10,9 +10,9 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'AI Resume Maker - Create Professional Resumes',
-  description: 'Create ATS-friendly resumes with AI enhancement for Indian job market',
-  keywords: 'resume maker, AI resume, Indian jobs, ATS friendly resume',
+  title: 'ResumeAI Pro - Create Professional Resumes with AI',
+  description: 'Create ATS-friendly resumes with AI enhancement for Indian job market. Perfect for students and freshers.',
+  keywords: 'resume maker, AI resume, Indian jobs, ATS friendly resume, student resume builder',
   viewport: 'width=device-width, initial-scale=1, maximum-scale=5',
 }
 
@@ -35,7 +35,6 @@ export default function RootLayout({
             },
           }}
         />
-        <MobileNav />
       </body>
     </html>
   )

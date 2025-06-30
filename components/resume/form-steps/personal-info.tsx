@@ -7,8 +7,8 @@ import { Upload, X, User } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 interface PersonalInfoStepProps {
-  data: PersonalInfo
-  onChange: (data: PersonalInfo) => void
+  data: { personalInfo: PersonalInfo }
+  onChange: (data: { personalInfo: PersonalInfo }) => void
 }
 
 export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({ 
@@ -19,7 +19,12 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleChange = (field: keyof PersonalInfo, value: string) => {
-    onChange({ ...data, [field]: value })
+    onChange({ 
+      personalInfo: { 
+        ...data.personalInfo, 
+        [field]: value 
+      } 
+    })
   }
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,16 +76,16 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
 
   // Ensure all values are strings to prevent controlled/uncontrolled switching
   const safeData = {
-    fullName: data.fullName || '',
-    email: data.email || '',
-    phone: data.phone || '',
-    address: data.address || '',
-    city: data.city || '',
-    state: data.state || '',
-    pincode: data.pincode || '',
-    linkedin: data.linkedin || '',
-    portfolio: data.portfolio || '',
-    profileImage: data.profileImage || '',
+    fullName: data.personalInfo?.fullName || '',
+    email: data.personalInfo?.email || '',
+    phone: data.personalInfo?.phone || '',
+    address: data.personalInfo?.address || '',
+    city: data.personalInfo?.city || '',
+    state: data.personalInfo?.state || '',
+    pincode: data.personalInfo?.pincode || '',
+    linkedin: data.personalInfo?.linkedin || '',
+    portfolio: data.personalInfo?.portfolio || '',
+    profileImage: data.personalInfo?.profileImage || '',
   }
 
   return (
