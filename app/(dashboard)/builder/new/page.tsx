@@ -20,11 +20,17 @@ const INITIAL_DATA: ResumeData = {
     city: '',
     state: '',
     pincode: '',
+    linkedin: '',
+    portfolio: '',
   },
   professionalSummary: '',
   education: [],
   experience: [],
   skills: [],
+  projects: [],
+  certifications: [],
+  achievements: [],
+  coursework: [],
   template: 'corporate'
 }
 

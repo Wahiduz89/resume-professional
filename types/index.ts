@@ -1,14 +1,14 @@
 export interface PersonalInfo {
-    fullName: string
-    email: string
-    phone: string
-    address: string
-    city: string
-    state: string
-    pincode: string
-    linkedin?: string
-    portfolio?: string
-  }
+  fullName: string
+  email: string
+  phone: string
+  address: string
+  city: string
+  state: string
+  pincode: string
+  linkedin: string
+  portfolio: string
+}
   
   export interface Education {
     id: string
