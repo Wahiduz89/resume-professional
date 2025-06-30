@@ -1,3 +1,4 @@
+// app/(dashboard)/builder/new/page.tsx
 'use client'
 
 import { useState } from 'react'
@@ -7,6 +8,8 @@ import { PersonalInfoStep } from '@/components/resume/form-steps/personal-info'
 import { EducationStep } from '@/components/resume/form-steps/education'
 import { ExperienceStep } from '@/components/resume/form-steps/experience'
 import { SkillsStep } from '@/components/resume/form-steps/skills'
+import { LanguagesStep } from '@/components/resume/form-steps/languages'
+import { CertificationsStep } from '@/components/resume/form-steps/certifications'
 import { CorporateTemplate } from '@/components/resume/templates/corporate'
 import { ResumeData } from '@/types'
 import toast from 'react-hot-toast'
@@ -22,6 +25,7 @@ const INITIAL_DATA: ResumeData = {
     pincode: '',
     linkedin: '',
     portfolio: '',
+    profileImage: '',
   },
   professionalSummary: '',
   education: [],
@@ -31,6 +35,7 @@ const INITIAL_DATA: ResumeData = {
   certifications: [],
   achievements: [],
   coursework: [],
+  languages: [],
   template: 'corporate'
 }
 
@@ -45,6 +50,8 @@ export default function NewResumePage() {
     { title: 'Education', component: EducationStep },
     { title: 'Experience', component: ExperienceStep },
     { title: 'Skills', component: SkillsStep },
+    { title: 'Languages', component: LanguagesStep },
+    { title: 'Certifications', component: CertificationsStep },
   ]
 
   const handleNext = () => {
@@ -72,6 +79,8 @@ export default function NewResumePage() {
         const { id } = await response.json()
         toast.success('Resume saved successfully!')
         router.push(`/builder/${id}`)
+      } else {
+        toast.error('Failed to save resume')
       }
     } catch (error) {
       toast.error('Failed to save resume')
@@ -84,40 +93,43 @@ export default function NewResumePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Mobile-first layout */}
       <div className="lg:grid lg:grid-cols-2 min-h-screen">
-        {/* Form Section */}
         <div className="p-4 lg:p-8 overflow-y-auto">
-          {/* Progress Bar */}
           <div className="mb-8">
-            <div className="flex justify-between mb-2">
+            <h1 className="text-2xl font-bold mb-2">Create Your Resume</h1>
+            <p className="text-gray-600">
+              Fill out each section to build your professional resume.
+            </p>
+          </div>
+
+          <div className="mb-8">
+            <div className="flex justify-between mb-4 text-xs lg:text-sm overflow-x-auto">
               {steps.map((step, index) => (
-                <div 
+                <button
                   key={index}
-                  className={`text-sm ${
-                    index <= currentStep ? 'text-blue-600' : 'text-gray-400'
+                  onClick={() => setCurrentStep(index)}
+                  className={`cursor-pointer hover:text-blue-700 px-2 py-1 whitespace-nowrap ${
+                    index === currentStep ? 'text-blue-600 font-medium' : 'text-gray-400'
                   }`}
                 >
                   {step.title}
-                </div>
+                </button>
               ))}
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
               <div 
-                className="bg-blue-600 h-2 rounded-full transition-all"
+                className="bg-blue-600 h-2 rounded-full transition-all duration-300"
                 style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
               />
             </div>
           </div>
 
-          {/* Form Content */}
           <div className="bg-white rounded-lg p-6 shadow-sm">
             <CurrentStepComponent
               data={resumeData}
               onChange={(data) => setResumeData({ ...resumeData, ...data })}
             />
 
-            {/* Navigation Buttons */}
             <div className="flex justify-between mt-8">
               <Button
                 variant="outline"
@@ -143,7 +155,6 @@ export default function NewResumePage() {
           </div>
         </div>
 
-        {/* Preview Section - Hidden on mobile, visible on desktop */}
         <div className="hidden lg:block bg-gray-100 p-8 overflow-y-auto">
           <div className="sticky top-0">
             <h3 className="text-xl font-semibold mb-4">Live Preview</h3>

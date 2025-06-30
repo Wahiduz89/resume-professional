@@ -1,3 +1,4 @@
+// app/(dashboard)/builder/[id]/page.tsx
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -7,6 +8,8 @@ import { PersonalInfoStep } from '@/components/resume/form-steps/personal-info'
 import { EducationStep } from '@/components/resume/form-steps/education'
 import { ExperienceStep } from '@/components/resume/form-steps/experience'
 import { SkillsStep } from '@/components/resume/form-steps/skills'
+import { LanguagesStep } from '@/components/resume/form-steps/languages'
+import { CertificationsStep } from '@/components/resume/form-steps/certifications'
 import { CorporateTemplate } from '@/components/resume/templates/corporate'
 import { ResumeData } from '@/types'
 import toast from 'react-hot-toast'
@@ -22,6 +25,7 @@ const INITIAL_DATA: ResumeData = {
     pincode: '',
     linkedin: '',
     portfolio: '',
+    profileImage: '',
   },
   professionalSummary: '',
   education: [],
@@ -31,6 +35,7 @@ const INITIAL_DATA: ResumeData = {
   certifications: [],
   achievements: [],
   coursework: [],
+  languages: [],
   template: 'corporate'
 }
 
@@ -49,9 +54,10 @@ export default function EditResumePage() {
     { title: 'Education', component: EducationStep },
     { title: 'Experience', component: ExperienceStep },
     { title: 'Skills', component: SkillsStep },
+    { title: 'Languages', component: LanguagesStep },
+    { title: 'Certifications', component: CertificationsStep },
   ]
 
-  // Fetch existing resume data on component mount
   useEffect(() => {
     const fetchResumeData = async () => {
       if (!resumeId) return
@@ -60,7 +66,21 @@ export default function EditResumePage() {
         const response = await fetch(`/api/resume/${resumeId}`)
         if (response.ok) {
           const data = await response.json()
-          setResumeData(data.content)
+          const content = data.content
+          
+          // Ensure new fields exist in existing resume data
+          const updatedContent = {
+            ...content,
+            personalInfo: {
+              ...INITIAL_DATA.personalInfo,
+              ...content.personalInfo,
+              profileImage: content.personalInfo?.profileImage || '',
+            },
+            languages: content.languages || [],
+            certifications: content.certifications || [],
+          }
+          
+          setResumeData(updatedContent)
         } else {
           toast.error('Failed to load resume data')
           router.push('/dashboard')
@@ -134,7 +154,6 @@ export default function EditResumePage() {
     }
   }
 
-  // Show loading spinner while fetching data
   if (initialLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -150,11 +169,8 @@ export default function EditResumePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Mobile-first layout */}
       <div className="lg:grid lg:grid-cols-2 min-h-screen">
-        {/* Form Section */}
         <div className="p-4 lg:p-8 overflow-y-auto">
-          {/* Header */}
           <div className="mb-6">
             <div className="flex justify-between items-center mb-4">
               <h1 className="text-2xl font-bold">Edit Resume</h1>
@@ -172,14 +188,13 @@ export default function EditResumePage() {
             </p>
           </div>
 
-          {/* Progress Bar */}
           <div className="mb-8">
-            <div className="flex justify-between mb-2">
+            <div className="flex justify-between mb-4 text-xs lg:text-sm overflow-x-auto">
               {steps.map((step, index) => (
                 <button
                   key={index}
                   onClick={() => setCurrentStep(index)}
-                  className={`text-sm cursor-pointer hover:text-blue-700 ${
+                  className={`cursor-pointer hover:text-blue-700 px-2 py-1 whitespace-nowrap ${
                     index === currentStep ? 'text-blue-600 font-medium' : 'text-gray-400'
                   }`}
                 >
@@ -189,20 +204,18 @@ export default function EditResumePage() {
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
               <div 
-                className="bg-blue-600 h-2 rounded-full transition-all"
+                className="bg-blue-600 h-2 rounded-full transition-all duration-300"
                 style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
               />
             </div>
           </div>
 
-          {/* Form Content */}
           <div className="bg-white rounded-lg p-6 shadow-sm">
             <CurrentStepComponent
               data={resumeData}
               onChange={(data) => setResumeData({ ...resumeData, ...data })}
             />
 
-            {/* Navigation Buttons */}
             <div className="flex justify-between mt-8">
               <Button
                 variant="outline"
@@ -237,7 +250,6 @@ export default function EditResumePage() {
           </div>
         </div>
 
-        {/* Preview Section - Hidden on mobile, visible on desktop */}
         <div className="hidden lg:block bg-gray-100 p-8 overflow-y-auto">
           <div className="sticky top-0">
             <h3 className="text-xl font-semibold mb-4">Live Preview</h3>
