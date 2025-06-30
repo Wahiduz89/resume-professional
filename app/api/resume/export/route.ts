@@ -3,10 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import puppeteer from 'puppeteer'
-import { renderToString } from 'react-dom/server'
-import { CorporateTemplate } from '@/components/resume/templates/corporate'
-import { TechnicalTemplate } from '@/components/resume/templates/technical'
-import { GeneralTemplate } from '@/components/resume/templates/general'
+import { generateTemplateHTML } from '@/lib/pdf-templates'
 
 export async function POST(req: NextRequest) {
   try {
@@ -46,44 +43,10 @@ export async function POST(req: NextRequest) {
     const resume = user.resumes[0]
     const resumeData = resume.content as any
 
-    // Select template component
-    let TemplateComponent
-    switch (resumeData.template) {
-      case 'technical':
-        TemplateComponent = TechnicalTemplate
-        break
-      case 'general':
-        TemplateComponent = GeneralTemplate
-        break
-      default:
-        TemplateComponent = CorporateTemplate
-    }
+    // Generate HTML using template function
+    const html = generateTemplateHTML(resumeData.template, resumeData)
 
-    // Generate HTML
-    const html = `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <meta charset="utf-8">
-          <style>
-            * { margin: 0; padding: 0; box-sizing: border-box; }
-            body { 
-              font-family: Arial, sans-serif; 
-              line-height: 1.6;
-              color: #333;
-            }
-            @media print {
-              body { margin: 0; }
-            }
-          </style>
-        </head>
-        <body>
-          ${renderToString(TemplateComponent({ data: resumeData }))}
-        </body>
-      </html>
-    `
-
-    // Generate PDF
+    // Generate PDF using Puppeteer
     const browser = await puppeteer.launch({
       headless: true,
       args: ['--no-sandbox', '--disable-setuid-sandbox']
@@ -105,7 +68,7 @@ export async function POST(req: NextRequest) {
     
     await browser.close()
 
-    // Return PDF
+    // Return PDF response
     return new NextResponse(pdf, {
       headers: {
         'Content-Type': 'application/pdf',
