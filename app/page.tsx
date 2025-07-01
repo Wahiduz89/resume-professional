@@ -29,10 +29,10 @@ export default function HomePage() {
 
   const studentFeatures = [
     'ATS-friendly templates designed for campus placements',
-    'AI helps highlight academic projects and internships',
-    'Special formats for fresher roles',
+    'Professional formats for fresher roles',
     'Cover letter templates included',
     'LinkedIn optimization tips',
+    'AI enhancement available in Student Pro plan',
     'Starting at just ₹99/month'
   ]
 
@@ -176,47 +176,19 @@ export default function HomePage() {
           </h2>
           
           <div className="grid md:grid-cols-2 gap-8">
-            {/* Student Plan */}
-            <div className="bg-white p-8 rounded-lg shadow-sm border-2 border-blue-500">
+            {/* Student Starter Plan */}
+            <div className="bg-white p-8 rounded-lg shadow-sm border">
               <div className="text-center mb-6">
-                <h3 className="text-2xl font-bold mb-2">Student Plan</h3>
+                <h3 className="text-2xl font-bold mb-2">Student Starter</h3>
                 <div className="text-4xl font-bold text-blue-600">
                   ₹99
                   <span className="text-lg text-gray-600 font-normal">/month</span>
                 </div>
-                <p className="text-gray-600 mt-2">Perfect for students & freshers</p>
+                <p className="text-gray-600 mt-2">Perfect for getting started</p>
               </div>
               
               <ul className="space-y-3 mb-8">
-                {['3 Resume Templates', 'AI Content Enhancement', 'ATS-Friendly Formats', 'PDF Export', 'Cover Letter Templates', 'Email Support'].map((feature, index) => (
-                  <li key={index} className="flex items-center gap-2">
-                    <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-                    <span className="text-gray-700">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-              
-              <Button 
-                className="w-full bg-blue-600 hover:bg-blue-700"
-                onClick={() => router.push('/register')}
-              >
-                Start Free Trial
-              </Button>
-            </div>
-
-            {/* Professional Plan */}
-            <div className="bg-white p-8 rounded-lg shadow-sm border">
-              <div className="text-center mb-6">
-                <h3 className="text-2xl font-bold mb-2">Professional Plan</h3>
-                <div className="text-4xl font-bold">
-                  ₹299
-                  <span className="text-lg text-gray-600 font-normal">/month</span>
-                </div>
-                <p className="text-gray-600 mt-2">For experienced professionals</p>
-              </div>
-              
-              <ul className="space-y-3 mb-8">
-                {['Everything in Student Plan', 'Unlimited Templates', 'Priority AI Enhancement', 'Multiple Export Formats', 'Resume Analytics', 'Priority Support'].map((feature, index) => (
+                {['1 Resume Template', 'ATS-Friendly Formats', 'PDF Export', 'Cover Letter Templates', 'Email Support', 'Basic Resume Builder'].map((feature, index) => (
                   <li key={index} className="flex items-center gap-2">
                     <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
                     <span className="text-gray-700">{feature}</span>
@@ -227,6 +199,34 @@ export default function HomePage() {
               <Button 
                 variant="outline"
                 className="w-full"
+                onClick={() => router.push('/register')}
+              >
+                Start Free Trial
+              </Button>
+            </div>
+
+            {/* Student Pro Plan */}
+            <div className="bg-white p-8 rounded-lg shadow-sm border-2 border-blue-500">
+              <div className="text-center mb-6">
+                <h3 className="text-2xl font-bold mb-2">Student Pro</h3>
+                <div className="text-4xl font-bold">
+                  ₹299
+                  <span className="text-lg text-gray-600 font-normal">/month</span>
+                </div>
+                <p className="text-gray-600 mt-2">For serious job seekers</p>
+              </div>
+              
+              <ul className="space-y-3 mb-8">
+                {['3 Resume Templates', 'AI Content Enhancement', 'ATS-Friendly Formats', 'PDF Export', 'Cover Letter Templates', 'Priority Support'].map((feature, index) => (
+                  <li key={index} className="flex items-center gap-2">
+                    <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+              
+              <Button 
+                className="w-full bg-blue-600 hover:bg-blue-700"
                 onClick={() => router.push('/register')}
               >
                 Start Free Trial

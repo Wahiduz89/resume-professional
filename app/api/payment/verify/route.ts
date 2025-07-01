@@ -1,3 +1,4 @@
+// app/api/payment/verify/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
@@ -31,7 +32,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    // Update or create subscription
+    // Update or create subscription with new plan type
     const expiresAt = new Date()
     expiresAt.setDate(expiresAt.getDate() + 30) // 30 days for monthly plan
 

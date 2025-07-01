@@ -11,14 +11,16 @@ declare global {
 }
 
 interface SubscriptionProps {
+  planType?: 'student_starter_monthly' | 'student_pro_monthly'
   onSuccess?: () => void
 }
 
 export const SubscriptionComponent: React.FC<SubscriptionProps> = ({ 
+  planType = 'student_pro_monthly',
   onSuccess 
 }) => {
   const [loading, setLoading] = useState(false)
-  const plan = SUBSCRIPTION_PLANS.monthly
+  const plan = SUBSCRIPTION_PLANS[planType]
 
   const loadRazorpayScript = () => {
     return new Promise((resolve) => {
@@ -35,11 +37,11 @@ export const SubscriptionComponent: React.FC<SubscriptionProps> = ({
     try {
       await loadRazorpayScript()
 
-      // Create order
+      // Create order with the specified plan type
       const orderResponse = await fetch('/api/payment/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ planType: 'monthly' })
+        body: JSON.stringify({ planType })
       })
 
       if (!orderResponse.ok) {
@@ -52,7 +54,7 @@ export const SubscriptionComponent: React.FC<SubscriptionProps> = ({
         key: orderData.keyId,
         amount: orderData.amount,
         currency: orderData.currency,
-        name: 'AI Resume Maker',
+        name: 'ResumeAI Pro',
         description: plan.description,
         order_id: orderData.orderId,
         handler: async function (response: any) {
@@ -64,7 +66,7 @@ export const SubscriptionComponent: React.FC<SubscriptionProps> = ({
               orderId: response.razorpay_order_id,
               paymentId: response.razorpay_payment_id,
               signature: response.razorpay_signature,
-              planType: 'monthly'
+              planType: planType
             })
           })
 
@@ -76,7 +78,7 @@ export const SubscriptionComponent: React.FC<SubscriptionProps> = ({
           }
         },
         prefill: {
-          email: '', // Will be filled from session
+          email: '',
           contact: ''
         },
         theme: {
@@ -97,7 +99,7 @@ export const SubscriptionComponent: React.FC<SubscriptionProps> = ({
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold text-center mb-6">
-        Upgrade to Premium
+        Upgrade to {plan.name}
       </h2>
 
       <div className="bg-blue-50 rounded-lg p-6 mb-6">

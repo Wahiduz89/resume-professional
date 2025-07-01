@@ -1,3 +1,4 @@
+// app/api/payment/create-order/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
@@ -20,7 +21,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    const { planType = 'monthly' } = await req.json()
+    const { planType = 'student_starter_monthly' } = await req.json()
+    
+    // Validate planType exists in our SUBSCRIPTION_PLANS
+    if (!SUBSCRIPTION_PLANS[planType as keyof typeof SUBSCRIPTION_PLANS]) {
+      return NextResponse.json({ error: 'Invalid plan type' }, { status: 400 })
+    }
+    
     const plan = SUBSCRIPTION_PLANS[planType as keyof typeof SUBSCRIPTION_PLANS]
 
     const order = await razorpay.orders.create({
