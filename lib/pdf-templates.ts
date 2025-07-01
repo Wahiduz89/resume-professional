@@ -1,8 +1,6 @@
-// lib/pdf-templates.ts
-import { ResumeData } from '@/types'
-
-export function generateCorporateTemplateHTML(data: ResumeData): string {
-  const { personalInfo, professionalSummary, education, experience, skills } = data
+// lib/pdf-templates.ts - Updated generateFresherTemplateHTML function
+export function generateFresherTemplateHTML(data: ResumeData): string {
+  const { personalInfo, professionalSummary, education, experience, skills, projects, languages, certifications } = data
 
   return `
     <!DOCTYPE html>
@@ -17,364 +15,406 @@ export function generateCorporateTemplateHTML(data: ResumeData): string {
           }
           body { 
             font-family: Arial, sans-serif; 
-            line-height: 1.6;
+            line-height: 1.4;
             color: #333;
             max-width: 210mm;
             margin: 0 auto;
-            padding: 32px;
+            background: white;
+            position: relative;
           }
+          
+          /* Background Decorations */
+          .bg-decoration-1 {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 120px;
+            height: 120px;
+            opacity: 0.1;
+            z-index: 1;
+          }
+          .bg-decoration-2 {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 150px;
+            height: 150px;
+            opacity: 0.1;
+            z-index: 1;
+          }
+          
+          /* Header Section */
           .header {
-            border-bottom: 2px solid #1f2937;
-            padding-bottom: 16px;
-            margin-bottom: 24px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+            z-index: 2;
           }
-          .name {
-            font-size: 24px;
-            font-weight: bold;
-            color: #111827;
-            margin-bottom: 8px;
+          .header::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            border-radius: 0 0 50% 50%;
           }
-          .contact-info {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-            font-size: 14px;
-            color: #4b5563;
-            margin-bottom: 8px;
-          }
-          .links {
-            display: flex;
-            gap: 16px;
-            margin-top: 8px;
-            font-size: 14px;
-          }
-          .links a {
-            color: #2563eb;
-            text-decoration: none;
-          }
-          .section {
-            margin-bottom: 24px;
-          }
-          .section-title {
-            font-size: 18px;
-            font-weight: bold;
-            color: #1f2937;
-            text-transform: uppercase;
-            margin-bottom: 12px;
-          }
-          .experience-item, .education-item {
-            margin-bottom: 16px;
-          }
-          .job-header {
+          .header-content {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
+            align-items: center;
+            position: relative;
+            z-index: 3;
+          }
+          .profile-section {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+          }
+          .profile-image {
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            border: 4px solid white;
+            object-fit: cover;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+          }
+          .profile-placeholder {
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            border: 4px solid white;
+            background-color: #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+          }
+          .name-section h1 {
+            font-size: 28px;
+            font-weight: bold;
+            letter-spacing: 1px;
             margin-bottom: 4px;
           }
           .job-title {
+            font-size: 18px;
+            color: #bfdbfe;
+            font-weight: 500;
+          }
+          .contact-section {
+            text-align: right;
+            font-size: 13px;
+          }
+          .contact-label {
             font-weight: 600;
-            color: #111827;
-          }
-          .job-date {
-            font-size: 14px;
-            color: #4b5563;
-          }
-          .company {
-            color: #374151;
-            font-style: italic;
             margin-bottom: 8px;
           }
-          .description {
-            color: #374151;
-            font-size: 14px;
-            line-height: 1.5;
-          }
-          .skills-container {
+          .contact-item {
+            margin-bottom: 4px;
             display: flex;
-            flex-wrap: wrap;
+            align-items: center;
+            justify-content: flex-end;
             gap: 8px;
           }
-          .skill-tag {
-            background-color: #e5e7eb;
-            color: #374151;
-            padding: 4px 12px;
-            border-radius: 4px;
-            font-size: 14px;
+          .contact-email {
+            color: #bfdbfe;
+            margin-top: 4px;
           }
-          @media print {
-            body { margin: 0; }
-          }
-        </style>
-      </head>
-      <body>
-        <header class="header">
-          <h1 class="name">${personalInfo.fullName}</h1>
-          <div class="contact-info">
-            <span>${personalInfo.email}</span>
-            <span>${personalInfo.phone}</span>
-            <span>${personalInfo.city}, ${personalInfo.state}</span>
-          </div>
-          ${(personalInfo.linkedin || personalInfo.portfolio) ? `
-            <div class="links">
-              ${personalInfo.linkedin ? `<a href="${personalInfo.linkedin}">LinkedIn</a>` : ''}
-              ${personalInfo.portfolio ? `<a href="${personalInfo.portfolio}">Portfolio</a>` : ''}
-            </div>
-          ` : ''}
-        </header>
-
-        ${professionalSummary ? `
-          <section class="section">
-            <h2 class="section-title">Professional Summary</h2>
-            <p class="description">${professionalSummary}</p>
-          </section>
-        ` : ''}
-
-        ${experience.length > 0 ? `
-          <section class="section">
-            <h2 class="section-title">Professional Experience</h2>
-            ${experience.map(exp => `
-              <div class="experience-item">
-                <div class="job-header">
-                  <h3 class="job-title">${exp.jobTitle}</h3>
-                  <span class="job-date">${exp.startDate} - ${exp.current ? 'Present' : exp.endDate}</span>
-                </div>
-                <p class="company">${exp.company}${exp.location ? `, ${exp.location}` : ''}</p>
-                <p class="description">${exp.description}</p>
-              </div>
-            `).join('')}
-          </section>
-        ` : ''}
-
-        ${education.length > 0 ? `
-          <section class="section">
-            <h2 class="section-title">Education</h2>
-            ${education.map(edu => `
-              <div class="education-item">
-                <div class="job-header">
-                  <div>
-                    <h3 class="job-title">${edu.degree}</h3>
-                    <p class="company">${edu.institution}${edu.location ? `, ${edu.location}` : ''}</p>
-                    ${edu.percentage ? `<p style="font-size: 14px; color: #4b5563;">Score: ${edu.percentage}${edu.percentage.includes('%') ? '' : '%'}</p>` : ''}
-                  </div>
-                  <span class="job-date">${edu.startDate} - ${edu.endDate}</span>
-                </div>
-              </div>
-            `).join('')}
-          </section>
-        ` : ''}
-
-        ${skills.length > 0 ? `
-          <section class="section">
-            <h2 class="section-title">Skills</h2>
-            <div class="skills-container">
-              ${skills.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
-            </div>
-          </section>
-        ` : ''}
-      </body>
-    </html>
-  `
-}
-
-export function generateFresherTemplateHTML(data: ResumeData): string {
-  const { personalInfo, professionalSummary, education, experience, skills, projects, certifications } = data
-
-  return `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <meta charset="utf-8">
-        <style>
-          * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-          }
-          body { 
-            font-family: Arial, sans-serif; 
-            line-height: 1.6;
-            color: #333;
-            max-width: 210mm;
-            margin: 0 auto;
+          
+          /* Main Content */
+          .main-content {
             padding: 32px;
-          }
-          .header {
-            text-align: center;
-            margin-bottom: 24px;
-          }
-          .name {
-            font-size: 20px;
-            font-weight: bold;
-            color: #111827;
-            margin-bottom: 8px;
-          }
-          .contact-info {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            font-size: 14px;
-            color: #4b5563;
-            margin-bottom: 8px;
-          }
-          .linkedin-link {
-            color: #2563eb;
-            text-decoration: none;
-            font-size: 14px;
+            position: relative;
+            z-index: 2;
           }
           .section {
-            margin-bottom: 20px;
+            margin-bottom: 32px;
           }
           .section-title {
             font-size: 16px;
             font-weight: bold;
             color: #1f2937;
-            border-bottom: 1px solid #d1d5db;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #3b82f6;
             padding-bottom: 4px;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
           }
-          .item {
-            margin-bottom: 12px;
-          }
-          .item-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 4px;
-          }
-          .item-title {
-            font-weight: 600;
-            color: #111827;
-          }
-          .item-date {
-            font-size: 14px;
-            color: #4b5563;
-          }
-          .item-subtitle {
-            font-size: 14px;
+          .summary-text {
+            font-size: 13px;
             color: #374151;
-            font-style: italic;
+            line-height: 1.6;
+            text-align: justify;
           }
-          .item-description {
-            font-size: 14px;
-            color: #374151;
-            margin-top: 4px;
-          }
+          
+          /* Skills Grid */
           .skills-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 8px;
+            gap: 16px 32px;
           }
           .skill-item {
-            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
             color: #374151;
           }
+          .skill-bullet {
+            width: 6px;
+            height: 6px;
+            background-color: #3b82f6;
+            border-radius: 50%;
+            flex-shrink: 0;
+          }
+          
+          /* Experience Items */
+          .experience-item, .project-item, .education-item {
+            margin-bottom: 20px;
+          }
+          .item-header {
+            margin-bottom: 8px;
+          }
+          .item-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 4px;
+          }
+          .item-company {
+            font-size: 13px;
+            color: #6b7280;
+            font-style: italic;
+            margin-bottom: 8px;
+          }
+          .item-description {
+            font-size: 13px;
+            color: #374151;
+            line-height: 1.5;
+          }
+          .description-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 4px;
+          }
+          .description-bullet {
+            width: 6px;
+            height: 6px;
+            background-color: #9ca3af;
+            border-radius: 50%;
+            margin-top: 6px;
+            flex-shrink: 0;
+          }
+          .tech-info {
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 8px;
+          }
+          .tech-label {
+            font-weight: 500;
+          }
+          
+          /* Languages and Certifications */
+          .language-item, .cert-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #374151;
+          }
+          .cert-text {
+            font-size: 13px;
+            color: #374151;
+            margin-bottom: 4px;
+          }
+          .cert-details {
+            font-size: 11px;
+            color: #6b7280;
+          }
+          
           @media print {
             body { margin: 0; }
+            .bg-decoration-1, .bg-decoration-2 { display: none; }
           }
         </style>
       </head>
       <body>
-        <header class="header">
-          <h1 class="name">${personalInfo.fullName}</h1>
-          <div class="contact-info">
-            <span>${personalInfo.email}</span>
-            <span>•</span>
-            <span>${personalInfo.phone}</span>
-            <span>•</span>
-            <span>${personalInfo.city}</span>
-          </div>
-          ${personalInfo.linkedin ? `
-            <a href="${personalInfo.linkedin}" class="linkedin-link">LinkedIn Profile</a>
-          ` : ''}
-        </header>
+        <!-- Background Decorations -->
+        <div class="bg-decoration-1">
+          <svg viewBox="0 0 100 100" style="width: 100%; height: 100%;">
+            <path d="M0,0 Q50,25 100,0 L100,50 Q75,25 50,50 Q25,75 0,50 Z" fill="#3b82f6"/>
+          </svg>
+        </div>
+        <div class="bg-decoration-2">
+          <svg viewBox="0 0 100 100" style="width: 100%; height: 100%;">
+            <path d="M0,100 Q25,75 50,100 Q75,75 100,100 L100,50 Q75,75 50,50 Q25,25 0,50 Z" fill="#3b82f6"/>
+          </svg>
+        </div>
 
-        ${professionalSummary ? `
-          <section class="section">
-            <h2 class="section-title">CAREER OBJECTIVE</h2>
-            <p class="item-description">${professionalSummary}</p>
-          </section>
-        ` : ''}
-
-        ${education.length > 0 ? `
-          <section class="section">
-            <h2 class="section-title">EDUCATION</h2>
-            ${education.map(edu => `
-              <div class="item">
-                <div class="item-header">
-                  <div>
-                    <h3 class="item-title">${edu.degree}</h3>
-                    <p class="item-subtitle">${edu.institution}</p>
-                    ${edu.percentage ? `<p style="font-size: 14px; color: #4b5563;">CGPA/Percentage: ${edu.percentage}</p>` : ''}
-                  </div>
-                  <span class="item-date">${edu.startDate} - ${edu.endDate}</span>
+        <!-- Header Section -->
+        <div class="header">
+          <div class="header-content">
+            <!-- Left Side - Profile and Name -->
+            <div class="profile-section">
+              ${personalInfo.profileImage ? `
+                <img src="${personalInfo.profileImage}" alt="${personalInfo.fullName}" class="profile-image">
+              ` : `
+                <div class="profile-placeholder">
+                  ${personalInfo.fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
                 </div>
+              `}
+              
+              <div class="name-section">
+                <h1>${personalInfo.fullName.toUpperCase()}</h1>
+                ${experience.length > 0 ? `<p class="job-title">${experience[0].jobTitle.toUpperCase()}</p>` : ''}
               </div>
-            `).join('')}
-          </section>
-        ` : ''}
-
-        ${experience.length > 0 ? `
-          <section class="section">
-            <h2 class="section-title">INTERNSHIPS & EXPERIENCE</h2>
-            ${experience.map(exp => `
-              <div class="item">
-                <div class="item-header">
-                  <h3 class="item-title">${exp.jobTitle}</h3>
-                  <span class="item-date">${exp.startDate} - ${exp.current ? 'Present' : exp.endDate}</span>
-                </div>
-                <p class="item-subtitle">${exp.company}</p>
-                <p class="item-description">${exp.description}</p>
-              </div>
-            `).join('')}
-          </section>
-        ` : ''}
-
-        ${projects && projects.length > 0 ? `
-          <section class="section">
-            <h2 class="section-title">ACADEMIC PROJECTS</h2>
-            ${projects.map(project => `
-              <div class="item">
-                <h3 class="item-title">${project.name}</h3>
-                <p class="item-description">${project.description}</p>
-                ${project.technologies ? `
-                  <p style="font-size: 14px; color: #4b5563; margin-top: 4px;">
-                    Technologies: ${project.technologies.join(', ')}
-                  </p>
-                ` : ''}
-              </div>
-            `).join('')}
-          </section>
-        ` : ''}
-
-        ${skills.length > 0 ? `
-          <section class="section">
-            <h2 class="section-title">TECHNICAL SKILLS</h2>
-            <div class="skills-grid">
-              ${skills.map(skill => `<span class="skill-item">• ${skill}</span>`).join('')}
             </div>
-          </section>
-        ` : ''}
 
-        ${certifications && certifications.length > 0 ? `
-          <section class="section">
-            <h2 class="section-title">CERTIFICATIONS & ACHIEVEMENTS</h2>
-            ${certifications.map(cert => `
-              <p class="skill-item">• ${cert}</p>
-            `).join('')}
-          </section>
-        ` : ''}
+            <!-- Right Side - Contact Information -->
+            <div class="contact-section">
+              <div class="contact-label">Address:</div>
+              ${personalInfo.address ? `<div>${personalInfo.address}</div>` : ''}
+              <div>${personalInfo.city}${personalInfo.city && personalInfo.state ? ', ' : ''}${personalInfo.state}</div>
+              <div class="contact-item">
+                <span>📞 ${personalInfo.phone}</span>
+              </div>
+              <div class="contact-item">
+                <span>✉️ Email:</span>
+              </div>
+              <div class="contact-email">${personalInfo.email}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+          <!-- Summary Section -->
+          ${professionalSummary ? `
+            <div class="section">
+              <h2 class="section-title">Summary</h2>
+              <p class="summary-text">${professionalSummary}</p>
+            </div>
+          ` : ''}
+
+          <!-- Skill Highlights -->
+          ${skills.length > 0 ? `
+            <div class="section">
+              <h2 class="section-title">Skill Highlights</h2>
+              <div class="skills-grid">
+                ${skills.map(skill => `
+                  <div class="skill-item">
+                    <span class="skill-bullet"></span>
+                    <span>${skill}</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+
+          <!-- Experience Section -->
+          ${experience.length > 0 ? `
+            <div class="section">
+              <h2 class="section-title">Experience</h2>
+              ${experience.map(exp => `
+                <div class="experience-item">
+                  <div class="item-header">
+                    <h3 class="item-title">${exp.jobTitle} - ${exp.startDate} to ${exp.current ? 'Present' : exp.endDate}</h3>
+                    <p class="item-company">${exp.company}, ${exp.location}</p>
+                  </div>
+                  <div class="item-description">
+                    ${exp.description.split('\n').map(line => line.trim() ? `
+                      <div class="description-item">
+                        <span class="description-bullet"></span>
+                        <span>${line}</span>
+                      </div>
+                    ` : '').join('')}
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          ` : ''}
+
+          <!-- Projects Section -->
+          ${projects && projects.length > 0 ? `
+            <div class="section">
+              <h2 class="section-title">Projects</h2>
+              ${projects.map(project => `
+                <div class="project-item">
+                  <div class="item-header">
+                    <h3 class="item-title">${project.name}</h3>
+                    ${project.technologies && project.technologies.length > 0 ? `
+                      <p class="tech-info">
+                        <span class="tech-label">Technologies:</span> ${project.technologies.join(', ')}
+                      </p>
+                    ` : ''}
+                  </div>
+                  <div class="item-description">
+                    <div class="description-item">
+                      <span class="description-bullet"></span>
+                      <span>${project.description}</span>
+                    </div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          ` : ''}
+
+          <!-- Education Section -->
+          ${education.length > 0 ? `
+            <div class="section">
+              <h2 class="section-title">Education</h2>
+              ${education.map(edu => `
+                <div class="education-item">
+                  <h3 class="item-title">${edu.degree}: ${edu.startDate.split('-')[0]}</h3>
+                  <p class="item-company">${edu.institution}, ${edu.location}</p>
+                  ${edu.percentage ? `<p class="tech-info">Grade: ${edu.percentage}</p>` : ''}
+                </div>
+              `).join('')}
+            </div>
+          ` : ''}
+
+          <!-- Languages Section -->
+          ${languages && languages.length > 0 ? `
+            <div class="section">
+              <h2 class="section-title">Languages</h2>
+              ${languages.map(language => `
+                <div class="language-item">
+                  <span class="skill-bullet"></span>
+                  <span>${language.name} - ${language.proficiency}</span>
+                </div>
+              `).join('')}
+            </div>
+          ` : ''}
+
+          <!-- Certifications Section -->
+          ${certifications && certifications.length > 0 ? `
+            <div class="section">
+              <h2 class="section-title">Certifications</h2>
+              ${certifications.map(cert => `
+                <div style="margin-bottom: 12px;">
+                  <p class="cert-text">
+                    <strong>${cert.name}</strong> - ${cert.issuer}
+                  </p>
+                  <p class="cert-details">
+                    Issued: ${new Date(cert.issueDate).toLocaleDateString('en-US', { 
+                      year: 'numeric', 
+                      month: 'short' 
+                    })}
+                  </p>
+                </div>
+              `).join('')}
+            </div>
+          ` : ''}
+        </div>
       </body>
     </html>
   `
-}
-
-export function generateTemplateHTML(template: string, data: ResumeData): string {
-  switch (template) {
-    case 'fresher':
-      return generateFresherTemplateHTML(data)
-    case 'technical':
-    case 'general':
-    default:
-      return generateCorporateTemplateHTML(data)
-  }
 }

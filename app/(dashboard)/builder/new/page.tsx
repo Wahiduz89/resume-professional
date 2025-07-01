@@ -10,7 +10,7 @@ import { ExperienceStep } from '@/components/resume/form-steps/experience'
 import { SkillsStep } from '@/components/resume/form-steps/skills'
 import { LanguagesStep } from '@/components/resume/form-steps/languages'
 import { CertificationsStep } from '@/components/resume/form-steps/certifications'
-import { CorporateTemplate } from '@/components/resume/templates/corporate'
+import { FresherTemplate } from '@/components/resume/templates/fresher'
 import { ResumeData } from '@/types'
 import toast from 'react-hot-toast'
 
@@ -36,7 +36,7 @@ const INITIAL_DATA: ResumeData = {
   achievements: [],
   coursework: [],
   languages: [],
-  template: 'corporate'
+  template: 'fresher' // Changed from 'corporate' to 'fresher'
 }
 
 export default function NewResumePage() {
@@ -159,7 +159,7 @@ export default function NewResumePage() {
           <div className="sticky top-0">
             <h3 className="text-xl font-semibold mb-4">Live Preview</h3>
             <div className="transform scale-75 origin-top">
-              <CorporateTemplate data={resumeData} />
+              <FresherTemplate data={resumeData} />
             </div>
           </div>
         </div>
