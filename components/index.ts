@@ -2,6 +2,7 @@
 // Layout components
 export { Navbar } from './layout/navbar'
 export { MobileNav } from './layout/mobile-nav'
+export { DashboardHeader } from './layout/dashboard-header'
 
 // UI components
 export { Button } from './ui/button'

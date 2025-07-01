@@ -1,14 +1,28 @@
+// components/layout/mobile-nav.tsx
 'use client'
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { Menu, X, Home, FileText, User, CreditCard } from 'lucide-react'
+import { usePathname, useRouter } from 'next/navigation'
+import { signOut } from 'next-auth/react'
+import { Menu, X, Home, FileText, User, CreditCard, LogOut } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export function MobileNav() {
   const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname()
+  const router = useRouter()
+
+  const handleLogout = async () => {
+    try {
+      await signOut({
+        redirect: false,
+      })
+      router.push('/')
+    } catch (error) {
+      console.error('Logout error:', error)
+    }
+  }
 
   const navItems = [
     { href: '/dashboard', label: 'Dashboard', icon: Home },
@@ -48,6 +62,18 @@ export function MobileNav() {
                 </Link>
               )
             })}
+            
+            {/* Logout Button */}
+            <button
+              onClick={() => {
+                setIsOpen(false)
+                handleLogout()
+              }}
+              className="flex items-center space-x-3 p-3 rounded-lg transition-colors hover:bg-red-50 text-red-600 w-full"
+            >
+              <LogOut className="w-5 h-5" />
+              <span>Sign Out</span>
+            </button>
           </nav>
         </div>
       )}
