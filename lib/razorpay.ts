@@ -29,7 +29,6 @@ export const SUBSCRIPTION_PLANS = {
       '1 Resume Template',
       'ATS-Friendly Formats',
       'PDF Export',
-      'Cover Letter Templates',
       'Email Support',
       'Basic Resume Builder'
     ]
@@ -44,7 +43,6 @@ export const SUBSCRIPTION_PLANS = {
       'AI Content Enhancement',
       'ATS-Friendly Formats',
       'PDF Export',
-      'Cover Letter Templates',
       'Priority Support'
     ]
   }

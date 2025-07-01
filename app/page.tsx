@@ -30,7 +30,6 @@ export default function HomePage() {
   const studentFeatures = [
     'ATS-friendly templates designed for campus placements',
     'Professional formats for fresher roles',
-    'Cover letter templates included',
     'LinkedIn optimization tips',
     'AI enhancement available in Student Pro plan',
     'Starting at just ₹99/month'
@@ -188,7 +187,7 @@ export default function HomePage() {
               </div>
               
               <ul className="space-y-3 mb-8">
-                {['1 Resume Template', 'ATS-Friendly Formats', 'PDF Export', 'Cover Letter Templates', 'Email Support', 'Basic Resume Builder'].map((feature, index) => (
+                {['1 Resume Template', 'ATS-Friendly Formats', 'PDF Export', 'Email Support', 'Basic Resume Builder'].map((feature, index) => (
                   <li key={index} className="flex items-center gap-2">
                     <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
                     <span className="text-gray-700">{feature}</span>
@@ -217,7 +216,7 @@ export default function HomePage() {
               </div>
               
               <ul className="space-y-3 mb-8">
-                {['3 Resume Templates', 'AI Content Enhancement', 'ATS-Friendly Formats', 'PDF Export', 'Cover Letter Templates', 'Priority Support'].map((feature, index) => (
+                {['3 Resume Templates', 'AI Content Enhancement', 'ATS-Friendly Formats', 'PDF Export', 'Priority Support'].map((feature, index) => (
                   <li key={index} className="flex items-center gap-2">
                     <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
                     <span className="text-gray-700">{feature}</span>
