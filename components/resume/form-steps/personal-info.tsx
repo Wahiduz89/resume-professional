@@ -16,6 +16,7 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
   onChange 
 }) => {
   const [uploading, setUploading] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleChange = (field: keyof PersonalInfo, value: string) => {
@@ -37,9 +38,9 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
       return
     }
 
-    // Validate file size (max 2MB)
-    if (file.size > 2 * 1024 * 1024) {
-      toast.error('Image size should be less than 2MB')
+    // Validate file size (max 5MB for Cloudinary)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Image size should be less than 5MB')
       return
     }
 
@@ -54,24 +55,58 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
       })
 
       if (response.ok) {
-        const { url } = await response.json()
+        const { url, publicId } = await response.json()
+        
+        // Store both URL and publicId for future deletion if needed
         handleChange('profileImage', url)
+        handleChange('profileImagePublicId', publicId)
+        
         toast.success('Profile image uploaded successfully!')
       } else {
-        toast.error('Failed to upload image')
+        const error = await response.json()
+        toast.error(error.error || 'Failed to upload image')
       }
     } catch (error) {
+      console.error('Upload error:', error)
       toast.error('Failed to upload image')
     } finally {
       setUploading(false)
     }
   }
 
-  const removeImage = () => {
+  const removeImage = async () => {
+    // If there's a publicId, delete from Cloudinary
+    if (data.personalInfo?.profileImagePublicId) {
+      setDeleting(true)
+      try {
+        const response = await fetch(
+          `/api/upload/profile-image?publicId=${encodeURIComponent(data.personalInfo.profileImagePublicId)}`,
+          {
+            method: 'DELETE'
+          }
+        )
+
+        if (!response.ok) {
+          console.error('Failed to delete image from Cloudinary')
+          // Continue with removal even if deletion fails
+        }
+      } catch (error) {
+        console.error('Error deleting image:', error)
+        // Continue with removal even if deletion fails
+      } finally {
+        setDeleting(false)
+      }
+    }
+    
+    // Clear the image data from form
     handleChange('profileImage', '')
+    handleChange('profileImagePublicId', '')
+    
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
     }
+
+    toast.success('Profile image removed')
   }
 
   // Ensure all values are strings to prevent controlled/uncontrolled switching
@@ -86,6 +121,7 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
     linkedin: data.personalInfo?.linkedin || '',
     portfolio: data.personalInfo?.portfolio || '',
     profileImage: data.personalInfo?.profileImage || '',
+    profileImagePublicId: data.personalInfo?.profileImagePublicId || '',
   }
 
   return (
@@ -103,12 +139,23 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
                   src={safeData.profileImage}
                   alt="Profile"
                   className="w-20 h-20 rounded-full object-cover border-2 border-gray-300"
+                  onError={(e) => {
+                    console.error('Image failed to load:', safeData.profileImage)
+                    // Fallback to placeholder if image fails to load
+                    e.currentTarget.style.display = 'none'
+                  }}
                 />
                 <button
                   onClick={removeImage}
-                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                  disabled={deleting}
+                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                  title="Remove image"
                 >
-                  <X className="w-3 h-3" />
+                  {deleting ? (
+                    <div className="w-3 h-3 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                  ) : (
+                    <X className="w-3 h-3" />
+                  )}
                 </button>
               </div>
             ) : (
@@ -125,20 +172,26 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
               accept="image/*"
               onChange={handleImageUpload}
               className="hidden"
+              disabled={uploading}
             />
             <Button
               type="button"
               variant="outline"
               onClick={() => fileInputRef.current?.click()}
-              disabled={uploading}
+              disabled={uploading || deleting}
               className="mb-2"
             >
               <Upload className="w-4 h-4 mr-2" />
               {uploading ? 'Uploading...' : 'Upload Photo'}
             </Button>
             <p className="text-sm text-gray-600">
-              Recommended: Square image, max 2MB (JPG, PNG)
+              Recommended: Square image, max 5MB (JPG, PNG, WebP)
             </p>
+            {safeData.profileImage && (
+              <p className="text-xs text-green-600 mt-1">
+                ✓ Image uploaded and ready for PDF generation
+              </p>
+            )}
           </div>
         </div>
       </div>

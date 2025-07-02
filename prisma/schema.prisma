@@ -1,4 +1,4 @@
-// prisma/schema.prisma - Updated with usage tracking
+// prisma/schema.prisma - Updated with usage tracking and image storage
 generator client {
   provider = "prisma-client-js"
 }
@@ -20,6 +20,7 @@ model User {
   subscription  Subscription?
   resumes       Resume[]
   downloads     Download[]
+  images        UserImage[]
 }
 
 model Resume {
@@ -60,4 +61,16 @@ model Download {
   
   user          User      @relation(fields: [userId], references: [id])
   resume        Resume    @relation(fields: [resumeId], references: [id])
+}
+
+model UserImage {
+  id        String   @id @default(cuid())
+  userId    String
+  publicId  String   @unique
+  secureUrl String
+  format    String
+  bytes     Int
+  createdAt DateTime @default(now())
+  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

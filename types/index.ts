@@ -9,7 +9,8 @@ export interface PersonalInfo {
   pincode: string
   linkedin: string
   portfolio: string
-  profileImage?: string // New field for profile image URL
+  profileImage?: string
+  profileImagePublicId?: string // Added for Cloudinary deletion
 }
 
 export interface Education {
@@ -41,14 +42,12 @@ export interface Project {
   link?: string
 }
 
-// New interface for languages
 export interface Language {
   id: string
   name: string
   proficiency: 'Beginner' | 'Intermediate' | 'Advanced' | 'Native'
 }
 
-// New interface for certifications
 export interface Certification {
   id: string
   name: string
@@ -66,10 +65,10 @@ export interface ResumeData {
   experience: Experience[]
   skills: string[]
   projects?: Project[]
-  certifications: Certification[] // Updated to use new Certification interface
+  certifications: Certification[]
   achievements?: string[]
   coursework?: string[]
-  languages: Language[] // New field for languages
+  languages: Language[]
   template: 'corporate' | 'technical' | 'general' | 'fresher' | 'internship'
 }
 
