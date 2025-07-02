@@ -1,4 +1,4 @@
-// components/index.ts
+// components/index.ts - Updated to include GeneralTemplate
 // Layout components
 export { Navbar } from './layout/navbar'
 export { MobileNav } from './layout/mobile-nav'
@@ -22,6 +22,7 @@ export { ProjectsStep } from './resume/form-steps/projects'
 // Resume templates
 export { CorporateTemplate } from './resume/templates/corporate'
 export { FresherTemplate } from './resume/templates/fresher'
+export { GeneralTemplate } from './resume/templates/general'
 
 // Payment components
 export { SubscriptionComponent } from './payment/subscription'

@@ -1,4 +1,4 @@
-// app/(dashboard)/builder/new/page.tsx
+// Update for app/(dashboard)/builder/new/page.tsx - Add template selection
 'use client'
 
 import { useState } from 'react'
@@ -11,6 +11,7 @@ import { SkillsStep } from '@/components/resume/form-steps/skills'
 import { LanguagesStep } from '@/components/resume/form-steps/languages'
 import { CertificationsStep } from '@/components/resume/form-steps/certifications'
 import { FresherTemplate } from '@/components/resume/templates/fresher'
+import { GeneralTemplate } from '@/components/resume/templates/general'
 import { ResumeData } from '@/types'
 import toast from 'react-hot-toast'
 
@@ -36,12 +37,29 @@ const INITIAL_DATA: ResumeData = {
   achievements: [],
   coursework: [],
   languages: [],
-  template: 'fresher' // Changed from 'corporate' to 'fresher'
+  template: 'fresher' // Default to fresher template for students
 }
+
+const TEMPLATE_OPTIONS = [
+  {
+    id: 'general',
+    name: 'General Professional',
+    description: 'Perfect for experienced professionals and mid-level careers',
+    preview: GeneralTemplate,
+    features: ['Modern curved design', 'Sidebar layout', 'Skills visualization', 'ATS-friendly structure']
+  },
+  {
+    id: 'fresher',
+    name: 'Fresh Graduate',
+    description: 'Ideal for students and recent graduates',
+    preview: FresherTemplate,
+    features: ['Clean design', 'Education focus', 'Project highlights', 'Entry-level friendly']
+  }
+]
 
 export default function NewResumePage() {
   const router = useRouter()
-  const [currentStep, setCurrentStep] = useState(0)
+  const [currentStep, setCurrentStep] = useState(-1) // Start with template selection
   const [resumeData, setResumeData] = useState<ResumeData>(INITIAL_DATA)
   const [loading, setLoading] = useState(false)
 
@@ -54,6 +72,11 @@ export default function NewResumePage() {
     { title: 'Certifications', component: CertificationsStep },
   ]
 
+  const selectTemplate = (templateId: string) => {
+    setResumeData({ ...resumeData, template: templateId as ResumeData['template'] })
+    setCurrentStep(0)
+  }
+
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1)
@@ -63,6 +86,8 @@ export default function NewResumePage() {
   const handlePrevious = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1)
+    } else if (currentStep === 0) {
+      setCurrentStep(-1) // Go back to template selection
     }
   }
 
@@ -89,7 +114,63 @@ export default function NewResumePage() {
     }
   }
 
+  // Template Selection View
+  if (currentStep === -1) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-6xl mx-auto p-4 lg:p-8">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold mb-2">Choose Your Resume Template</h1>
+            <p className="text-gray-600">
+              Select a template that best fits your career level and industry
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            {TEMPLATE_OPTIONS.map((template) => {
+              const PreviewComponent = template.preview
+              return (
+                <div key={template.id} className="bg-white rounded-lg shadow-sm border overflow-hidden">
+                  <div className="p-6">
+                    <h3 className="text-xl font-semibold mb-2">{template.name}</h3>
+                    <p className="text-gray-600 mb-4">{template.description}</p>
+                    
+                    <div className="space-y-2 mb-6">
+                      {template.features.map((feature, index) => (
+                        <div key={index} className="flex items-center text-sm text-gray-700">
+                          <span className="w-2 h-2 bg-blue-600 rounded-full mr-3"></span>
+                          {feature}
+                        </div>
+                      ))}
+                    </div>
+
+                    <Button 
+                      onClick={() => selectTemplate(template.id)}
+                      className="w-full mb-4"
+                    >
+                      Select This Template
+                    </Button>
+                  </div>
+                  
+                  <div className="bg-gray-50 p-4">
+                    <p className="text-sm text-gray-600 mb-3">Preview:</p>
+                    <div className="transform scale-[0.15] origin-top-left h-48 overflow-hidden border rounded">
+                      <PreviewComponent data={INITIAL_DATA} />
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Form Steps View
   const CurrentStepComponent = steps[currentStep].component
+  const selectedTemplate = TEMPLATE_OPTIONS.find(t => t.id === resumeData.template)
+  const PreviewComponent = selectedTemplate?.preview || GeneralTemplate
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -98,7 +179,7 @@ export default function NewResumePage() {
           <div className="mb-8">
             <h1 className="text-2xl font-bold mb-2">Create Your Resume</h1>
             <p className="text-gray-600">
-              Fill out each section to build your professional resume.
+              Using {selectedTemplate?.name} template - Fill out each section to build your professional resume.
             </p>
           </div>
 
@@ -134,9 +215,8 @@ export default function NewResumePage() {
               <Button
                 variant="outline"
                 onClick={handlePrevious}
-                disabled={currentStep === 0}
               >
-                Previous
+                {currentStep === 0 ? 'Change Template' : 'Previous'}
               </Button>
 
               {currentStep === steps.length - 1 ? (
@@ -159,7 +239,7 @@ export default function NewResumePage() {
           <div className="sticky top-0">
             <h3 className="text-xl font-semibold mb-4">Live Preview</h3>
             <div className="transform scale-75 origin-top">
-              <FresherTemplate data={resumeData} />
+              <PreviewComponent data={resumeData} />
             </div>
           </div>
         </div>
