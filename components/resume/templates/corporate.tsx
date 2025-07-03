@@ -1,6 +1,7 @@
-// components/resume/templates/corporate.tsx
+// components/resume/templates/corporate.tsx - Updated with ProfileImage
 import React from 'react'
 import { ResumeData } from '@/types'
+import { ProfileImage } from '../profile-image'
 
 interface TemplateProps {
   data: ResumeData
@@ -14,16 +15,21 @@ export const CorporateTemplate: React.FC<TemplateProps> = ({ data }) => {
       {/* Header Section with Profile Image */}
       <header className="border-b-2 border-gray-800 pb-4 mb-6">
         <div className="flex items-start gap-6">
-          {/* Profile Image */}
-          {personalInfo.profileImage && (
-            <div className="flex-shrink-0">
-              <img
-                src={personalInfo.profileImage}
-                alt={personalInfo.fullName}
-                className="w-24 h-24 rounded-full object-cover border-2 border-gray-300"
-              />
-            </div>
-          )}
+          {/* Profile Image with Error Handling */}
+          <div className="flex-shrink-0">
+            <ProfileImage
+              src={personalInfo.profileImage || ''}
+              alt={personalInfo.fullName}
+              className="w-24 h-24 rounded-full object-cover border-2 border-gray-300"
+              fallbackContent={
+                <div className="w-24 h-24 rounded-full border-2 border-gray-300 bg-gray-200 flex items-center justify-center">
+                  <span className="text-gray-500 text-lg font-bold">
+                    {personalInfo.fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                  </span>
+                </div>
+              }
+            />
+          </div>
           
           {/* Personal Information */}
           <div className="flex-1">

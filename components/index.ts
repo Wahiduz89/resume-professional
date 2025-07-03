@@ -1,4 +1,4 @@
-// components/index.ts - Updated to include GeneralTemplate
+// components/index.ts - Updated to include ProfileImage
 // Layout components
 export { Navbar } from './layout/navbar'
 export { MobileNav } from './layout/mobile-nav'
@@ -23,6 +23,9 @@ export { ProjectsStep } from './resume/form-steps/projects'
 export { CorporateTemplate } from './resume/templates/corporate'
 export { FresherTemplate } from './resume/templates/fresher'
 export { GeneralTemplate } from './resume/templates/general'
+
+// Resume utilities
+export { ProfileImage } from './resume/profile-image'
 
 // Payment components
 export { SubscriptionComponent } from './payment/subscription'

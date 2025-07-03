@@ -1,4 +1,4 @@
-// app/(dashboard)/builder/[id]/page.tsx
+// app/(dashboard)/builder/[id]/page.tsx - Fixed template selection
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -11,6 +11,8 @@ import { SkillsStep } from '@/components/resume/form-steps/skills'
 import { LanguagesStep } from '@/components/resume/form-steps/languages'
 import { CertificationsStep } from '@/components/resume/form-steps/certifications'
 import { CorporateTemplate } from '@/components/resume/templates/corporate'
+import { FresherTemplate } from '@/components/resume/templates/fresher'
+import { GeneralTemplate } from '@/components/resume/templates/general'
 import { ResumeData } from '@/types'
 import toast from 'react-hot-toast'
 
@@ -37,6 +39,15 @@ const INITIAL_DATA: ResumeData = {
   coursework: [],
   languages: [],
   template: 'corporate'
+}
+
+// Template mapping for dynamic selection
+const TEMPLATE_COMPONENTS = {
+  'corporate': CorporateTemplate,
+  'fresher': FresherTemplate,
+  'general': GeneralTemplate,
+  'technical': GeneralTemplate, // fallback to general
+  'internship': FresherTemplate // fallback to fresher
 }
 
 export default function EditResumePage() {
@@ -166,6 +177,9 @@ export default function EditResumePage() {
   }
 
   const CurrentStepComponent = steps[currentStep].component
+  
+  // Fixed: Dynamically select the correct template component
+  const TemplateComponent = TEMPLATE_COMPONENTS[resumeData.template as keyof typeof TEMPLATE_COMPONENTS] || GeneralTemplate
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -254,7 +268,7 @@ export default function EditResumePage() {
           <div className="sticky top-0">
             <h3 className="text-xl font-semibold mb-4">Live Preview</h3>
             <div className="transform scale-75 origin-top">
-              <CorporateTemplate data={resumeData} />
+              <TemplateComponent data={resumeData} />
             </div>
           </div>
         </div>

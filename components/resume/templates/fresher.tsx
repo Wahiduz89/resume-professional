@@ -1,6 +1,7 @@
-// components/resume/templates/fresher.tsx
+// components/resume/templates/fresher.tsx - Updated with error handling
 import React from 'react'
 import { ResumeData } from '@/types'
+import { ProfileImage } from '../profile-image'
 
 interface TemplateProps {
   data: ResumeData
@@ -43,21 +44,18 @@ export const FresherTemplate: React.FC<TemplateProps> = ({ data }) => {
             {/* Left Side - Profile Image and Name */}
             <div className="flex items-center space-x-6">
               <div className="relative">
-                {personalInfo.profileImage ? (
-                  <div className="w-24 h-24 rounded-full border-4 border-white overflow-hidden shadow-lg">
-                    <img
-                      src={personalInfo.profileImage}
-                      alt={personalInfo.fullName}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                ) : (
-                  <div className="w-24 h-24 rounded-full border-4 border-white bg-blue-500 flex items-center justify-center shadow-lg">
-                    <span className="text-white text-xl font-bold">
-                      {personalInfo.fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                    </span>
-                  </div>
-                )}
+                <ProfileImage
+                  src={personalInfo.profileImage || ''}
+                  alt={personalInfo.fullName}
+                  className="w-24 h-24 rounded-full border-4 border-white object-cover shadow-lg"
+                  fallbackContent={
+                    <div className="w-24 h-24 rounded-full border-4 border-white bg-blue-500 flex items-center justify-center shadow-lg">
+                      <span className="text-white text-xl font-bold">
+                        {personalInfo.fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                      </span>
+                    </div>
+                  }
+                />
               </div>
               
               <div>

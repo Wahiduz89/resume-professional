@@ -1,6 +1,7 @@
-// components/resume/templates/general.tsx - Professional Corporate Design
+// components/resume/templates/general.tsx - Complete updated version
 import React from 'react'
 import { ResumeData } from '@/types'
+import { ProfileImage } from '../profile-image'
 
 interface TemplateProps {
   data: ResumeData
@@ -52,23 +53,24 @@ export const GeneralTemplate: React.FC<TemplateProps> = ({ data }) => {
           <div className="flex items-center justify-between">
             {/* Left: Profile and Name */}
             <div className="flex items-center space-x-10">
-              {/* Enhanced Profile Image */}
+              {/* Enhanced Profile Image with Error Handling */}
               <div className="relative group">
                 <div className="absolute -inset-4 bg-gradient-to-r from-blue-400 via-purple-400 to-indigo-400 rounded-full opacity-20 blur-xl group-hover:opacity-30 transition-opacity duration-300"></div>
                 <div className="absolute -inset-2 bg-white/10 rounded-full backdrop-blur-sm"></div>
-                {personalInfo.profileImage ? (
-                  <img
-                    src={personalInfo.profileImage}
-                    alt={personalInfo.fullName}
-                    className="relative w-40 h-40 rounded-full border-4 border-white/30 object-cover shadow-2xl backdrop-blur-sm"
-                  />
-                ) : (
-                  <div className="relative w-40 h-40 rounded-full border-4 border-white/30 bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 flex items-center justify-center shadow-2xl">
-                    <span className="text-white text-4xl font-bold tracking-wider drop-shadow-lg">
-                      {personalInfo.fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                    </span>
-                  </div>
-                )}
+                
+                <ProfileImage
+                  src={personalInfo.profileImage || ''}
+                  alt={personalInfo.fullName}
+                  className="relative w-40 h-40 rounded-full border-4 border-white/30 object-cover shadow-2xl backdrop-blur-sm"
+                  fallbackContent={
+                    <div className="relative w-40 h-40 rounded-full border-4 border-white/30 bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 flex items-center justify-center shadow-2xl">
+                      <span className="text-white text-4xl font-bold tracking-wider drop-shadow-lg">
+                        {personalInfo.fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                      </span>
+                    </div>
+                  }
+                />
+                
                 <div className="absolute -bottom-3 -right-3 w-10 h-10 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
                   <div className="w-3 h-3 bg-white rounded-full"></div>
                 </div>

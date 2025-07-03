@@ -1,4 +1,4 @@
-// components/resume/form-steps/personal-info.tsx
+// components/resume/form-steps/personal-info.tsx - Fixed version
 import React, { useState, useRef } from 'react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -24,6 +24,16 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
       personalInfo: { 
         ...data.personalInfo, 
         [field]: value 
+      } 
+    })
+  }
+
+  // Fixed function to handle multiple fields in a single update
+  const handleMultipleChanges = (updates: Partial<PersonalInfo>) => {
+    onChange({ 
+      personalInfo: { 
+        ...data.personalInfo, 
+        ...updates 
       } 
     })
   }
@@ -57,11 +67,18 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
       if (response.ok) {
         const { url, publicId } = await response.json()
         
-        // Store both URL and publicId for future deletion if needed
-        handleChange('profileImage', url)
-        handleChange('profileImagePublicId', publicId)
+        // Fixed: Update both fields in a single state update
+        handleMultipleChanges({
+          profileImage: url,
+          profileImagePublicId: publicId
+        })
         
         toast.success('Profile image uploaded successfully!')
+        
+        // Force a small delay to ensure state is updated before re-render
+        setTimeout(() => {
+          console.log('Profile image updated:', url) // Debug log
+        }, 100)
       } else {
         const error = await response.json()
         toast.error(error.error || 'Failed to upload image')
@@ -98,9 +115,11 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
       }
     }
     
-    // Clear the image data from form
-    handleChange('profileImage', '')
-    handleChange('profileImagePublicId', '')
+    // Fixed: Clear both image fields in a single update
+    handleMultipleChanges({
+      profileImage: '',
+      profileImagePublicId: ''
+    })
     
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
@@ -124,6 +143,11 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
     profileImagePublicId: data.personalInfo?.profileImagePublicId || '',
   }
 
+  // Debug log to track state changes
+  React.useEffect(() => {
+    console.log('PersonalInfo profileImage updated:', safeData.profileImage)
+  }, [safeData.profileImage])
+
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold mb-4">Personal Information</h2>
@@ -141,8 +165,15 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
                   className="w-20 h-20 rounded-full object-cover border-2 border-gray-300"
                   onError={(e) => {
                     console.error('Image failed to load:', safeData.profileImage)
-                    // Fallback to placeholder if image fails to load
-                    e.currentTarget.style.display = 'none'
+                    // Show error to user and revert to placeholder
+                    toast.error('Failed to load profile image')
+                    handleMultipleChanges({
+                      profileImage: '',
+                      profileImagePublicId: ''
+                    })
+                  }}
+                  onLoad={() => {
+                    console.log('Image loaded successfully:', safeData.profileImage)
                   }}
                 />
                 <button
