@@ -38,7 +38,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
       <Navbar />
-      
+
       {/* Hero Section */}
       <div className="max-w-6xl mx-auto px-4 pt-32 pb-16">
         <div className="text-center">
@@ -46,19 +46,19 @@ export default function HomePage() {
             <GraduationCap className="w-5 h-5" />
             <span className="text-sm font-medium">Built for Students & Fresh Graduates</span>
           </div>
-          
+
           <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
             Create Your First Professional Resume
           </h1>
-          
+
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Land your dream internship or first job with AI-powered resumes 
+            Land your dream internship or first job with AI-powered resumes
             designed specifically for Indian campus placements and entry-level positions.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-            <Button 
-              size="lg" 
+            <Button
+              size="lg"
               onClick={() => router.push('/register')}
               className="bg-blue-600 hover:bg-blue-700 text-white px-8"
             >
@@ -66,8 +66,8 @@ export default function HomePage() {
               Create New Resume
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
-            <Button 
-              size="lg" 
+            <Button
+              size="lg"
               variant="outline"
               onClick={() => router.push('/dashboard')}
               className="border-blue-600 text-blue-600 hover:bg-blue-50 px-8"
@@ -89,7 +89,7 @@ export default function HomePage() {
           <h2 className="text-3xl font-bold text-center mb-12">
             Everything You Need to Get Hired
           </h2>
-          
+
           <div className="grid md:grid-cols-3 gap-8">
             {features.map((feature, index) => {
               const Icon = feature.icon
@@ -113,7 +113,7 @@ export default function HomePage() {
           <h2 className="text-3xl font-bold text-center mb-12">
             Why Students Choose ResumeAI Pro
           </h2>
-          
+
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {studentFeatures.map((feature, index) => (
               <div key={index} className="flex items-start gap-3">
@@ -134,12 +134,12 @@ export default function HomePage() {
           <p className="text-center text-gray-600 mb-12">
             Choose from templates optimized for Indian recruiters and ATS systems
           </p>
-          
+
           <div className="grid md:grid-cols-3 gap-8">
             <div className="bg-white p-6 rounded-lg shadow-sm border hover:shadow-md transition-shadow">
               <h3 className="font-semibold mb-2">Fresher Template</h3>
               <p className="text-sm text-gray-600 mb-4">
-                Perfect for students with limited work experience. 
+                Perfect for students with limited work experience.
                 Highlights education, projects, and skills.
               </p>
               <div className="flex items-center gap-1 text-yellow-500">
@@ -147,19 +147,19 @@ export default function HomePage() {
                 <span className="text-sm">Most popular for freshers</span>
               </div>
             </div>
-            
+
             <div className="bg-white p-6 rounded-lg shadow-sm border hover:shadow-md transition-shadow">
               <h3 className="font-semibold mb-2">Internship Template</h3>
               <p className="text-sm text-gray-600 mb-4">
-                Ideal for internship applications. 
+                Ideal for internship applications.
                 Emphasizes academic achievements and relevant coursework.
               </p>
             </div>
-            
+
             <div className="bg-white p-6 rounded-lg shadow-sm border hover:shadow-md transition-shadow">
               <h3 className="font-semibold mb-2">Technical Template</h3>
               <p className="text-sm text-gray-600 mb-4">
-                For engineering and tech students. 
+                For engineering and tech students.
                 Showcases technical skills and projects prominently.
               </p>
             </div>
@@ -173,7 +173,7 @@ export default function HomePage() {
           <h2 className="text-3xl font-bold text-center mb-12">
             Simple, Student-Friendly Pricing
           </h2>
-          
+
           <div className="grid md:grid-cols-2 gap-8">
             {/* Student Starter Plan */}
             <div className="bg-white p-8 rounded-lg shadow-sm border">
@@ -185,7 +185,7 @@ export default function HomePage() {
                 </div>
                 <p className="text-gray-600 mt-2">Perfect for getting started</p>
               </div>
-              
+
               <ul className="space-y-3 mb-8">
                 {['1 Resume Template', 'ATS-Friendly Formats', 'PDF Export', 'Email Support', 'Basic Resume Builder'].map((feature, index) => (
                   <li key={index} className="flex items-center gap-2">
@@ -194,13 +194,14 @@ export default function HomePage() {
                   </li>
                 ))}
               </ul>
-              
-              <Button 
+
+              <Button
                 variant="outline"
                 className="w-full"
                 onClick={() => router.push('/register')}
               >
-                Start Free Trial
+                Get Started
+
               </Button>
             </div>
 
@@ -214,7 +215,7 @@ export default function HomePage() {
                 </div>
                 <p className="text-gray-600 mt-2">For serious job seekers</p>
               </div>
-              
+
               <ul className="space-y-3 mb-8">
                 {['3 Resume Templates', 'AI Content Enhancement', 'ATS-Friendly Formats', 'PDF Export', 'Priority Support'].map((feature, index) => (
                   <li key={index} className="flex items-center gap-2">
@@ -223,18 +224,17 @@ export default function HomePage() {
                   </li>
                 ))}
               </ul>
-              
-              <Button 
+
+              <Button
                 className="w-full bg-blue-600 hover:bg-blue-700"
                 onClick={() => router.push('/register')}
               >
-                Start Free Trial
+                Get Started
               </Button>
             </div>
           </div>
         </div>
       </div>
-
       {/* CTA Section */}
       <div className="bg-blue-600 text-white py-16">
         <div className="max-w-4xl mx-auto px-4 text-center">
@@ -244,21 +244,13 @@ export default function HomePage() {
           <p className="text-xl mb-8 opacity-90">
             Join thousands of students who landed their dream jobs
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              size="lg" 
+          <div className="flex justify-center">
+            <Button
+              size="lg"
               onClick={() => router.push('/register')}
               className="bg-white text-blue-600 hover:bg-gray-100"
             >
               Create Your Resume Now
-            </Button>
-            <Button 
-              size="lg" 
-              variant="outline"
-              onClick={() => router.push('/dashboard')}
-              className="border-white text-white hover:bg-white hover:text-blue-600"
-            >
-              Upload Existing Resume
             </Button>
           </div>
         </div>

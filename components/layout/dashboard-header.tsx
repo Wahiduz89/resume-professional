@@ -4,7 +4,7 @@
 import { useSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { FileText, LogOut, User, Settings } from 'lucide-react'
+import { ArrowLeft, LogOut, User, Settings } from 'lucide-react'
 import { useState } from 'react'
 
 export function DashboardHeader() {
@@ -26,13 +26,15 @@ export function DashboardHeader() {
   return (
     <header className="bg-white border-b border-gray-200 px-4 py-3 lg:px-8">
       <div className="flex items-center justify-between">
-        {/* Logo and App Name */}
-        <div className="flex items-center space-x-3">
-          <FileText className="w-8 h-8 text-blue-600" />
-          <div>
-            <h1 className="text-xl font-bold text-gray-900">ResumeAI Pro</h1>
-            <p className="text-sm text-gray-600">Dashboard</p>
-          </div>
+        {/* Back to Dashboard Link */}
+        <div>
+          <button
+            onClick={() => router.push('/dashboard')}
+            className="flex items-center space-x-2 text-xl font-bold text-gray-900 hover:text-blue-600 transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            <span>Back to Dashboard</span>
+          </button>
         </div>
 
         {/* User Menu */}
@@ -69,9 +71,9 @@ export function DashboardHeader() {
                   <Settings className="w-4 h-4" />
                   <span>Profile Settings</span>
                 </button>
-                
+
                 <hr className="my-1" />
-                
+
                 <button
                   onClick={() => {
                     setShowDropdown(false)
