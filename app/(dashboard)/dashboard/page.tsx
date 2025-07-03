@@ -1,11 +1,11 @@
-// app/(dashboard)/dashboard/page.tsx - Updated with payment flow integration
+// app/(dashboard)/dashboard/page.tsx - Updated with delete resume functionality
 'use client'
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { UploadResume } from '@/components/resume/upload-resume'
-import { Plus, Download, Edit, FileText, AlertCircle, Crown } from 'lucide-react'
+import { Plus, Download, Edit, FileText, AlertCircle, Crown, Trash2 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { formatDate } from '@/lib/utils'
 
@@ -33,6 +33,7 @@ export default function DashboardPage() {
   const [resumes, setResumes] = useState<Resume[]>([])
   const [loading, setLoading] = useState(true)
   const [exporting, setExporting] = useState<string | null>(null)
+  const [deleting, setDeleting] = useState<string | null>(null)
   const [showUpload, setShowUpload] = useState(false)
   const [downloadChecks, setDownloadChecks] = useState<Record<string, DownloadCheck>>({})
 
@@ -129,6 +130,40 @@ export default function DashboardPage() {
       toast.error('Download failed')
     } finally {
       setExporting(null)
+    }
+  }
+
+  const handleDeleteResume = async (resumeId: string, resumeName: string) => {
+    const confirmed = window.confirm(
+      `Are you sure you want to delete "${resumeName}"? This action cannot be undone.`
+    )
+    
+    if (!confirmed) return
+
+    setDeleting(resumeId)
+    try {
+      const response = await fetch(`/api/resume/${resumeId}`, {
+        method: 'DELETE'
+      })
+
+      if (response.ok) {
+        toast.success('Resume deleted successfully!')
+        // Remove the deleted resume from the state
+        setResumes(prevResumes => prevResumes.filter(resume => resume.id !== resumeId))
+        // Remove download check data for deleted resume
+        setDownloadChecks(prevChecks => {
+          const updatedChecks = { ...prevChecks }
+          delete updatedChecks[resumeId]
+          return updatedChecks
+        })
+      } else {
+        const errorData = await response.json()
+        toast.error(errorData.error || 'Failed to delete resume')
+      }
+    } catch (error) {
+      toast.error('Failed to delete resume')
+    } finally {
+      setDeleting(null)
     }
   }
 
@@ -337,6 +372,19 @@ export default function DashboardPage() {
                 >
                   <Download className="w-4 h-4 mr-1" />
                   {getDownloadButtonText(resume)}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleDeleteResume(resume.id, resume.content.personalInfo?.fullName || 'Untitled Resume')}
+                  disabled={deleting === resume.id}
+                  className="text-red-600 hover:text-red-700 border-red-300 hover:border-red-400"
+                >
+                  {deleting === resume.id ? (
+                    <div className="w-4 h-4 animate-spin rounded-full border-2 border-red-600 border-t-transparent"></div>
+                  ) : (
+                    <Trash2 className="w-4 h-4" />
+                  )}
                 </Button>
               </div>
             </div>

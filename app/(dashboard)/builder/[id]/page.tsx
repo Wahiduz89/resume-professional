@@ -1,4 +1,4 @@
-// app/(dashboard)/builder/[id]/page.tsx - Fixed template selection
+// app/(dashboard)/builder/[id]/page.tsx - Updated without delete button
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -141,30 +141,6 @@ export default function EditResumePage() {
     }
   }
 
-  const handleDelete = async () => {
-    if (!confirm('Are you sure you want to delete this resume? This action cannot be undone.')) {
-      return
-    }
-
-    setLoading(true)
-    try {
-      const response = await fetch(`/api/resume/${resumeId}`, {
-        method: 'DELETE'
-      })
-
-      if (response.ok) {
-        toast.success('Resume deleted successfully!')
-        router.push('/dashboard')
-      } else {
-        toast.error('Failed to delete resume')
-      }
-    } catch (error) {
-      toast.error('Failed to delete resume')
-    } finally {
-      setLoading(false)
-    }
-  }
-
   if (initialLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -186,17 +162,7 @@ export default function EditResumePage() {
       <div className="lg:grid lg:grid-cols-2 min-h-screen">
         <div className="p-4 lg:p-8 overflow-y-auto">
           <div className="mb-6">
-            <div className="flex justify-between items-center mb-4">
-              <h1 className="text-2xl font-bold">Edit Resume</h1>
-              <Button
-                variant="outline"
-                onClick={handleDelete}
-                disabled={loading}
-                className="text-red-600 hover:text-red-700 border-red-300 hover:border-red-400"
-              >
-                Delete Resume
-              </Button>
-            </div>
+            <h1 className="text-2xl font-bold mb-4">Edit Resume</h1>
             <p className="text-gray-600">
               Make changes to your resume and save when ready.
             </p>
