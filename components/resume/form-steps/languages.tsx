@@ -79,7 +79,7 @@ export const LanguagesStep: React.FC<LanguagesStepProps> = ({
                     Language *
                   </label>
                   <Input
-                    placeholder="e.g., English, Hindi, Spanish"
+                    placeholder="e.g., English, Hindi, Assamese"
                     value={language.name || ''}
                     onChange={(e) => updateLanguage(language.id, { name: e.target.value })}
                     required

@@ -9,6 +9,84 @@ interface EducationStepProps {
   onChange: (data: { education: Education[] }) => void
 }
 
+const DEGREE_OPTIONS = [
+  // High School
+  'High School Diploma',
+  'Higher Secondary Certificate (HSC)',
+  'Senior Secondary Certificate',
+  
+  // Undergraduate Degrees
+  'Bachelor of Arts (BA)',
+  'Bachelor of Science (BSc)',
+  'Bachelor of Commerce (BCom)',
+  'Bachelor of Engineering (BE)',
+  'Bachelor of Technology (BTech)',
+  'Bachelor of Computer Applications (BCA)',
+  'Bachelor of Business Administration (BBA)',
+  'Bachelor of Fine Arts (BFA)',
+  'Bachelor of Architecture (BArch)',
+  'Bachelor of Medicine, Bachelor of Surgery (MBBS)',
+  'Bachelor of Dental Surgery (BDS)',
+  'Bachelor of Pharmacy (BPharm)',
+  'Bachelor of Education (BEd)',
+  'Bachelor of Law (LLB)',
+  'Bachelor of Design (BDes)',
+  'Bachelor of Social Work (BSW)',
+  'Bachelor of Journalism and Mass Communication (BJMC)',
+  'Bachelor of Hotel Management (BHM)',
+  
+  // Postgraduate Degrees
+  'Master of Arts (MA)',
+  'Master of Science (MSc)',
+  'Master of Commerce (MCom)',
+  'Master of Engineering (ME)',
+  'Master of Technology (MTech)',
+  'Master of Computer Applications (MCA)',
+  'Master of Business Administration (MBA)',
+  'Master of Fine Arts (MFA)',
+  'Master of Architecture (MArch)',
+  'Master of Medicine (MD)',
+  'Master of Surgery (MS)',
+  'Master of Dental Surgery (MDS)',
+  'Master of Pharmacy (MPharm)',
+  'Master of Education (MEd)',
+  'Master of Law (LLM)',
+  'Master of Design (MDes)',
+  'Master of Social Work (MSW)',
+  'Master of Journalism and Mass Communication (MJMC)',
+  'Master of Hotel Management (MHM)',
+  'Master of Public Health (MPH)',
+  'Master of Library and Information Science (MLISc)',
+  
+  // Doctoral Degrees
+  'Doctor of Philosophy (PhD)',
+  'Doctor of Medicine (DM)',
+  'Master of Chirurgiae (MCh)',
+  'Doctor of Science (DSc)',
+  'Doctor of Literature (DLitt)',
+  
+  // Diploma and Certificate Programs
+  'Diploma in Engineering',
+  'Diploma in Computer Applications',
+  'Diploma in Business Management',
+  'Diploma in Hotel Management',
+  'Diploma in Pharmacy',
+  'Diploma in Education',
+  'Post Graduate Diploma (PGD)',
+  'Advanced Diploma',
+  'Certificate Course',
+  
+  // Professional Degrees
+  'Chartered Accountancy (CA)',
+  'Company Secretary (CS)',
+  'Cost and Management Accountancy (CMA)',
+  'Certified Financial Planner (CFP)',
+  'Fellow of Institute of Chartered Accountants (FCA)',
+  
+  // Other
+  'Other'
+] as const
+
 export const EducationStep: React.FC<EducationStepProps> = ({ 
   data, 
   onChange 
@@ -64,45 +142,90 @@ export const EducationStep: React.FC<EducationStepProps> = ({
         data.education.map((edu) => (
           <div key={edu.id} className="border rounded-lg p-4 space-y-3">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Degree/Course *
+                </label>
+                <select
+                  value={edu.degree || ''}
+                  onChange={(e) => updateEducation(edu.id, { degree: e.target.value })}
+                  className="w-full h-12 px-3 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                >
+                  <option value="">Select Degree/Course</option>
+                  {DEGREE_OPTIONS.map((degree) => (
+                    <option key={degree} value={degree}>
+                      {degree}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Institution/University *
+                </label>
+                <Input
+                  placeholder="Institution/University"
+                  value={edu.institution || ''}
+                  onChange={(e) => updateEducation(edu.id, { institution: e.target.value })}
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Location (City, State)
+              </label>
               <Input
-                placeholder="Degree/Course *"
-                value={edu.degree || ''}
-                onChange={(e) => updateEducation(edu.id, { degree: e.target.value })}
-              />
-              <Input
-                placeholder="Institution/University *"
-                value={edu.institution || ''}
-                onChange={(e) => updateEducation(edu.id, { institution: e.target.value })}
+                placeholder="Location (City, State)"
+                value={edu.location || ''}
+                onChange={(e) => updateEducation(edu.id, { location: e.target.value })}
               />
             </div>
 
-            <Input
-              placeholder="Location (City, State)"
-              value={edu.location || ''}
-              onChange={(e) => updateEducation(edu.id, { location: e.target.value })}
-            />
-
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              <Input
-                type="month"
-                placeholder="Start Date"
-                value={edu.startDate || ''}
-                onChange={(e) => updateEducation(edu.id, { startDate: e.target.value })}
-              />
-              <Input
-                type="month"
-                placeholder="End Date"
-                value={edu.endDate || ''}
-                onChange={(e) => updateEducation(edu.id, { endDate: e.target.value })}
-              />
-              <Input
-                placeholder="CGPA/Percentage"
-                value={edu.percentage || ''}
-                onChange={(e) => updateEducation(edu.id, { percentage: e.target.value })}
-              />
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Start Date
+                </label>
+                <Input
+                  type="month"
+                  placeholder="Start Date"
+                  value={edu.startDate || ''}
+                  onChange={(e) => updateEducation(edu.id, { startDate: e.target.value })}
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  End Date
+                </label>
+                <Input
+                  type="month"
+                  placeholder="End Date"
+                  value={edu.endDate || ''}
+                  onChange={(e) => updateEducation(edu.id, { endDate: e.target.value })}
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  CGPA/Percentage
+                </label>
+                <Input
+                  placeholder="CGPA/Percentage"
+                  value={edu.percentage || ''}
+                  onChange={(e) => updateEducation(edu.id, { percentage: e.target.value })}
+                />
+              </div>
             </div>
 
             <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Additional Details (Optional)
+              </label>
               <textarea
                 placeholder="Additional details (achievements, relevant coursework, etc.)"
                 value={edu.description || ''}
@@ -122,6 +245,18 @@ export const EducationStep: React.FC<EducationStepProps> = ({
             </div>
           </div>
         ))
+      )}
+
+      {data.education.length > 0 && (
+        <div className="bg-green-50 p-4 rounded-lg">
+          <h4 className="font-medium text-green-900 mb-2">Education Tips:</h4>
+          <div className="text-sm text-green-800 space-y-1">
+            <p>• List your most recent education first</p>
+            <p>• Include your CGPA or percentage if it strengthens your application</p>
+            <p>• Mention relevant coursework, projects, or achievements in additional details</p>
+            <p>• For ongoing education, leave the end date empty or mention "Expected [Year]"</p>
+          </div>
+        </div>
       )}
     </div>
   )

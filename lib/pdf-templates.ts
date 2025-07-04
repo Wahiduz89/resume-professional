@@ -1,4 +1,4 @@
-// lib/pdf-templates.ts - Complete updated file with both templates
+// lib/pdf-templates.ts - Complete updated file with A4-optimized general template
 import { ResumeData } from '@/types'
 
 export function generateFresherTemplateHTML(data: ResumeData): string {
@@ -437,88 +437,57 @@ export function generateGeneralTemplateHTML(data: ResumeData): string {
           }
           body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            line-height: 1.5;
+            line-height: 1.4;
             color: #1f2937;
             background: white;
-            font-size: 11px;
+            font-size: 10px;
           }
           
           .container {
             max-width: 210mm;
+            max-height: 297mm;
             margin: 0 auto;
             position: relative;
-            min-height: 297mm;
             background: white;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
           }
           
-          /* Professional Background Pattern */
+          /* Minimized Background Pattern */
           .bg-pattern {
             position: absolute;
             inset: 0;
-            opacity: 0.015;
+            opacity: 0.01;
             pointer-events: none;
           }
           .bg-decoration-1 {
             position: absolute;
             top: 0;
             right: 0;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(59,130,246,0.8) 0%, transparent 70%);
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(59,130,246,0.3) 0%, transparent 70%);
             border-radius: 50%;
             transform: translate(50%, -50%);
-            filter: blur(60px);
-          }
-          .bg-decoration-2 {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 250px;
-            height: 250px;
-            background: radial-gradient(circle, rgba(99,102,241,0.6) 0%, transparent 70%);
-            border-radius: 50%;
-            transform: translate(-30%, 30%);
-            filter: blur(40px);
-          }
-          .bg-decoration-3 {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 200px;
-            height: 200px;
-            background: radial-gradient(circle, rgba(147,51,234,0.4) 0%, transparent 70%);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            filter: blur(80px);
+            filter: blur(30px);
           }
           
-          /* Sophisticated Header */
+          /* Compact Header */
           .header {
             position: relative;
-            background: linear-gradient(135deg, #0f172a 0%, #1e40af 30%, #3730a3 70%, #581c87 100%);
+            background: linear-gradient(135deg, #0f172a 0%, #1e40af 50%, #3730a3 100%);
             color: white;
             overflow: hidden;
-            padding: 50px 60px;
-            margin-bottom: 30px;
-          }
-          .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(59,130,246,0.1) 0%, rgba(147,51,234,0.1) 100%);
+            padding: 20px 30px;
+            margin-bottom: 15px;
           }
           .header::after {
             content: '';
             position: absolute;
-            bottom: -40px;
+            bottom: -15px;
             left: 0;
             width: 100%;
-            height: 80px;
-            background: linear-gradient(135deg, #0f172a 0%, #1e40af 30%, #3730a3 70%, #581c87 100%);
+            height: 30px;
+            background: linear-gradient(135deg, #0f172a 0%, #1e40af 50%, #3730a3 100%);
             border-radius: 0 0 50% 50%;
             opacity: 0.8;
           }
@@ -532,102 +501,91 @@ export function generateGeneralTemplateHTML(data: ResumeData): string {
           .profile-section {
             display: flex;
             align-items: center;
-            gap: 40px;
+            gap: 20px;
           }
           .profile-image {
-            width: 160px;
-            height: 160px;
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
-            border: 6px solid rgba(255,255,255,0.3);
+            border: 3px solid rgba(255,255,255,0.3);
             object-fit: cover;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
           }
           .profile-placeholder {
-            width: 160px;
-            height: 160px;
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
-            border: 6px solid rgba(255,255,255,0.3);
+            border: 3px solid rgba(255,255,255,0.3);
             background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 40px;
+            font-size: 20px;
             font-weight: 900;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
           }
           .name-section h1 {
-            font-size: 48px;
+            font-size: 24px;
             font-weight: 900;
-            letter-spacing: 3px;
-            margin-bottom: 12px;
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
-            background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
           }
           .job-title {
-            font-size: 22px;
+            font-size: 14px;
             color: #bfdbfe;
             font-weight: 600;
-            letter-spacing: 1px;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
-            margin-bottom: 20px;
+            margin-bottom: 8px;
           }
           .professional-badge {
             display: flex;
             align-items: center;
-            gap: 16px;
-            margin-top: 20px;
+            gap: 8px;
           }
           .badge-line {
-            height: 2px;
-            width: 60px;
-            background: linear-gradient(to right, rgba(255,255,255,0.8), rgba(255,255,255,0.2));
-            border-radius: 1px;
+            height: 1px;
+            width: 30px;
+            background: rgba(255,255,255,0.6);
           }
           .badge-text {
             background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            padding: 8px 24px;
-            border-radius: 20px;
+            padding: 4px 12px;
+            border-radius: 10px;
             border: 1px solid rgba(255,255,255,0.2);
             color: #bfdbfe;
-            font-size: 11px;
+            font-size: 8px;
             font-weight: 700;
-            letter-spacing: 3px;
+            letter-spacing: 1px;
           }
           .contact-card {
             background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(15px);
-            padding: 24px;
-            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            padding: 12px;
+            border-radius: 12px;
             border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            font-size: 9px;
           }
           .contact-item-header {
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            gap: 12px;
-            margin-bottom: 8px;
+            gap: 8px;
+            margin-bottom: 4px;
           }
           .contact-icon-header {
-            width: 28px;
-            height: 28px;
+            width: 16px;
+            height: 16px;
             background: rgba(255,255,255,0.2);
-            border-radius: 8px;
+            border-radius: 4px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            font-size: 10px;
           }
           .contact-label {
             color: #bfdbfe;
-            font-size: 11px;
+            font-size: 8px;
             font-weight: 600;
           }
           .contact-value {
@@ -635,20 +593,20 @@ export function generateGeneralTemplateHTML(data: ResumeData): string {
             font-weight: 600;
             text-align: right;
             word-break: break-all;
-            font-size: 12px;
+            font-size: 9px;
           }
           
-          /* Main Layout */
+          /* Compact Main Layout */
           .main-layout {
             display: flex;
-            gap: 40px;
-            padding: 0 60px 60px;
+            gap: 20px;
+            padding: 0 30px 20px;
           }
           .sidebar {
-            width: 380px;
-            background: linear-gradient(to bottom, #f8fafc, #f1f5f9, #e2e8f0);
-            border-radius: 20px;
-            padding: 30px;
+            width: 200px;
+            background: linear-gradient(to bottom, #f8fafc, #f1f5f9);
+            border-radius: 12px;
+            padding: 15px;
             border: 1px solid rgba(226,232,240,0.5);
           }
           .main-content {
@@ -656,13 +614,13 @@ export function generateGeneralTemplateHTML(data: ResumeData): string {
             background: white;
           }
           
-          /* Enhanced Card Styles */
+          /* Compact Card Styles */
           .card {
             background: white;
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             border: 1px solid rgba(226,232,240,0.5);
             position: relative;
             overflow: hidden;
@@ -672,292 +630,257 @@ export function generateGeneralTemplateHTML(data: ResumeData): string {
             position: absolute;
             top: 0;
             left: 0;
-            width: 6px;
+            width: 3px;
             height: 100%;
-            background: linear-gradient(to bottom, #3b82f6, #8b5cf6, #ec4899);
-          }
-          .card-bg-decoration {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            transform: translate(60px, -60px);
+            background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
           }
           .card-header {
             display: flex;
             align-items: center;
-            margin-bottom: 24px;
+            margin-bottom: 12px;
             position: relative;
             z-index: 10;
           }
           .card-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 16px;
+            width: 24px;
+            height: 24px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 20px;
+            margin-right: 10px;
             color: white;
-            font-size: 20px;
-            box-shadow: 0 8px 20px rgba(59,130,246,0.3);
-            transform: rotate(2deg);
+            font-size: 12px;
+            box-shadow: 0 4px 8px rgba(59,130,246,0.2);
           }
           .card-title {
-            font-size: 20px;
+            font-size: 12px;
             font-weight: 900;
             color: #1f2937;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
           }
           
-          /* Contact Items */
+          /* Compact Contact Items */
           .contact-item {
             display: flex;
             align-items: center;
-            margin-bottom: 20px;
-            padding: 16px;
+            margin-bottom: 8px;
+            padding: 8px;
             background: white;
-            border-radius: 16px;
+            border-radius: 8px;
             border: 1px solid rgba(226,232,240,0.8);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            transition: all 0.2s ease;
-          }
-          .contact-item:hover {
-            background: #f8fafc;
-            border-color: #cbd5e1;
-            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
           }
           .contact-icon-wrapper {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
+            width: 20px;
+            height: 20px;
+            border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 16px;
+            margin-right: 8px;
             color: white;
-            font-size: 16px;
-            box-shadow: 0 4px 8px rgba(59,130,246,0.25);
+            font-size: 10px;
+            box-shadow: 0 2px 4px rgba(59,130,246,0.2);
           }
           .contact-text {
-            font-size: 12px;
+            font-size: 8px;
             color: #374151;
             font-weight: 600;
             word-break: break-all;
             flex: 1;
           }
           
-          /* Skills */
+          /* Compact Skills */
           .skill-item {
-            margin-bottom: 24px;
+            margin-bottom: 12px;
           }
           .skill-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 4px;
           }
           .skill-name {
-            font-size: 13px;
+            font-size: 9px;
             font-weight: 800;
             color: #1f2937;
           }
           .skill-percentage {
-            font-size: 11px;
+            font-size: 8px;
             font-weight: 900;
             color: #3b82f6;
             background: #dbeafe;
-            padding: 4px 12px;
-            border-radius: 12px;
+            padding: 2px 6px;
+            border-radius: 6px;
           }
           .skill-bar {
             width: 100%;
-            height: 16px;
+            height: 8px;
             background: #e5e7eb;
-            border-radius: 8px;
+            border-radius: 4px;
             overflow: hidden;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
-            position: relative;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
           }
           .skill-progress {
             height: 100%;
-            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
-            border-radius: 8px;
-            position: relative;
-            box-shadow: 0 2px 8px rgba(59,130,246,0.4);
-          }
-          .skill-progress::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 50%;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.4), transparent);
-            border-radius: 8px 8px 0 0;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(59,130,246,0.3);
           }
           
-          /* Languages */
+          /* Compact Languages */
           .language-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px;
-            margin-bottom: 16px;
+            padding: 8px;
+            margin-bottom: 6px;
             background: white;
-            border-radius: 12px;
+            border-radius: 8px;
             border: 1px solid rgba(226,232,240,0.8);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            font-size: 9px;
           }
           .language-name {
-            font-size: 13px;
             font-weight: 700;
             color: #1f2937;
           }
           .language-level {
             display: flex;
-            gap: 6px;
+            gap: 3px;
           }
           .level-dot {
-            width: 14px;
-            height: 14px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
-            border: 2px solid #e5e7eb;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border: 1px solid #e5e7eb;
           }
           .level-active {
             background: linear-gradient(135deg, #3b82f6, #8b5cf6);
             border-color: #3b82f6;
-            box-shadow: 0 4px 8px rgba(59,130,246,0.4);
           }
           .level-inactive {
             background: #f1f5f9;
-            border-color: #e5e7eb;
           }
           
-          /* Timeline Items */
+          /* Compact Timeline Items */
           .timeline-item {
             position: relative;
-            padding-left: 30px;
-            margin-bottom: 40px;
-            border-left: 4px solid #bfdbfe;
+            padding-left: 20px;
+            margin-bottom: 20px;
+            border-left: 2px solid #bfdbfe;
           }
           .timeline-item::before {
             content: '';
             position: absolute;
-            left: -10px;
+            left: -6px;
             top: 0;
-            width: 16px;
-            height: 16px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
-            border: 4px solid white;
-            box-shadow: 0 4px 8px rgba(59,130,246,0.4);
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(59,130,246,0.3);
           }
           .timeline-content {
             background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            border-radius: 16px;
-            padding: 24px;
+            border-radius: 8px;
+            padding: 12px;
             border: 1px solid rgba(226,232,240,0.8);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            position: relative;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
           }
           .item-header {
-            margin-bottom: 16px;
+            margin-bottom: 8px;
           }
           .item-title {
-            font-size: 18px;
+            font-size: 12px;
             font-weight: 800;
             color: #111827;
-            margin-bottom: 6px;
+            margin-bottom: 3px;
           }
           .item-company {
-            font-size: 15px;
+            font-size: 10px;
             font-weight: 700;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
           }
           .item-location {
-            font-size: 12px;
+            font-size: 8px;
             color: #6b7280;
             font-weight: 600;
-            margin-bottom: 12px;
+            margin-bottom: 6px;
           }
           .item-date {
             display: inline-block;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 8px;
             font-weight: 700;
             float: right;
-            margin-top: -20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-top: -10px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
           }
           .item-description {
-            font-size: 12px;
+            font-size: 9px;
             color: #374151;
-            line-height: 1.7;
+            line-height: 1.5;
           }
           .description-point {
             display: flex;
             align-items: flex-start;
-            margin-bottom: 12px;
-            padding: 12px;
+            margin-bottom: 6px;
+            padding: 6px;
             background: white;
-            border-radius: 12px;
+            border-radius: 6px;
             border: 1px solid rgba(226,232,240,0.8);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
           }
           .point-bullet {
-            width: 8px;
-            height: 8px;
+            width: 4px;
+            height: 4px;
             border-radius: 50%;
-            margin-right: 16px;
-            margin-top: 8px;
+            margin-right: 8px;
+            margin-top: 4px;
             flex-shrink: 0;
-            box-shadow: 0 2px 4px rgba(59,130,246,0.3);
+            box-shadow: 0 1px 2px rgba(59,130,246,0.2);
           }
           
-          /* Summary Section */
+          /* Compact Summary Section */
           .summary-card {
             background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
-            border-radius: 20px;
-            padding: 32px;
+            border-radius: 12px;
+            padding: 15px;
             border: 1px solid rgba(226,232,240,0.5);
             position: relative;
             overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-          }
-          .summary-text {
-            font-size: 13px;
-            color: #374151;
-            line-height: 1.8;
-            text-align: justify;
-            background: rgba(255,255,255,0.8);
-            backdrop-filter: blur(10px);
-            padding: 24px;
-            border-radius: 16px;
-            border-left: 8px solid #3b82f6;
-            position: relative;
-            font-weight: 500;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
           }
+          .summary-text {
+            font-size: 10px;
+            color: #374151;
+            line-height: 1.6;
+            text-align: justify;
+            background: rgba(255,255,255,0.8);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+            font-weight: 500;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+          }
           
-          /* Additional Skills Tags */
+          /* Compact Additional Skills Tags */
           .skill-tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 4px;
           }
           .skill-tag {
             background: linear-gradient(135deg, #dbeafe, #bfdbfe);
             color: #1e40af;
-            padding: 10px 16px;
-            border-radius: 20px;
-            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 10px;
+            font-size: 8px;
             font-weight: 700;
             border: 1px solid #93c5fd;
-            box-shadow: 0 2px 4px rgba(59,130,246,0.2);
+            box-shadow: 0 1px 2px rgba(59,130,246,0.1);
           }
           
           /* Color Variations for Different Sections */
@@ -975,24 +898,34 @@ export function generateGeneralTemplateHTML(data: ResumeData): string {
           .certifications-timeline .item-date { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #92400e; }
           
           @media print {
-            body { margin: 0; font-size: 10px; }
-            .card { break-inside: avoid; page-break-inside: avoid; }
-            .timeline-item { break-inside: avoid; page-break-inside: avoid; }
+            body { margin: 0; font-size: 9px; }
+            .container { 
+              max-height: 297mm; 
+              box-shadow: none; 
+              page-break-inside: avoid;
+            }
+            .card { 
+              break-inside: avoid; 
+              page-break-inside: avoid; 
+            }
+            .timeline-item { 
+              break-inside: avoid; 
+              page-break-inside: avoid; 
+            }
             .bg-pattern { display: none; }
-            .container { box-shadow: none; }
+            .header { margin-bottom: 10px; }
+            .main-layout { padding-bottom: 10px; }
           }
         </style>
       </head>
       <body>
         <div class="container">
-          <!-- Professional Background Pattern -->
+          <!-- Minimized Background Pattern -->
           <div class="bg-pattern">
             <div class="bg-decoration-1"></div>
-            <div class="bg-decoration-2"></div>
-            <div class="bg-decoration-3"></div>
           </div>
           
-          <!-- Enhanced Header Section -->
+          <!-- Compact Header Section -->
           <div class="header">
             <div class="header-content">
               <div class="profile-section">
@@ -1022,7 +955,7 @@ export function generateGeneralTemplateHTML(data: ResumeData): string {
                 </div>
                 <div class="contact-value">${personalInfo.email}</div>
                 
-                <div class="contact-item-header" style="margin-top: 16px;">
+                <div class="contact-item-header" style="margin-top: 8px;">
                   <span class="contact-label">Phone</span>
                   <div class="contact-icon-header">📞</div>
                 </div>
@@ -1031,13 +964,12 @@ export function generateGeneralTemplateHTML(data: ResumeData): string {
             </div>
           </div>
 
-          <!-- Main Layout -->
+          <!-- Compact Main Layout -->
           <div class="main-layout">
-            <!-- Enhanced Left Sidebar -->
+            <!-- Compact Left Sidebar -->
             <div class="sidebar">
               <!-- Contact Information -->
               <div class="card">
-                <div class="card-bg-decoration" style="background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(147,197,253,0.1));"></div>
                 <div class="card-header">
                   <div class="card-icon" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">📧</div>
                   <h3 class="card-title">CONTACT</h3>
@@ -1074,9 +1006,8 @@ export function generateGeneralTemplateHTML(data: ResumeData): string {
               <!-- Skills Section -->
               ${skills.length > 0 ? `
                 <div class="card">
-                  <div class="card-bg-decoration" style="background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(196,181,253,0.1));"></div>
                   <div class="card-header">
-                    <div class="card-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); transform: rotate(-2deg);">⚡</div>
+                    <div class="card-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">⚡</div>
                     <h3 class="card-title">SKILLS</h3>
                   </div>
                   ${skills.slice(0, 6).map((skill, index) => `
@@ -1096,9 +1027,8 @@ export function generateGeneralTemplateHTML(data: ResumeData): string {
               <!-- Languages Section -->
               ${languages && languages.length > 0 ? `
                 <div class="card">
-                  <div class="card-bg-decoration" style="background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(110,231,183,0.1));"></div>
                   <div class="card-header">
-                    <div class="card-icon" style="background: linear-gradient(135deg, #10b981, #059669); transform: rotate(2deg);">🌍</div>
+                    <div class="card-icon" style="background: linear-gradient(135deg, #10b981, #059669);">🌍</div>
                     <h3 class="card-title">LANGUAGES</h3>
                   </div>
                   ${languages.map(language => {
@@ -1122,9 +1052,8 @@ export function generateGeneralTemplateHTML(data: ResumeData): string {
               <!-- Additional Skills -->
               ${skills.length > 6 ? `
                 <div class="card">
-                  <div class="card-bg-decoration" style="background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(251,191,36,0.1));"></div>
                   <div class="card-header">
-                    <div class="card-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706); transform: rotate(-2deg);">🎯</div>
+                    <div class="card-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">🎯</div>
                     <h3 class="card-title">MORE</h3>
                   </div>
                   <div class="skill-tags">
@@ -1136,14 +1065,13 @@ export function generateGeneralTemplateHTML(data: ResumeData): string {
               ` : ''}
             </div>
 
-            <!-- Enhanced Right Main Content -->
+            <!-- Compact Right Main Content -->
             <div class="main-content">
               <!-- Professional Summary -->
               ${professionalSummary ? `
                 <div class="summary-card">
-                  <div class="card-bg-decoration" style="background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(165,180,252,0.1));"></div>
                   <div class="card-header">
-                    <div class="card-icon" style="background: linear-gradient(135deg, #6366f1, #4f46e5); transform: rotate(1deg);">📄</div>
+                    <div class="card-icon" style="background: linear-gradient(135deg, #6366f1, #4f46e5);">📄</div>
                     <h3 class="card-title">PROFESSIONAL SUMMARY</h3>
                   </div>
                   <p class="summary-text">${professionalSummary}</p>
@@ -1153,9 +1081,8 @@ export function generateGeneralTemplateHTML(data: ResumeData): string {
               <!-- Education Section -->
               ${education.length > 0 ? `
                 <div class="card">
-                  <div class="card-bg-decoration" style="background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(110,231,183,0.1));"></div>
                   <div class="card-header">
-                    <div class="card-icon" style="background: linear-gradient(135deg, #10b981, #059669); transform: rotate(-1deg);">🎓</div>
+                    <div class="card-icon" style="background: linear-gradient(135deg, #10b981, #059669);">🎓</div>
                     <h3 class="card-title">EDUCATION</h3>
                   </div>
                   <div class="education-timeline">
@@ -1181,9 +1108,8 @@ export function generateGeneralTemplateHTML(data: ResumeData): string {
               <!-- Work Experience Section -->
               ${experience.length > 0 ? `
                 <div class="card">
-                  <div class="card-bg-decoration" style="background: linear-gradient(135deg, rgba(139,92,246,0.1), rgba(196,181,253,0.1));"></div>
                   <div class="card-header">
-                    <div class="card-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); transform: rotate(2deg);">💼</div>
+                    <div class="card-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">💼</div>
                     <h3 class="card-title">WORK EXPERIENCE</h3>
                   </div>
                   <div class="experience-timeline">
@@ -1216,9 +1142,8 @@ export function generateGeneralTemplateHTML(data: ResumeData): string {
               <!-- Certifications Section -->
               ${certifications && certifications.length > 0 ? `
                 <div class="card">
-                  <div class="card-bg-decoration" style="background: linear-gradient(135deg, rgba(245,158,11,0.1), rgba(251,191,36,0.1));"></div>
                   <div class="card-header">
-                    <div class="card-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706); transform: rotate(-2deg);">🏆</div>
+                    <div class="card-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">🏆</div>
                     <h3 class="card-title">CERTIFICATIONS</h3>
                   </div>
                   <div class="certifications-timeline">
