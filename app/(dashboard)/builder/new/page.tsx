@@ -99,11 +99,11 @@ export default function NewResumePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(resumeData)
       })
-
+  
       if (response.ok) {
         const { id } = await response.json()
         toast.success('Resume saved successfully!')
-        router.push(`/builder/${id}`)
+        router.push('/dashboard') // Changed from `/builder/${id}`
       } else {
         toast.error('Failed to save resume')
       }

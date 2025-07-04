@@ -60,7 +60,7 @@ model Download {
   createdAt     DateTime  @default(now())
   
   user          User      @relation(fields: [userId], references: [id])
-  resume        Resume    @relation(fields: [resumeId], references: [id])
+  resume        Resume    @relation(fields: [resumeId], references: [id], onDelete: Cascade)
 }
 
 model UserImage {
