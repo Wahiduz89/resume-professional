@@ -1,4 +1,4 @@
-// Update for app/(dashboard)/builder/new/page.tsx - Add template selection
+// Update for app/(dashboard)/builder/new/page.tsx - Add technical template selection
 'use client'
 
 import { useState } from 'react'
@@ -12,6 +12,7 @@ import { LanguagesStep } from '@/components/resume/form-steps/languages'
 import { CertificationsStep } from '@/components/resume/form-steps/certifications'
 import { FresherTemplate } from '@/components/resume/templates/fresher'
 import { GeneralTemplate } from '@/components/resume/templates/general'
+import { TechnicalTemplate } from '@/components/resume/templates/technical'
 import { ResumeData } from '@/types'
 import toast from 'react-hot-toast'
 
@@ -46,14 +47,24 @@ const TEMPLATE_OPTIONS = [
     name: 'General Professional',
     description: 'Perfect for experienced professionals and mid-level careers',
     preview: GeneralTemplate,
-    features: ['Modern curved design', 'Sidebar layout', 'Skills visualization', 'ATS-friendly structure']
+    features: ['Modern curved design', 'Sidebar layout', 'Skills visualization', 'ATS-friendly structure'],
+    bestFor: 'Experienced professionals, MBA graduates, management roles'
   },
   {
     id: 'fresher',
     name: 'Fresh Graduate',
     description: 'Ideal for students and recent graduates',
     preview: FresherTemplate,
-    features: ['Clean design', 'Education focus', 'Project highlights', 'Entry-level friendly']
+    features: ['Clean design', 'Education focus', 'Project highlights', 'Entry-level friendly'],
+    bestFor: 'Fresh graduates, internship seekers, first-time job applicants'
+  },
+  {
+    id: 'technical',
+    name: 'Technical Engineering',
+    description: 'Designed specifically for engineering and tech students',
+    preview: TechnicalTemplate,
+    features: ['Code-themed design', 'Technical skills categorization', 'Project showcase', 'GitHub integration'],
+    bestFor: 'Engineering students, software developers, technical roles'
   }
 ]
 
@@ -103,7 +114,7 @@ export default function NewResumePage() {
       if (response.ok) {
         const { id } = await response.json()
         toast.success('Resume saved successfully!')
-        router.push('/dashboard') // Changed from `/builder/${id}`
+        router.push('/dashboard')
       } else {
         toast.error('Failed to save resume')
       }
@@ -118,7 +129,7 @@ export default function NewResumePage() {
   if (currentStep === -1) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <div className="max-w-6xl mx-auto p-4 lg:p-8">
+        <div className="max-w-7xl mx-auto p-4 lg:p-8">
           <div className="mb-8">
             <h1 className="text-3xl font-bold mb-2">Choose Your Resume Template</h1>
             <p className="text-gray-600">
@@ -126,22 +137,28 @@ export default function NewResumePage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-3 gap-8">
             {TEMPLATE_OPTIONS.map((template) => {
               const PreviewComponent = template.preview
               return (
-                <div key={template.id} className="bg-white rounded-lg shadow-sm border overflow-hidden">
+                <div key={template.id} className="bg-white rounded-lg shadow-sm border overflow-hidden hover:shadow-lg transition-shadow">
                   <div className="p-6">
                     <h3 className="text-xl font-semibold mb-2">{template.name}</h3>
                     <p className="text-gray-600 mb-4">{template.description}</p>
                     
-                    <div className="space-y-2 mb-6">
+                    <div className="space-y-2 mb-4">
                       {template.features.map((feature, index) => (
                         <div key={index} className="flex items-center text-sm text-gray-700">
                           <span className="w-2 h-2 bg-blue-600 rounded-full mr-3"></span>
                           {feature}
                         </div>
                       ))}
+                    </div>
+
+                    <div className="mb-4 p-3 bg-blue-50 rounded-lg">
+                      <p className="text-sm text-blue-800">
+                        <span className="font-medium">Best for:</span> {template.bestFor}
+                      </p>
                     </div>
 
                     <Button 
@@ -154,7 +171,7 @@ export default function NewResumePage() {
                   
                   <div className="bg-gray-50 p-4">
                     <p className="text-sm text-gray-600 mb-3">Preview:</p>
-                    <div className="transform scale-[0.15] origin-top-left h-48 overflow-hidden border rounded">
+                    <div className="transform scale-[0.12] origin-top-left h-40 overflow-hidden border rounded">
                       <PreviewComponent data={INITIAL_DATA} />
                     </div>
                   </div>

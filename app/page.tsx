@@ -1,10 +1,10 @@
-// app/page.tsx
+// app/page.tsx - Updated with technical template mention
 'use client'
 
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Navbar } from '@/components/layout/navbar'
-import { GraduationCap, Briefcase, CheckCircle, Star, FileText, Upload, ArrowRight, Sparkles } from 'lucide-react'
+import { GraduationCap, Briefcase, CheckCircle, Star, FileText, Upload, ArrowRight, Sparkles, Code } from 'lucide-react'
 
 export default function HomePage() {
   const router = useRouter()
@@ -30,6 +30,7 @@ export default function HomePage() {
   const studentFeatures = [
     'ATS-friendly templates designed for campus placements',
     'Professional formats for fresher roles',
+    'Technical template for engineering students',
     'LinkedIn optimization tips',
     'AI enhancement available in Student Pro plan',
     'Starting at just ₹99/month'
@@ -125,7 +126,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Templates Preview */}
+      {/* Templates Preview - Updated with Technical Template */}
       <div id="templates" className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-4">
@@ -149,25 +150,32 @@ export default function HomePage() {
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-sm border hover:shadow-md transition-shadow">
-              <h3 className="font-semibold mb-2">Internship Template</h3>
+              <div className="flex items-center gap-2 mb-2">
+                <Code className="w-5 h-5 text-blue-600" />
+                <h3 className="font-semibold">Technical Template</h3>
+              </div>
               <p className="text-sm text-gray-600 mb-4">
-                Ideal for internship applications.
-                Emphasizes academic achievements and relevant coursework.
+                Designed specifically for engineering and tech students.
+                Features code-themed design and technical skill categorization.
               </p>
+              <div className="flex items-center gap-1 text-blue-500">
+                <Sparkles className="w-4 h-4 fill-current" />
+                <span className="text-sm">Perfect for engineers</span>
+              </div>
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-sm border hover:shadow-md transition-shadow">
-              <h3 className="font-semibold mb-2">Technical Template</h3>
+              <h3 className="font-semibold mb-2">General Template</h3>
               <p className="text-sm text-gray-600 mb-4">
-                For engineering and tech students.
-                Showcases technical skills and projects prominently.
+                Professional template for experienced candidates.
+                Sophisticated design with advanced features.
               </p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Pricing Section */}
+      {/* Pricing Section - Updated with Technical Template mention */}
       <div id="pricing" className="py-16 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">
@@ -187,7 +195,7 @@ export default function HomePage() {
               </div>
 
               <ul className="space-y-3 mb-8">
-                {['1 Resume Template', 'ATS-Friendly Formats', 'PDF Export', 'Email Support', 'Basic Resume Builder'].map((feature, index) => (
+                {['Fresher Resume Template', 'ATS-Friendly Formats', '1 AI-Enhanced Download', 'PDF Export', 'Email Support'].map((feature, index) => (
                   <li key={index} className="flex items-center gap-2">
                     <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
                     <span className="text-gray-700">{feature}</span>
@@ -201,7 +209,6 @@ export default function HomePage() {
                 onClick={() => router.push('/register')}
               >
                 Get Started
-
               </Button>
             </div>
 
@@ -217,7 +224,7 @@ export default function HomePage() {
               </div>
 
               <ul className="space-y-3 mb-8">
-                {['3 Resume Templates', 'AI Content Enhancement', 'ATS-Friendly Formats', 'PDF Export', 'Priority Support'].map((feature, index) => (
+                {['All Templates (Fresher, Technical, General)', '5 AI-Enhanced Downloads', 'Technical Skills Categorization', 'ATS-Friendly Formats', 'Priority Support'].map((feature, index) => (
                   <li key={index} className="flex items-center gap-2">
                     <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
                     <span className="text-gray-700">{feature}</span>
@@ -235,6 +242,7 @@ export default function HomePage() {
           </div>
         </div>
       </div>
+
       {/* CTA Section */}
       <div className="bg-blue-600 text-white py-16">
         <div className="max-w-4xl mx-auto px-4 text-center">

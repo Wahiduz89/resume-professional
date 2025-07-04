@@ -1,11 +1,11 @@
-// app/(dashboard)/subscription/page.tsx - Complete subscription management page
+// app/(dashboard)/subscription/page.tsx - Updated subscription page with technical template
 'use client'
 
 import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { SubscriptionComponent } from '@/components/payment/subscription'
-import { Check, Crown, Sparkles, Download, FileText, Shield, Zap, ArrowRight } from 'lucide-react'
+import { Check, Crown, Sparkles, Download, FileText, Shield, Zap, ArrowRight, Code } from 'lucide-react'
 import { CLIENT_SUBSCRIPTION_PLANS } from '@/lib/subscription-config'
 
 interface CurrentSubscription {
@@ -269,8 +269,16 @@ export default function SubscriptionPage() {
             <div className="flex items-start gap-3">
               <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
               <div>
-                <span className="font-medium">Unlimited General & Fresher Template Downloads</span>
-                <p className="text-sm text-gray-600">Access to all premium templates with unlimited downloads</p>
+                <span className="font-medium">Unlimited General, Fresher & Technical Template Downloads</span>
+                <p className="text-sm text-gray-600">Access to all premium templates including the new Technical template for engineers</p>
+              </div>
+            </div>
+            
+            <div className="flex items-start gap-3">
+              <Code className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
+              <div>
+                <span className="font-medium">Technical Template with Skills Categorization</span>
+                <p className="text-sm text-gray-600">Perfect for engineering students with code-themed design and technical skill grouping</p>
               </div>
             </div>
             
@@ -344,6 +352,11 @@ export default function SubscriptionPage() {
                 <td className="p-4 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
               </tr>
               <tr className="border-t">
+                <td className="p-4 font-medium">Technical Template Access</td>
+                <td className="p-4 text-center text-gray-400">—</td>
+                <td className="p-4 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
+              </tr>
+              <tr className="border-t">
                 <td className="p-4 font-medium">Unlimited Basic Downloads</td>
                 <td className="p-4 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
                 <td className="p-4 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
@@ -352,6 +365,11 @@ export default function SubscriptionPage() {
                 <td className="p-4 font-medium">AI-Enhanced Downloads</td>
                 <td className="p-4 text-center">1 per month</td>
                 <td className="p-4 text-center">5 per month</td>
+              </tr>
+              <tr className="border-t">
+                <td className="p-4 font-medium">Technical Skills Categorization</td>
+                <td className="p-4 text-center text-gray-400">—</td>
+                <td className="p-4 text-center"><Check className="w-5 h-5 text-green-500 mx-auto" /></td>
               </tr>
               <tr className="border-t">
                 <td className="p-4 font-medium">Support Level</td>
@@ -368,18 +386,18 @@ export default function SubscriptionPage() {
         <h3 className="text-2xl font-bold mb-4">Frequently Asked Questions</h3>
         <div className="max-w-3xl mx-auto space-y-6 text-left">
           <div className="bg-white p-6 rounded-lg shadow-sm">
-            <h4 className="font-semibold mb-2">What happens after I subscribe?</h4>
-            <p className="text-gray-600">You can immediately download resumes according to your plan limits. Your subscription renews monthly and usage resets each billing cycle.</p>
+            <h4 className="font-semibold mb-2">What is the Technical Template?</h4>
+            <p className="text-gray-600">The Technical Template is specifically designed for engineering and computer science students. It features a code-themed design, automatic categorization of technical skills (programming languages, frameworks, tools, etc.), and enhanced project showcase sections perfect for GitHub portfolios.</p>
           </div>
           
           <div className="bg-white p-6 rounded-lg shadow-sm">
             <h4 className="font-semibold mb-2">Can I upgrade my plan anytime?</h4>
-            <p className="text-gray-600">Yes, you can upgrade from Student Starter to Student Pro anytime. The new benefits take effect immediately.</p>
+            <p className="text-gray-600">Yes, you can upgrade from Student Starter to Student Pro anytime. The new benefits take effect immediately, including access to all templates.</p>
           </div>
           
           <div className="bg-white p-6 rounded-lg shadow-sm">
             <h4 className="font-semibold mb-2">What is the difference between basic and AI-enhanced downloads?</h4>
-            <p className="text-gray-600">Basic downloads give you the resume as you created it. AI-enhanced downloads use artificial intelligence to improve your content, making it more professional and ATS-friendly.</p>
+            <p className="text-gray-600">Basic downloads give you the resume as you created it. AI-enhanced downloads use artificial intelligence to improve your content, making it more professional and ATS-friendly with better language and formatting.</p>
           </div>
         </div>
       </div>

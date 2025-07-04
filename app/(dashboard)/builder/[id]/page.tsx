@@ -1,4 +1,4 @@
-// app/(dashboard)/builder/[id]/page.tsx - Updated without delete button
+// app/(dashboard)/builder/[id]/page.tsx - Updated with technical template support
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -13,6 +13,7 @@ import { CertificationsStep } from '@/components/resume/form-steps/certification
 import { CorporateTemplate } from '@/components/resume/templates/corporate'
 import { FresherTemplate } from '@/components/resume/templates/fresher'
 import { GeneralTemplate } from '@/components/resume/templates/general'
+import { TechnicalTemplate } from '@/components/resume/templates/technical'
 import { ResumeData } from '@/types'
 import toast from 'react-hot-toast'
 
@@ -41,12 +42,12 @@ const INITIAL_DATA: ResumeData = {
   template: 'corporate'
 }
 
-// Template mapping for dynamic selection
+// Template mapping for dynamic selection - Updated with technical template
 const TEMPLATE_COMPONENTS = {
   'corporate': CorporateTemplate,
   'fresher': FresherTemplate,
   'general': GeneralTemplate,
-  'technical': GeneralTemplate, // fallback to general
+  'technical': TechnicalTemplate,
   'internship': FresherTemplate // fallback to fresher
 }
 
@@ -89,6 +90,7 @@ export default function EditResumePage() {
             },
             languages: content.languages || [],
             certifications: content.certifications || [],
+            projects: content.projects || [], // Ensure projects field exists
           }
           
           setResumeData(updatedContent)
@@ -154,7 +156,7 @@ export default function EditResumePage() {
 
   const CurrentStepComponent = steps[currentStep].component
   
-  // Fixed: Dynamically select the correct template component
+  // Dynamically select the correct template component with technical template support
   const TemplateComponent = TEMPLATE_COMPONENTS[resumeData.template as keyof typeof TEMPLATE_COMPONENTS] || GeneralTemplate
 
   return (
@@ -166,6 +168,11 @@ export default function EditResumePage() {
             <p className="text-gray-600">
               Make changes to your resume and save when ready.
             </p>
+            {resumeData.template && (
+              <div className="mt-2 inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+                Using: {resumeData.template.charAt(0).toUpperCase() + resumeData.template.slice(1)} Template
+              </div>
+            )}
           </div>
 
           <div className="mb-8">

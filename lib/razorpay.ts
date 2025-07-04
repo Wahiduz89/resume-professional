@@ -1,4 +1,4 @@
-// lib/razorpay.ts - Server-side only Razorpay configuration
+// lib/razorpay.ts - Updated server-side Razorpay configuration with technical template
 import Razorpay from 'razorpay'
 import crypto from 'crypto'
 
@@ -21,7 +21,7 @@ export function verifyPaymentSignature(
   return generatedSignature === signature
 }
 
-// Server-side subscription plans with limits
+// Server-side subscription plans with limits - Updated with technical template
 export const SUBSCRIPTION_PLANS = {
   student_starter_monthly: {
     name: 'Student Starter',
@@ -49,17 +49,17 @@ export const SUBSCRIPTION_PLANS = {
     currency: 'INR',
     description: 'For serious job seekers with advanced features',
     features: [
-      'Unlimited General & Fresher Template Downloads',
+      'Unlimited General, Fresher & Technical Template Downloads',
       '5 AI-Enhanced Resume Downloads',
-      'All Premium Templates',
+      'All Premium Templates (including Technical)',
       'Advanced ATS Optimization',
       'PDF Export',
       'Priority Support',
       'LinkedIn Profile Tips'
     ],
     limits: {
-      templates: ['fresher', 'general'], // Both templates
-      unlimitedDownloads: ['fresher', 'general'], // Unlimited for both without AI
+      templates: ['fresher', 'general', 'technical'], // All templates including technical
+      unlimitedDownloads: ['fresher', 'general', 'technical'], // Unlimited for all templates without AI
       aiEnhancedDownloads: 5, // 5 AI-enhanced downloads
       totalDownloads: null // No limit on basic downloads
     }

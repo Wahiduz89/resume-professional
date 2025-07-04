@@ -1,4 +1,4 @@
-// types/index.ts
+// types/index.ts - Updated with technical template support
 export interface PersonalInfo {
   fullName: string
   email: string
