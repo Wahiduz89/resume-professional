@@ -11,8 +11,7 @@ export default function RegisterPage() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    password: '',
-    phone: ''
+    password: ''
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -67,13 +66,6 @@ export default function RegisterPage() {
             value={formData.password}
             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
             required
-          />
-          
-          <Input
-            type="tel"
-            placeholder="Phone (Optional)"
-            value={formData.phone}
-            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
           />
 
           <Button 
