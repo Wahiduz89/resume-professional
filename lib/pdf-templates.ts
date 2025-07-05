@@ -4,7 +4,7 @@ import { ResumeData } from '@/types'
 export function generateTechnicalTemplateHTML(data: ResumeData): string {
   const { personalInfo, professionalSummary, education, experience, skills, projects, languages, certifications } = data
 
-  // Categorize skills for technical display
+  // Group skills into categories for better technical display
   const categorizeSkills = (skillsList: string[]) => {
     const categories = {
       'Programming Languages': [] as string[],
@@ -46,6 +46,7 @@ export function generateTechnicalTemplateHTML(data: ResumeData): string {
     <html>
       <head>
         <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
           * { 
             margin: 0; 
@@ -53,10 +54,9 @@ export function generateTechnicalTemplateHTML(data: ResumeData): string {
             box-sizing: border-box; 
           }
           
-          /* A4 Page Setup */
           @page {
             size: A4;
-            margin: 10mm;
+            margin: 0;
           }
           
           body { 
@@ -66,23 +66,24 @@ export function generateTechnicalTemplateHTML(data: ResumeData): string {
             background: white;
             font-size: 9px;
             width: 210mm;
-            min-height: 297mm;
-            margin: 0 auto;
+            height: 297mm;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
           }
           
           .container {
             width: 210mm;
-            max-width: 210mm;
-            min-height: 297mm;
-            margin: 0 auto;
+            height: 297mm;
+            margin: 0;
+            padding: 0;
             background: white;
             position: relative;
             overflow: hidden;
             box-sizing: border-box;
-            padding: 0;
           }
           
-          /* Technical Background Pattern - A4 Optimized */
+          /* Technical Background Pattern */
           .bg-pattern {
             position: absolute;
             inset: 0;
@@ -91,54 +92,64 @@ export function generateTechnicalTemplateHTML(data: ResumeData): string {
             background-image: repeating-linear-gradient(
               45deg,
               transparent,
-              transparent 8px,
-              #1e40af 8px,
-              #1e40af 9px
+              transparent 2mm,
+              #1e40af 2mm,
+              #1e40af 2.5mm
             );
           }
           
-          /* Header Section - A4 Optimized */
+          /* Header Section */
           .header {
             background: linear-gradient(135deg, #111827 0%, #1e40af 50%, #4338ca 100%);
             color: white;
-            padding: 15mm 12mm;
+            padding: 12mm 10mm;
             position: relative;
             overflow: hidden;
-            max-height: 60mm;
+            height: 50mm;
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
+            print-color-adjust: exact !important;
           }
+          
           .header::before {
             content: '&lt;Developer/&gt;';
             position: absolute;
-            top: 8px;
-            right: 10px;
+            top: 2mm;
+            right: 3mm;
             color: #22d3ee;
             opacity: 0.3;
-            font-size: 7px;
+            font-size: 6px;
             font-family: 'Courier New', monospace;
           }
+          
           .header-content {
             display: flex;
             align-items: center;
             justify-content: space-between;
             position: relative;
             z-index: 10;
+            height: 100%;
           }
+          
           .profile-section {
             display: flex;
             align-items: center;
-            gap: 15mm;
+            gap: 10mm;
+            flex: 1;
           }
+          
           .profile-image {
-            width: 20mm;
-            height: 20mm;
+            width: 15mm;
+            height: 15mm;
             border-radius: 2mm;
             border: 1px solid rgba(255,255,255,0.3);
             object-fit: cover;
-            box-shadow: 0 2mm 5mm rgba(0,0,0,0.3);
+            box-shadow: 0 1mm 3mm rgba(0,0,0,0.3);
           }
+          
           .profile-placeholder {
-            width: 20mm;
-            height: 20mm;
+            width: 15mm;
+            height: 15mm;
             border-radius: 2mm;
             border: 1px solid rgba(255,255,255,0.3);
             background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%);
@@ -146,443 +157,497 @@ export function generateTechnicalTemplateHTML(data: ResumeData): string {
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 12px;
+            font-size: 8px;
             font-weight: 900;
-            box-shadow: 0 2mm 5mm rgba(0,0,0,0.3);
+            box-shadow: 0 1mm 3mm rgba(0,0,0,0.3);
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
+            print-color-adjust: exact !important;
           }
+          
           .name-section {
             font-family: 'Courier New', monospace;
           }
+          
           .code-comment {
             color: #22d3ee;
-            font-size: 7px;
-            margin-bottom: 2px;
+            font-size: 6px;
+            margin-bottom: 1mm;
           }
+          
           .name-section h1 {
-            font-size: 16px;
+            font-size: 12px;
             font-weight: 900;
-            letter-spacing: 0.5px;
-            margin-bottom: 3px;
+            letter-spacing: 0.3px;
+            margin-bottom: 1mm;
             font-family: 'Courier New', monospace;
+            line-height: 1.2;
           }
+          
           .job-title {
             color: #fbbf24;
-            font-size: 10px;
+            font-size: 8px;
             font-weight: 600;
             font-family: 'Courier New', monospace;
           }
+          
           .tech-badge {
             display: flex;
             align-items: center;
-            gap: 6px;
-            margin-top: 6px;
+            gap: 2mm;
+            margin-top: 2mm;
           }
+          
           .badge-line {
-            height: 1px;
-            width: 15px;
+            height: 0.5mm;
+            width: 5mm;
             background: rgba(34, 211, 238, 0.6);
           }
+          
           .badge-text {
             background: rgba(0,0,0,0.3);
-            padding: 3px 6px;
-            border-radius: 3px;
-            border: 1px solid rgba(34, 211, 238, 0.3);
+            padding: 1mm 2mm;
+            border-radius: 1mm;
+            border: 0.5mm solid rgba(34, 211, 238, 0.3);
             color: #22d3ee;
-            font-size: 7px;
+            font-size: 5px;
             font-weight: 700;
             font-family: 'Courier New', monospace;
           }
+          
           .contact-terminal {
             background: rgba(0,0,0,0.4);
-            padding: 8mm;
+            padding: 5mm;
             border-radius: 2mm;
-            border: 1px solid rgba(34, 211, 238, 0.3);
+            border: 0.5mm solid rgba(34, 211, 238, 0.3);
             font-family: 'Courier New', monospace;
-            font-size: 7px;
-            min-width: 45mm;
-            max-width: 50mm;
+            font-size: 6px;
+            min-width: 35mm;
+            max-width: 45mm;
           }
+          
           .terminal-header {
             display: flex;
             align-items: center;
-            gap: 2px;
-            margin-bottom: 8px;
+            gap: 1mm;
+            margin-bottom: 2mm;
           }
+          
           .terminal-dot {
-            width: 6px;
-            height: 6px;
+            width: 1.5mm;
+            height: 1.5mm;
             border-radius: 50%;
           }
-          .terminal-dot.red { background: #ef4444; }
-          .terminal-dot.yellow { background: #eab308; }
-          .terminal-dot.green { background: #22c55e; }
+          
+          .terminal-dot.red { 
+            background: #ef4444; 
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          .terminal-dot.yellow { 
+            background: #eab308; 
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          .terminal-dot.green { 
+            background: #22c55e; 
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          
           .terminal-path {
             color: #22d3ee;
-            font-size: 8px;
-            margin-left: 8px;
+            font-size: 5px;
+            margin-left: 2mm;
           }
+          
           .terminal-line {
-            margin-bottom: 3px;
+            margin-bottom: 1mm;
+            line-height: 1.2;
           }
+          
           .terminal-prompt {
             color: #22d3ee;
           }
+          
           .terminal-key {
             color: #60a5fa;
           }
+          
           .terminal-value {
             color: #fbbf24;
             word-break: break-all;
           }
           
-          /* Main Layout - A4 Optimized */
+          /* Main Layout */
           .main-layout {
             display: flex;
-            gap: 8mm;
-            padding: 8mm 10mm;
-            max-height: calc(297mm - 80mm); /* Account for header and margins */
+            gap: 5mm;
+            padding: 5mm;
+            height: calc(297mm - 50mm);
+            overflow: hidden;
           }
+          
           .sidebar {
-            width: 60mm;
+            width: 50mm;
             background: linear-gradient(to bottom, #f8fafc, #f1f5f9);
             border-radius: 2mm;
-            padding: 6mm;
-            border: 0.5px solid rgba(226,232,240,0.5);
+            padding: 4mm;
+            border: 0.3mm solid rgba(226,232,240,0.5);
+            overflow: hidden;
           }
+          
           .main-content {
             flex: 1;
             background: white;
-            max-width: calc(210mm - 80mm); /* Remaining width after sidebar and margins */
+            overflow: hidden;
           }
           
-          /* Card Styles - A4 Optimized */
+          /* Card Styles */
           .card {
             background: white;
             border-radius: 2mm;
-            padding: 4mm;
-            margin-bottom: 4mm;
-            box-shadow: 0 1mm 3mm rgba(0,0,0,0.05);
+            padding: 3mm;
+            margin-bottom: 3mm;
+            box-shadow: 0 0.5mm 2mm rgba(0,0,0,0.05);
             border-left: 1mm solid #3b82f6;
             position: relative;
+            break-inside: avoid;
+            page-break-inside: avoid;
           }
+          
           .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2mm;
+          }
+          
+          .card-icon {
+            width: 4mm;
+            height: 4mm;
+            border-radius: 1mm;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 2mm;
+            color: white;
+            font-size: 6px;
+            font-family: 'Courier New', monospace;
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          
+          .card-title {
+            font-size: 6px;
+            font-weight: 900;
+            color: #1f2937;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 0.2px;
+          }
+          
+          /* Technical Skills */
+          .skill-category {
+            margin-bottom: 3mm;
+          }
+          
+          .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5mm;
+          }
+          
+          .skill-tag {
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            color: #1e40af;
+            padding: 0.5mm 1mm;
+            border-radius: 1mm;
+            font-size: 5px;
+            font-weight: 700;
+            border: 0.2mm solid #93c5fd;
+            font-family: 'Courier New', monospace;
+          }
+          
+          /* Language Items */
+          .language-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5mm;
+            margin-bottom: 1mm;
+            background: white;
+            border-radius: 1mm;
+            border: 0.2mm solid rgba(226,232,240,0.8);
+            font-size: 6px;
+          }
+          
+          .language-name {
+            font-weight: 700;
+            color: #1f2937;
+            font-family: 'Courier New', monospace;
+          }
+          
+          .language-level {
+            display: flex;
+            gap: 0.5mm;
+          }
+          
+          .level-dot {
+            width: 1mm;
+            height: 1mm;
+            border-radius: 50%;
+            border: 0.1mm solid #e5e7eb;
+          }
+          
+          .level-active {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            border-color: #22c55e;
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          
+          .level-inactive {
+            background: #f1f5f9;
+          }
+          
+          /* Main Content Sections */
+          .section-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 2mm;
+            padding: 4mm;
+            margin-bottom: 4mm;
+            box-shadow: 0 0.5mm 2mm rgba(0,0,0,0.05);
+            border-left: 1mm solid #3b82f6;
+            break-inside: avoid;
+            page-break-inside: avoid;
+          }
+          
+          .section-header {
             display: flex;
             align-items: center;
             margin-bottom: 3mm;
           }
-          .card-icon {
+          
+          .section-icon {
             width: 5mm;
             height: 5mm;
             border-radius: 1mm;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 3mm;
+            margin-right: 2mm;
             color: white;
-            font-size: 8px;
-            font-family: 'Courier New', monospace;
-          }
-          .card-title {
-            font-size: 8px;
-            font-weight: 900;
-            color: #1f2937;
-            font-family: 'Courier New', monospace;
-            letter-spacing: 0.3px;
-          }
-          
-          /* Technical Skills - A4 Optimized */
-          .skill-category {
-            margin-bottom: 4mm;
-          }
-          .category-title {
             font-size: 7px;
-            font-weight: 900;
-            color: #374151;
-            margin-bottom: 2mm;
-            font-family: 'Courier New', monospace;
-          }
-          .skill-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1mm;
-          }
-          .skill-tag {
-            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
-            color: #1e40af;
-            padding: 1mm 2mm;
-            border-radius: 1.5mm;
-            font-size: 6px;
-            font-weight: 700;
-            border: 0.2mm solid #93c5fd;
-            font-family: 'Courier New', monospace;
+            box-shadow: 0 0.5mm 1mm rgba(59,130,246,0.3);
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
+            print-color-adjust: exact !important;
           }
           
-          /* Terminal Styles - A4 Optimized */
-          .terminal-header {
-            display: flex;
-            align-items: center;
-            gap: 1mm;
-            margin-bottom: 2mm;
-          }
-          .terminal-dot {
-            width: 2mm;
-            height: 2mm;
-            border-radius: 50%;
-          }
-          .terminal-dot.red { background: #ef4444; }
-          .terminal-dot.yellow { background: #eab308; }
-          .terminal-dot.green { background: #22c55e; }
-          .terminal-path {
-            color: #22d3ee;
-            font-size: 6px;
-            margin-left: 2mm;
-          }
-          .terminal-line {
-            margin-bottom: 1mm;
-          }
-          .terminal-prompt {
-            color: #22d3ee;
-          }
-          .terminal-key {
-            color: #60a5fa;
-          }
-          .terminal-value {
-            color: #fbbf24;
-            word-break: break-all;
-          }
-          
-          /* Language Items - A4 Optimized */
-          .language-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 2mm;
-            margin-bottom: 1.5mm;
-            background: white;
-            border-radius: 1.5mm;
-            border: 0.2mm solid rgba(226,232,240,0.8);
-            font-size: 7px;
-          }
-          .language-name {
-            font-weight: 700;
-            color: #1f2937;
-            font-family: 'Courier New', monospace;
-          }
-          .language-level {
-            display: flex;
-            gap: 1mm;
-          }
-          .level-dot {
-            width: 1.5mm;
-            height: 1.5mm;
-            border-radius: 50%;
-            border: 0.2mm solid #e5e7eb;
-          }
-          .level-active {
-            background: linear-gradient(135deg, #22c55e, #16a34a);
-            border-color: #22c55e;
-          }
-          .level-inactive {
-            background: #f1f5f9;
-          }
-          
-          /* Main Content Sections - A4 Optimized */
-          .section-card {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            border-radius: 2mm;
-            padding: 5mm;
-            margin-bottom: 5mm;
-            box-shadow: 0 1mm 3mm rgba(0,0,0,0.05);
-            border-left: 1.5mm solid #3b82f6;
-          }
-          .section-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 4mm;
-          }
-          .section-icon {
-            width: 6mm;
-            height: 6mm;
-            border-radius: 1.5mm;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 3mm;
-            color: white;
-            font-size: 10px;
-            box-shadow: 0 1mm 2mm rgba(59,130,246,0.3);
-          }
           .section-title {
-            font-size: 11px;
+            font-size: 9px;
             font-weight: 900;
             color: #1f2937;
             font-family: 'Courier New', monospace;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.2px;
           }
+          
           .section-content {
             background: rgba(255,255,255,0.8);
-            padding: 4mm;
-            border-radius: 1.5mm;
+            padding: 3mm;
+            border-radius: 1mm;
             border: 0.2mm solid rgba(226,232,240,0.8);
           }
+          
           .summary-text {
-            font-size: 8px;
+            font-size: 7px;
             color: #374151;
             line-height: 1.4;
             text-align: justify;
             font-weight: 500;
           }
           
-          /* Timeline Items - A4 Optimized */
+          /* Timeline Items */
           .timeline-item {
-            margin-bottom: 5mm;
-            padding: 4mm;
+            margin-bottom: 4mm;
+            padding: 3mm;
             background: rgba(255,255,255,0.9);
-            border-radius: 1.5mm;
+            border-radius: 1mm;
             border: 0.2mm solid rgba(226,232,240,0.8);
-            box-shadow: 0 0.5mm 1.5mm rgba(0,0,0,0.05);
+            box-shadow: 0 0.3mm 1mm rgba(0,0,0,0.05);
+            break-inside: avoid;
+            page-break-inside: avoid;
           }
+          
           .item-header {
-            margin-bottom: 3mm;
+            margin-bottom: 2mm;
           }
+          
           .item-title {
-            font-size: 10px;
+            font-size: 8px;
             font-weight: 800;
             color: #111827;
             margin-bottom: 1mm;
             font-family: 'Courier New', monospace;
+            line-height: 1.2;
           }
+          
           .item-company {
-            font-size: 8px;
+            font-size: 7px;
             font-weight: 700;
             margin-bottom: 1mm;
             color: #3b82f6;
             font-family: 'Courier New', monospace;
           }
+          
           .item-location {
-            font-size: 7px;
+            font-size: 6px;
             color: #6b7280;
             font-weight: 600;
-            margin-bottom: 2mm;
+            margin-bottom: 1mm;
           }
+          
           .item-date {
             display: inline-block;
-            padding: 1mm 2mm;
-            border-radius: 2mm;
-            font-size: 7px;
+            padding: 0.5mm 1mm;
+            border-radius: 1mm;
+            font-size: 6px;
             font-weight: 700;
             background: linear-gradient(135deg, #dbeafe, #bfdbfe);
             color: #1e40af;
             float: right;
-            margin-top: -3mm;
+            margin-top: -2mm;
             font-family: 'Courier New', monospace;
           }
+          
           .item-description {
-            font-size: 8px;
+            font-size: 7px;
             color: #374151;
             line-height: 1.3;
           }
+          
           .description-point {
             display: flex;
             align-items: flex-start;
-            margin-bottom: 2mm;
-            padding: 2mm;
+            margin-bottom: 1mm;
+            padding: 1mm;
             background: rgba(248,250,252,0.8);
-            border-radius: 1mm;
-            border: 0.2mm solid rgba(226,232,240,0.6);
-          }
-          .point-bullet {
-            width: 1mm;
-            height: 1mm;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-            margin-right: 2mm;
-            margin-top: 1.5mm;
-            flex-shrink: 0;
+            border-radius: 0.5mm;
+            border: 0.1mm solid rgba(226,232,240,0.6);
           }
           
-          /* Project Styles - A4 Optimized */
-          .project-item {
-            margin-bottom: 4mm;
-            padding: 4mm;
-            background: rgba(255,255,255,0.9);
-            border-radius: 1.5mm;
-            border: 0.2mm solid rgba(226,232,240,0.8);
-            box-shadow: 0 0.5mm 1.5mm rgba(0,0,0,0.05);
+          .point-bullet {
+            width: 0.8mm;
+            height: 0.8mm;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            margin-right: 1.5mm;
+            margin-top: 1mm;
+            flex-shrink: 0;
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
+            print-color-adjust: exact !important;
           }
+          
+          /* Project Styles */
+          .project-item {
+            margin-bottom: 3mm;
+            padding: 3mm;
+            background: rgba(255,255,255,0.9);
+            border-radius: 1mm;
+            border: 0.2mm solid rgba(226,232,240,0.8);
+            box-shadow: 0 0.3mm 1mm rgba(0,0,0,0.05);
+            break-inside: avoid;
+            page-break-inside: avoid;
+          }
+          
           .project-header {
             display: flex;
             justify-content: space-between;
             align-items: start;
-            margin-bottom: 3mm;
+            margin-bottom: 2mm;
           }
+          
           .project-title {
-            font-size: 10px;
+            font-size: 8px;
             font-weight: 800;
             color: #111827;
-            margin-bottom: 2mm;
+            margin-bottom: 1mm;
             font-family: 'Courier New', monospace;
           }
+          
           .project-tech {
             display: flex;
             flex-wrap: wrap;
-            gap: 1mm;
-            margin-bottom: 2mm;
+            gap: 0.5mm;
+            margin-bottom: 1mm;
           }
+          
           .tech-tag {
             background: linear-gradient(135deg, #f3e8ff, #e9d5ff);
             color: #7c3aed;
-            padding: 1mm 2mm;
-            border-radius: 1mm;
-            font-size: 6px;
+            padding: 0.5mm 1mm;
+            border-radius: 0.5mm;
+            font-size: 5px;
             font-weight: 700;
-            border: 0.2mm solid #c4b5fd;
+            border: 0.1mm solid #c4b5fd;
             font-family: 'Courier New', monospace;
           }
+          
           .project-link {
             background: linear-gradient(135deg, #8b5cf6, #7c3aed);
             color: white;
-            padding: 2mm 3mm;
-            border-radius: 1mm;
-            font-size: 6px;
+            padding: 1mm 2mm;
+            border-radius: 0.5mm;
+            font-size: 5px;
             font-weight: 700;
             text-decoration: none;
             font-family: 'Courier New', monospace;
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
+            print-color-adjust: exact !important;
           }
+          
           .project-description {
-            font-size: 8px;
+            font-size: 7px;
             color: #374151;
             line-height: 1.3;
             font-weight: 500;
           }
           
-          /* A4 Print Optimization */
+          /* Print Optimization */
           @media print {
             body { 
               margin: 0; 
+              padding: 0;
               font-size: 8px; 
               width: 210mm;
-              min-height: 297mm;
+              height: 297mm;
             }
             .container { 
               box-shadow: none; 
               width: 210mm;
-              min-height: 297mm;
+              height: 297mm;
             }
             .bg-pattern { display: none; }
-            .card, .timeline-item, .project-item { 
+            .card, .timeline-item, .project-item, .section-card { 
               break-inside: avoid; 
               page-break-inside: avoid; 
             }
-            .section-card {
-              break-inside: avoid;
-              page-break-inside: avoid;
-            }
             .header {
-              max-height: 55mm;
+              height: 45mm;
             }
             .main-layout {
-              max-height: calc(297mm - 75mm);
+              height: calc(297mm - 50mm);
+            }
+            * {
+              -webkit-print-color-adjust: exact !important;
+              color-adjust: exact !important;
+              print-color-adjust: exact !important;
             }
           }
         </style>
@@ -840,6 +905,8 @@ export function generateTechnicalTemplateHTML(data: ResumeData): string {
   `;
 }
 
+// lib/pdf-templates.ts - Fixed generateFresherTemplateHTML and generateTechnicalTemplateHTML functions
+
 export function generateFresherTemplateHTML(data: ResumeData): string {
   const { personalInfo, professionalSummary, education, experience, skills, projects, languages, certifications } = data
 
@@ -848,426 +915,7 @@ export function generateFresherTemplateHTML(data: ResumeData): string {
     <html>
       <head>
         <meta charset="utf-8">
-        <style>
-          * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-          }
-          body { 
-            font-family: Arial, sans-serif; 
-            line-height: 1.4;
-            color: #333;
-            max-width: 210mm;
-            margin: 0 auto;
-            background: white;
-            position: relative;
-          }
-          
-          /* Background Decorations */
-          .bg-decoration-1 {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 120px;
-            height: 120px;
-            opacity: 0.1;
-            z-index: 1;
-          }
-          .bg-decoration-2 {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 150px;
-            height: 150px;
-            opacity: 0.1;
-            z-index: 1;
-          }
-          
-          /* Header Section */
-          .header {
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-            color: white;
-            padding: 32px;
-            position: relative;
-            overflow: hidden;
-            z-index: 2;
-          }
-          .header::after {
-            content: '';
-            position: absolute;
-            bottom: -20px;
-            left: 0;
-            width: 100%;
-            height: 40px;
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-            border-radius: 0 0 50% 50%;
-          }
-          .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative;
-            z-index: 3;
-          }
-          .profile-section {
-            display: flex;
-            align-items: center;
-            gap: 24px;
-          }
-          .profile-image {
-            width: 96px;
-            height: 96px;
-            border-radius: 50%;
-            border: 4px solid white;
-            object-fit: cover;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-          }
-          .profile-placeholder {
-            width: 96px;
-            height: 96px;
-            border-radius: 50%;
-            border: 4px solid white;
-            background-color: #2563eb;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            font-weight: bold;
-            color: white;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-          }
-          .name-section h1 {
-            font-size: 28px;
-            font-weight: bold;
-            letter-spacing: 1px;
-            margin-bottom: 4px;
-          }
-          .job-title {
-            font-size: 18px;
-            color: #bfdbfe;
-            font-weight: 500;
-          }
-          .contact-section {
-            text-align: right;
-            font-size: 13px;
-          }
-          .contact-label {
-            font-weight: 600;
-            margin-bottom: 8px;
-          }
-          .contact-item {
-            margin-bottom: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 8px;
-          }
-          .contact-email {
-            color: #bfdbfe;
-            margin-top: 4px;
-          }
-          
-          /* Main Content */
-          .main-content {
-            padding: 32px;
-            position: relative;
-            z-index: 2;
-          }
-          .section {
-            margin-bottom: 32px;
-          }
-          .section-title {
-            font-size: 16px;
-            font-weight: bold;
-            color: #1f2937;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 2px solid #3b82f6;
-            padding-bottom: 4px;
-            margin-bottom: 16px;
-          }
-          .summary-text {
-            font-size: 13px;
-            color: #374151;
-            line-height: 1.6;
-            text-align: justify;
-          }
-          
-          /* Skills Grid */
-          .skills-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px 32px;
-          }
-          .skill-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 13px;
-            color: #374151;
-          }
-          .skill-bullet {
-            width: 6px;
-            height: 6px;
-            background-color: #3b82f6;
-            border-radius: 50%;
-            flex-shrink: 0;
-          }
-          
-          /* Experience Items */
-          .experience-item, .project-item, .education-item {
-            margin-bottom: 20px;
-          }
-          .item-header {
-            margin-bottom: 8px;
-          }
-          .item-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #111827;
-            margin-bottom: 4px;
-          }
-          .item-company {
-            font-size: 13px;
-            color: #6b7280;
-            font-style: italic;
-            margin-bottom: 8px;
-          }
-          .item-description {
-            font-size: 13px;
-            color: #374151;
-            line-height: 1.5;
-          }
-          .description-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            margin-bottom: 4px;
-          }
-          .description-bullet {
-            width: 6px;
-            height: 6px;
-            background-color: #9ca3af;
-            border-radius: 50%;
-            margin-top: 6px;
-            flex-shrink: 0;
-          }
-          .tech-info {
-            font-size: 12px;
-            color: #6b7280;
-            margin-bottom: 8px;
-          }
-          .tech-label {
-            font-weight: 500;
-          }
-          
-          /* Languages and Certifications */
-          .language-item, .cert-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 8px;
-            font-size: 13px;
-            color: #374151;
-          }
-          .cert-text {
-            font-size: 13px;
-            color: #374151;
-            margin-bottom: 4px;
-          }
-          .cert-details {
-            font-size: 11px;
-            color: #6b7280;
-          }
-          
-          @media print {
-            body { margin: 0; }
-            .bg-decoration-1, .bg-decoration-2 { display: none; }
-          }
-        </style>
-      </head>
-      <body>
-        <!-- Background Decorations -->
-        <div class="bg-decoration-1">
-          <svg viewBox="0 0 100 100" style="width: 100%; height: 100%;">
-            <path d="M0,0 Q50,25 100,0 L100,50 Q75,25 50,50 Q25,75 0,50 Z" fill="#3b82f6"/>
-          </svg>
-        </div>
-        <div class="bg-decoration-2">
-          <svg viewBox="0 0 100 100" style="width: 100%; height: 100%;">
-            <path d="M0,100 Q25,75 50,100 Q75,75 100,100 L100,50 Q75,75 50,50 Q25,25 0,50 Z" fill="#3b82f6"/>
-          </svg>
-        </div>
-
-        <!-- Header Section -->
-        <div class="header">
-          <div class="header-content">
-            <!-- Left Side - Profile and Name -->
-            <div class="profile-section">
-              ${personalInfo.profileImage ? `
-                <img src="${personalInfo.profileImage}" alt="${personalInfo.fullName}" class="profile-image">
-              ` : `
-                <div class="profile-placeholder">
-                  ${personalInfo.fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                </div>
-              `}
-              
-              <div class="name-section">
-                <h1>${personalInfo.fullName.toUpperCase()}</h1>
-                ${experience.length > 0 ? `<p class="job-title">${experience[0].jobTitle.toUpperCase()}</p>` : ''}
-              </div>
-            </div>
-
-            <!-- Right Side - Contact Information -->
-            <div class="contact-section">
-              <div class="contact-label">Address:</div>
-              ${personalInfo.address ? `<div>${personalInfo.address}</div>` : ''}
-              <div>${personalInfo.city}${personalInfo.city && personalInfo.state ? ', ' : ''}${personalInfo.state}</div>
-              <div class="contact-item">
-                <span>📞 ${personalInfo.phone}</span>
-              </div>
-              <div class="contact-item">
-                <span>✉️ Email:</span>
-              </div>
-              <div class="contact-email">${personalInfo.email}</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Main Content -->
-        <div class="main-content">
-          <!-- Summary Section -->
-          ${professionalSummary ? `
-            <div class="section">
-              <h2 class="section-title">Summary</h2>
-              <p class="summary-text">${professionalSummary}</p>
-            </div>
-          ` : ''}
-
-          <!-- Skill Highlights -->
-          ${skills.length > 0 ? `
-            <div class="section">
-              <h2 class="section-title">Skill Highlights</h2>
-              <div class="skills-grid">
-                ${skills.map(skill => `
-                  <div class="skill-item">
-                    <span class="skill-bullet"></span>
-                    <span>${skill}</span>
-                  </div>
-                `).join('')}
-              </div>
-            </div>
-          ` : ''}
-
-          <!-- Experience Section -->
-          ${experience.length > 0 ? `
-            <div class="section">
-              <h2 class="section-title">Experience</h2>
-              ${experience.map(exp => `
-                <div class="experience-item">
-                  <div class="item-header">
-                    <h3 class="item-title">${exp.jobTitle} - ${exp.startDate} to ${exp.current ? 'Present' : exp.endDate}</h3>
-                    <p class="item-company">${exp.company}, ${exp.location}</p>
-                  </div>
-                  <div class="item-description">
-                    ${exp.description.split('\n').map(line => line.trim() ? `
-                      <div class="description-item">
-                        <span class="description-bullet"></span>
-                        <span>${line}</span>
-                      </div>
-                    ` : '').join('')}
-                  </div>
-                </div>
-              `).join('')}
-            </div>
-          ` : ''}
-
-          <!-- Projects Section -->
-          ${projects && projects.length > 0 ? `
-            <div class="section">
-              <h2 class="section-title">Projects</h2>
-              ${projects.map(project => `
-                <div class="project-item">
-                  <div class="item-header">
-                    <h3 class="item-title">${project.name}</h3>
-                    ${project.technologies && project.technologies.length > 0 ? `
-                      <p class="tech-info">
-                        <span class="tech-label">Technologies:</span> ${project.technologies.join(', ')}
-                      </p>
-                    ` : ''}
-                  </div>
-                  <div class="item-description">
-                    <div class="description-item">
-                      <span class="description-bullet"></span>
-                      <span>${project.description}</span>
-                    </div>
-                  </div>
-                </div>
-              `).join('')}
-            </div>
-          ` : ''}
-
-          <!-- Education Section -->
-          ${education.length > 0 ? `
-            <div class="section">
-              <h2 class="section-title">Education</h2>
-              ${education.map(edu => `
-                <div class="education-item">
-                  <h3 class="item-title">${edu.degree}: ${edu.startDate.split('-')[0]}</h3>
-                  <p class="item-company">${edu.institution}, ${edu.location}</p>
-                  ${edu.percentage ? `<p class="tech-info">Grade: ${edu.percentage}</p>` : ''}
-                </div>
-              `).join('')}
-            </div>
-          ` : ''}
-
-          <!-- Languages Section -->
-          ${languages && languages.length > 0 ? `
-            <div class="section">
-              <h2 class="section-title">Languages</h2>
-              ${languages.map(language => `
-                <div class="language-item">
-                  <span class="skill-bullet"></span>
-                  <span>${language.name} - ${language.proficiency}</span>
-                </div>
-              `).join('')}
-            </div>
-          ` : ''}
-
-          <!-- Certifications Section -->
-          ${certifications && certifications.length > 0 ? `
-            <div class="section">
-              <h2 class="section-title">Certifications</h2>
-              ${certifications.map(cert => `
-                <div style="margin-bottom: 12px;">
-                  <p class="cert-text">
-                    <strong>${cert.name}</strong> - ${cert.issuer}
-                  </p>
-                  <p class="cert-details">
-                    Issued: ${new Date(cert.issueDate).toLocaleDateString('en-US', { 
-                      year: 'numeric', 
-                      month: 'short' 
-                    })}
-                  </p>
-                </div>
-              `).join('')}
-            </div>
-          ` : ''}
-        </div>
-      </body>
-    </html>
-  `
-}
-
-export function generateGeneralTemplateHTML(data: ResumeData): string {
-  const { personalInfo, professionalSummary, education, experience, skills, languages, certifications } = data
-
-  return `
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
           * { 
             margin: 0; 
@@ -1277,7 +925,7 @@ export function generateGeneralTemplateHTML(data: ResumeData): string {
           
           @page {
             size: A4;
-            margin: 10mm;
+            margin: 0;
           }
           
           body { 
@@ -1285,112 +933,643 @@ export function generateGeneralTemplateHTML(data: ResumeData): string {
             line-height: 1.4;
             color: #333;
             background: white;
-            font-size: 10px;
+            font-size: 11px;
             width: 210mm;
-            min-height: 297mm;
-            margin: 0 auto;
-            -webkit-print-color-adjust: exact !important;
-            color-adjust: exact !important;
-            print-color-adjust: exact !important;
+            height: 297mm;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            position: relative;
           }
           
-          .container {
-            display: flex;
-            width: 190mm;
-            min-height: 277mm;
-            margin: 0 auto;
+          .page-container {
+            width: 210mm;
+            height: 297mm;
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
+            overflow: hidden;
+            position: relative;
           }
           
-          /* Left Sidebar - Dark Blue */
-          .sidebar {
-            width: 65mm;
-            background-color: #2c3e50 !important;
+          /* Background Decorations */
+          .bg-decoration-1 {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 30mm;
+            height: 30mm;
+            opacity: 0.05;
+            z-index: 1;
+          }
+          .bg-decoration-2 {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40mm;
+            height: 40mm;
+            opacity: 0.05;
+            z-index: 1;
+          }
+          
+          /* Header Section */
+          .header {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
             color: white;
-            padding: 15mm 12mm;
-            flex-shrink: 0;
+            padding: 25mm 20mm;
+            position: relative;
+            overflow: hidden;
+            z-index: 2;
+            height: 80mm;
             -webkit-print-color-adjust: exact !important;
             color-adjust: exact !important;
             print-color-adjust: exact !important;
           }
           
-          /* Profile Section */
+          .header::after {
+            content: '';
+            position: absolute;
+            bottom: -5mm;
+            left: 0;
+            width: 100%;
+            height: 10mm;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            border-radius: 0 0 50% 50%;
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          
+          .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 3;
+            height: 100%;
+          }
+          
           .profile-section {
-            text-align: center;
-            margin-bottom: 12mm;
+            display: flex;
+            align-items: center;
+            gap: 15mm;
+            flex: 1;
           }
           
           .profile-image {
             width: 25mm;
             height: 25mm;
             border-radius: 50%;
-            border: 2px solid white;
+            border: 2mm solid white;
             object-fit: cover;
-            margin: 0 auto 8mm auto;
-            display: block;
-            box-shadow: 0 1mm 3mm rgba(0,0,0,0.3);
+            box-shadow: 0 2mm 4mm rgba(0,0,0,0.2);
           }
           
           .profile-placeholder {
             width: 25mm;
             height: 25mm;
             border-radius: 50%;
-            border: 2px solid white;
-            background-color: #34495e;
+            border: 2mm solid white;
+            background-color: #2563eb !important;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 8mm auto;
             font-size: 12px;
             font-weight: bold;
             color: white;
-            box-shadow: 0 1mm 3mm rgba(0,0,0,0.3);
+            box-shadow: 0 2mm 4mm rgba(0,0,0,0.2);
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
+            print-color-adjust: exact !important;
           }
           
-          .profile-name {
-            font-size: 13px;
+          .name-section h1 {
+            font-size: 20px;
             font-weight: bold;
-            color: white;
+            letter-spacing: 1px;
             margin-bottom: 2mm;
             line-height: 1.2;
           }
           
-          .profile-title {
+          .job-title {
+            font-size: 14px;
+            color: #bfdbfe;
+            font-weight: 500;
+            line-height: 1.3;
+          }
+          
+          .contact-section {
+            text-align: right;
             font-size: 10px;
+            max-width: 60mm;
+          }
+          
+          .contact-label {
+            font-weight: 600;
+            margin-bottom: 3mm;
+          }
+          
+          .contact-item {
+            margin-bottom: 2mm;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 3mm;
+            line-height: 1.3;
+          }
+          
+          .contact-email {
+            color: #bfdbfe;
+            margin-top: 2mm;
+            word-break: break-all;
+          }
+          
+          /* Main Content */
+          .main-content {
+            padding: 20mm;
+            position: relative;
+            z-index: 2;
+            height: calc(297mm - 80mm);
+            overflow: hidden;
+          }
+          
+          .section {
+            margin-bottom: 12mm;
+            break-inside: avoid;
+            page-break-inside: avoid;
+          }
+          
+          .section-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #1f2937;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #3b82f6;
+            padding-bottom: 2mm;
+            margin-bottom: 6mm;
+          }
+          
+          .summary-text {
+            font-size: 10px;
+            color: #374151;
+            line-height: 1.6;
+            text-align: justify;
+          }
+          
+          /* Skills Grid */
+          .skills-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4mm 8mm;
+          }
+          
+          .skill-item {
+            display: flex;
+            align-items: center;
+            gap: 3mm;
+            font-size: 10px;
+            color: #374151;
+          }
+          
+          .skill-bullet {
+            width: 2mm;
+            height: 2mm;
+            background-color: #3b82f6 !important;
+            border-radius: 50%;
+            flex-shrink: 0;
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          
+          /* Experience Items */
+          .experience-item, .project-item, .education-item {
+            margin-bottom: 8mm;
+            break-inside: avoid;
+            page-break-inside: avoid;
+          }
+          
+          .item-header {
+            margin-bottom: 3mm;
+          }
+          
+          .item-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 2mm;
+            line-height: 1.3;
+          }
+          
+          .item-company {
+            font-size: 10px;
+            color: #6b7280;
+            font-style: italic;
+            margin-bottom: 3mm;
+          }
+          
+          .item-description {
+            font-size: 10px;
+            color: #374151;
+            line-height: 1.5;
+          }
+          
+          .description-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 3mm;
+            margin-bottom: 2mm;
+          }
+          
+          .description-bullet {
+            width: 2mm;
+            height: 2mm;
+            background-color: #9ca3af !important;
+            border-radius: 50%;
+            margin-top: 2mm;
+            flex-shrink: 0;
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          
+          .tech-info {
+            font-size: 9px;
+            color: #6b7280;
+            margin-bottom: 3mm;
+          }
+          
+          .tech-label {
+            font-weight: 500;
+          }
+          
+          /* Languages and Certifications */
+          .language-item, .cert-item {
+            display: flex;
+            align-items: center;
+            gap: 3mm;
+            margin-bottom: 3mm;
+            font-size: 10px;
+            color: #374151;
+          }
+          
+          .cert-text {
+            font-size: 10px;
+            color: #374151;
+            margin-bottom: 2mm;
+          }
+          
+          .cert-details {
+            font-size: 9px;
+            color: #6b7280;
+          }
+          
+          /* Print Optimization */
+          @media print {
+            body { 
+              margin: 0; 
+              padding: 0;
+              font-size: 10px;
+              width: 210mm;
+              height: 297mm;
+            }
+            .page-container { 
+              width: 210mm;
+              height: 297mm;
+              margin: 0;
+              padding: 0;
+            }
+            .bg-decoration-1, .bg-decoration-2 { 
+              display: none; 
+            }
+            * {
+              -webkit-print-color-adjust: exact !important;
+              color-adjust: exact !important;
+              print-color-adjust: exact !important;
+            }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="page-container">
+          <!-- Background Decorations -->
+          <div class="bg-decoration-1">
+            <svg viewBox="0 0 100 100" style="width: 100%; height: 100%;">
+              <path d="M0,0 Q50,25 100,0 L100,50 Q75,25 50,50 Q25,75 0,50 Z" fill="#3b82f6"/>
+            </svg>
+          </div>
+          <div class="bg-decoration-2">
+            <svg viewBox="0 0 100 100" style="width: 100%; height: 100%;">
+              <path d="M0,100 Q25,75 50,100 Q75,75 100,100 L100,50 Q75,75 50,50 Q25,25 0,50 Z" fill="#3b82f6"/>
+            </svg>
+          </div>
+
+          <!-- Header Section -->
+          <div class="header">
+            <div class="header-content">
+              <!-- Left Side - Profile and Name -->
+              <div class="profile-section">
+                ${personalInfo.profileImage ? `
+                  <img src="${personalInfo.profileImage}" alt="${personalInfo.fullName}" class="profile-image">
+                ` : `
+                  <div class="profile-placeholder">
+                    ${personalInfo.fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                  </div>
+                `}
+                
+                <div class="name-section">
+                  <h1>${personalInfo.fullName.toUpperCase()}</h1>
+                  ${experience.length > 0 ? `<p class="job-title">${experience[0].jobTitle.toUpperCase()}</p>` : ''}
+                </div>
+              </div>
+
+              <!-- Right Side - Contact Information -->
+              <div class="contact-section">
+                <div class="contact-label">Address:</div>
+                ${personalInfo.address ? `<div>${personalInfo.address}</div>` : ''}
+                <div>${personalInfo.city}${personalInfo.city && personalInfo.state ? ', ' : ''}${personalInfo.state}</div>
+                <div class="contact-item">
+                  <span>📞 ${personalInfo.phone}</span>
+                </div>
+                <div class="contact-item">
+                  <span>✉️ Email:</span>
+                </div>
+                <div class="contact-email">${personalInfo.email}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main Content -->
+          <div class="main-content">
+            <!-- Summary Section -->
+            ${professionalSummary ? `
+              <div class="section">
+                <h2 class="section-title">Summary</h2>
+                <p class="summary-text">${professionalSummary}</p>
+              </div>
+            ` : ''}
+
+            <!-- Skill Highlights -->
+            ${skills.length > 0 ? `
+              <div class="section">
+                <h2 class="section-title">Skill Highlights</h2>
+                <div class="skills-grid">
+                  ${skills.map(skill => `
+                    <div class="skill-item">
+                      <span class="skill-bullet"></span>
+                      <span>${skill}</span>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            ` : ''}
+
+            <!-- Experience Section -->
+            ${experience.length > 0 ? `
+              <div class="section">
+                <h2 class="section-title">Experience</h2>
+                ${experience.map(exp => `
+                  <div class="experience-item">
+                    <div class="item-header">
+                      <h3 class="item-title">${exp.jobTitle} - ${exp.startDate} to ${exp.current ? 'Present' : exp.endDate}</h3>
+                      <p class="item-company">${exp.company}, ${exp.location}</p>
+                    </div>
+                    <div class="item-description">
+                      ${exp.description.split('\n').map(line => line.trim() ? `
+                        <div class="description-item">
+                          <span class="description-bullet"></span>
+                          <span>${line}</span>
+                        </div>
+                      ` : '').join('')}
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+
+            <!-- Projects Section -->
+            ${projects && projects.length > 0 ? `
+              <div class="section">
+                <h2 class="section-title">Projects</h2>
+                ${projects.map(project => `
+                  <div class="project-item">
+                    <div class="item-header">
+                      <h3 class="item-title">${project.name}</h3>
+                      ${project.technologies && project.technologies.length > 0 ? `
+                        <p class="tech-info">
+                          <span class="tech-label">Technologies:</span> ${project.technologies.join(', ')}
+                        </p>
+                      ` : ''}
+                    </div>
+                    <div class="item-description">
+                      <div class="description-item">
+                        <span class="description-bullet"></span>
+                        <span>${project.description}</span>
+                      </div>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+
+            <!-- Education Section -->
+            ${education.length > 0 ? `
+              <div class="section">
+                <h2 class="section-title">Education</h2>
+                ${education.map(edu => `
+                  <div class="education-item">
+                    <h3 class="item-title">${edu.degree}: ${edu.startDate.split('-')[0]}</h3>
+                    <p class="item-company">${edu.institution}, ${edu.location}</p>
+                    ${edu.percentage ? `<p class="tech-info">Grade: ${edu.percentage}</p>` : ''}
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+
+            <!-- Languages Section -->
+            ${languages && languages.length > 0 ? `
+              <div class="section">
+                <h2 class="section-title">Languages</h2>
+                ${languages.map(language => `
+                  <div class="language-item">
+                    <span class="skill-bullet"></span>
+                    <span>${language.name} - ${language.proficiency}</span>
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+
+            <!-- Certifications Section -->
+            ${certifications && certifications.length > 0 ? `
+              <div class="section">
+                <h2 class="section-title">Certifications</h2>
+                ${certifications.map(cert => `
+                  <div style="margin-bottom: 4mm;">
+                    <p class="cert-text">
+                      <strong>${cert.name}</strong> - ${cert.issuer}
+                    </p>
+                    <p class="cert-details">
+                      Issued: ${new Date(cert.issueDate).toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'short' 
+                      })}
+                    </p>
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      </body>
+    </html>
+  `
+}
+
+// lib/pdf-templates.ts - Fixed generateGeneralTemplateHTML function
+export function generateGeneralTemplateHTML(data: ResumeData): string {
+  const { personalInfo, professionalSummary, education, experience, skills, languages, certifications } = data
+
+  return `
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+          * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+          }
+          
+          @page {
+            size: A4;
+            margin: 0;
+          }
+          
+          body { 
+            font-family: Arial, sans-serif; 
+            line-height: 1.4;
+            color: #333;
+            background: white;
+            font-size: 11px;
+            width: 210mm;
+            height: 297mm;
+            margin: 0;
+            padding: 0;
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            overflow: hidden;
+          }
+          
+          .page-container {
+            display: flex;
+            width: 210mm;
+            height: 297mm;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            overflow: hidden;
+          }
+          
+          /* Left Sidebar - Dark Blue */
+          .sidebar {
+            width: 70mm;
+            height: 297mm;
+            background-color: #2c3e50 !important;
+            color: white;
+            padding: 20mm 15mm;
+            flex-shrink: 0;
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            overflow: hidden;
+          }
+          
+          /* Profile Section */
+          .profile-section {
+            text-align: center;
+            margin-bottom: 15mm;
+          }
+          
+          .profile-image {
+            width: 30mm;
+            height: 30mm;
+            border-radius: 50%;
+            border: 2mm solid white;
+            object-fit: cover;
+            margin: 0 auto 10mm auto;
+            display: block;
+            box-shadow: 0 2mm 5mm rgba(0,0,0,0.3);
+          }
+          
+          .profile-placeholder {
+            width: 30mm;
+            height: 30mm;
+            border-radius: 50%;
+            border: 2mm solid white;
+            background-color: #34495e !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10mm auto;
+            font-size: 14px;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 2mm 5mm rgba(0,0,0,0.3);
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          
+          .profile-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 3mm;
+            line-height: 1.2;
+            word-wrap: break-word;
+          }
+          
+          .profile-title {
+            font-size: 12px;
             color: #bdc3c7;
             font-weight: 500;
+            line-height: 1.3;
           }
           
           /* Sidebar Sections */
           .sidebar-section {
-            margin-bottom: 10mm;
+            margin-bottom: 12mm;
           }
           
           .sidebar-title {
-            font-size: 11px;
+            font-size: 13px;
             font-weight: bold;
             color: white;
-            margin-bottom: 5mm;
+            margin-bottom: 6mm;
             border-bottom: 1px solid #7f8c8d;
             padding-bottom: 2mm;
             text-transform: uppercase;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.5px;
           }
           
           /* Contact Items */
           .contact-item {
-            margin-bottom: 4mm;
+            margin-bottom: 5mm;
           }
           
           .contact-label {
-            font-size: 8px;
+            font-size: 10px;
             font-weight: 600;
             color: #bdc3c7;
             margin-bottom: 1mm;
           }
           
           .contact-value {
-            font-size: 9px;
+            font-size: 10px;
             color: white;
             word-break: break-all;
             line-height: 1.3;
@@ -1398,32 +1577,32 @@ export function generateGeneralTemplateHTML(data: ResumeData): string {
           
           /* Skills Section */
           .skill-item {
-            margin-bottom: 4mm;
+            margin-bottom: 5mm;
           }
           
           .skill-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.5mm;
+            margin-bottom: 2mm;
           }
           
           .skill-name {
-            font-size: 8px;
+            font-size: 10px;
             font-weight: 600;
             color: white;
           }
           
           .skill-percentage {
-            font-size: 7px;
+            font-size: 9px;
             color: #bdc3c7;
           }
           
           .skill-bar {
             width: 100%;
-            height: 3mm;
+            height: 4mm;
             background-color: #34495e !important;
-            border-radius: 1.5mm;
+            border-radius: 2mm;
             overflow: hidden;
             -webkit-print-color-adjust: exact !important;
             color-adjust: exact !important;
@@ -1433,8 +1612,7 @@ export function generateGeneralTemplateHTML(data: ResumeData): string {
           .skill-progress {
             height: 100%;
             background-color: #3498db !important;
-            border-radius: 1.5mm;
-            transition: width 0.3s ease;
+            border-radius: 2mm;
             -webkit-print-color-adjust: exact !important;
             color-adjust: exact !important;
             print-color-adjust: exact !important;
@@ -1442,24 +1620,24 @@ export function generateGeneralTemplateHTML(data: ResumeData): string {
           
           /* Language Items */
           .language-item {
-            margin-bottom: 3mm;
+            margin-bottom: 4mm;
           }
           
           .language-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.5mm;
+            margin-bottom: 2mm;
           }
           
           .language-name {
-            font-size: 8px;
+            font-size: 10px;
             font-weight: 600;
             color: white;
           }
           
           .language-level {
-            font-size: 7px;
+            font-size: 9px;
             color: #bdc3c7;
           }
           
@@ -1469,9 +1647,9 @@ export function generateGeneralTemplateHTML(data: ResumeData): string {
           }
           
           .language-dot {
-            width: 2.5mm;
-            height: 1.2mm;
-            border-radius: 0.6mm;
+            width: 3mm;
+            height: 1.5mm;
+            border-radius: 1mm;
             background-color: #34495e !important;
             -webkit-print-color-adjust: exact !important;
             color-adjust: exact !important;
@@ -1488,30 +1666,35 @@ export function generateGeneralTemplateHTML(data: ResumeData): string {
           /* Main Content Area */
           .main-content {
             flex: 1;
+            width: 140mm;
+            height: 297mm;
             background-color: white;
-            padding: 15mm 12mm;
+            padding: 20mm 15mm;
             color: #333;
             overflow: hidden;
           }
           
           /* Section Styles */
           .section {
-            margin-bottom: 10mm;
+            margin-bottom: 12mm;
+            break-inside: avoid;
+            page-break-inside: avoid;
           }
           
           .section-title {
-            font-size: 13px;
+            font-size: 16px;
             font-weight: bold;
             color: #2c3e50;
-            margin-bottom: 5mm;
+            margin-bottom: 6mm;
             border-bottom: 2px solid #000;
-            padding-bottom: 1.5mm;
+            padding-bottom: 2mm;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
           }
           
           /* Profile/Summary */
           .summary-text {
-            font-size: 9px;
+            font-size: 11px;
             color: #333;
             line-height: 1.6;
             text-align: justify;
@@ -1519,41 +1702,44 @@ export function generateGeneralTemplateHTML(data: ResumeData): string {
           
           /* Experience Items */
           .experience-item, .education-item, .certification-item {
-            margin-bottom: 7mm;
+            margin-bottom: 8mm;
             break-inside: avoid;
             page-break-inside: avoid;
           }
           
           .item-header {
-            margin-bottom: 2mm;
+            margin-bottom: 3mm;
             position: relative;
           }
           
           .item-title {
-            font-size: 11px;
+            font-size: 13px;
             font-weight: bold;
             color: #2c3e50;
-            margin-bottom: 1mm;
+            margin-bottom: 2mm;
+            line-height: 1.3;
           }
           
           .item-company {
-            font-size: 9px;
+            font-size: 11px;
             color: #333;
             font-weight: 600;
-            margin-bottom: 1mm;
+            margin-bottom: 2mm;
           }
           
           .item-date {
-            font-size: 8px;
+            font-size: 10px;
             color: #666;
             font-weight: 500;
             position: absolute;
             top: 0;
             right: 0;
+            background: white;
+            padding-left: 5mm;
           }
           
           .item-description {
-            font-size: 8.5px;
+            font-size: 10px;
             color: #333;
             line-height: 1.5;
           }
@@ -1561,16 +1747,16 @@ export function generateGeneralTemplateHTML(data: ResumeData): string {
           .description-point {
             display: flex;
             align-items: flex-start;
-            margin-bottom: 1.5mm;
+            margin-bottom: 2mm;
           }
           
           .description-bullet {
-            width: 1.5mm;
-            height: 1.5mm;
+            width: 2mm;
+            height: 2mm;
             background-color: #7f8c8d !important;
             border-radius: 50%;
-            margin-right: 2.5mm;
-            margin-top: 1.5mm;
+            margin-right: 3mm;
+            margin-top: 2mm;
             flex-shrink: 0;
             -webkit-print-color-adjust: exact !important;
             color-adjust: exact !important;
@@ -1579,35 +1765,42 @@ export function generateGeneralTemplateHTML(data: ResumeData): string {
           
           .description-text {
             flex: 1;
+            line-height: 1.4;
           }
           
           /* Print Optimization */
           @media print {
             body { 
               margin: 0; 
-              font-size: 9px; 
+              padding: 0;
+              font-size: 11px; 
+              width: 210mm;
+              height: 297mm;
             }
-            .container { 
-              box-shadow: none; 
-              width: 190mm;
-              min-height: 277mm;
-            }
-            .section { 
-              break-inside: avoid; 
-              page-break-inside: avoid; 
-            }
-            .experience-item, .education-item, .certification-item { 
-              break-inside: avoid; 
-              page-break-inside: avoid; 
+            .page-container { 
+              width: 210mm;
+              height: 297mm;
+              margin: 0;
+              padding: 0;
             }
             .sidebar {
-              width: 65mm;
+              width: 70mm;
+              height: 297mm;
+            }
+            .main-content {
+              width: 140mm;
+              height: 297mm;
+            }
+            * {
+              -webkit-print-color-adjust: exact !important;
+              color-adjust: exact !important;
+              print-color-adjust: exact !important;
             }
           }
         </style>
       </head>
       <body>
-        <div class="container">
+        <div class="page-container">
           <!-- Left Sidebar -->
           <div class="sidebar">
             <!-- Profile Section -->
@@ -1633,7 +1826,7 @@ export function generateGeneralTemplateHTML(data: ResumeData): string {
               <div class="contact-item">
                 <p class="contact-label">Address</p>
                 <p class="contact-value">${personalInfo.city}</p>
-                <p class="contact-value">${personalInfo.state}, USA</p>
+                <p class="contact-value">${personalInfo.state}</p>
               </div>
               
               <div class="contact-item">
