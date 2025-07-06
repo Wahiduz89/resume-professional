@@ -1,4 +1,4 @@
-// components/resume/templates/technical.tsx - Technical template for engineering students
+// components/resume/templates/technical.tsx - Fixed technical template for proper A4 display
 import React from 'react'
 import { ResumeData } from '@/types'
 import { ProfileImage } from '../profile-image'
@@ -40,7 +40,6 @@ export const TechnicalTemplate: React.FC<TemplateProps> = ({ data }) => {
       }
     })
 
-    // Filter out empty categories
     return Object.fromEntries(
       Object.entries(categories).filter(([_, items]) => items.length > 0)
     )
@@ -49,121 +48,47 @@ export const TechnicalTemplate: React.FC<TemplateProps> = ({ data }) => {
   const skillCategories = categorizeSkills(skills)
 
   return (
-    <div className="w-full max-w-[210mm] mx-auto bg-white shadow-2xl overflow-hidden relative print:shadow-none">
-      {/* Technical Background Pattern */}
-      <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
-        <div className="absolute top-0 left-0 w-full h-full">
-          <svg viewBox="0 0 100 100" className="w-full h-full">
-            <defs>
-              <pattern id="circuit" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
-                <path d="M0 10h20M10 0v20M5 5h10v10H5z" stroke="#1e40af" strokeWidth="0.5" fill="none"/>
-                <circle cx="5" cy="5" r="1" fill="#1e40af"/>
-                <circle cx="15" cy="15" r="1" fill="#1e40af"/>
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#circuit)"/>
-          </svg>
-        </div>
-      </div>
-
-      {/* Header Section - Tech Focused */}
-      <div className="relative">
-        <div className="absolute inset-0 bg-gradient-to-r from-gray-900 via-blue-900 to-indigo-900"></div>
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-800/70 via-indigo-800/50 to-purple-800/30"></div>
-        
-        {/* Code-like decorative elements */}
-        <div className="absolute top-4 right-4 text-green-400 opacity-20 font-mono text-xs">
-          <div>&lt;Developer/&gt;</div>
-          <div className="mt-1">console.log("Hello World!");</div>
-        </div>
-
-        <div className="relative z-20 px-12 py-12">
-          <div className="flex items-center justify-between">
-            {/* Left: Profile and Developer Info */}
-            <div className="flex items-center space-x-8">
-              {/* Technical Profile Image */}
-              <div className="relative group">
-                <div className="absolute -inset-3 bg-gradient-to-r from-green-400 via-blue-400 to-purple-400 rounded-lg opacity-20 blur-lg group-hover:opacity-30 transition-opacity duration-300"></div>
-                <div className="absolute -inset-1 bg-white/10 rounded-lg backdrop-blur-sm border border-white/20"></div>
-                
-                <ProfileImage
-                  src={personalInfo.profileImage || ''}
-                  alt={personalInfo.fullName}
-                  className="relative w-32 h-32 rounded-lg border-2 border-white/30 object-cover shadow-2xl"
-                  fallbackContent={
-                    <div className="relative w-32 h-32 rounded-lg border-2 border-white/30 bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 flex items-center justify-center shadow-2xl">
-                      <span className="text-white text-3xl font-bold font-mono tracking-wider">
-                        &lt;{personalInfo.fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}/&gt;
-                      </span>
-                    </div>
-                  }
-                />
-                
-                <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-gradient-to-r from-green-400 to-emerald-500 rounded-lg border-2 border-white shadow-lg flex items-center justify-center">
-                  <span className="text-white text-sm">⚡</span>
-                </div>
-              </div>
-              
-              {/* Name and Technical Title */}
-              <div className="space-y-3">
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-green-400 font-mono text-sm">&gt;</span>
-                    <span className="text-blue-200 font-mono text-sm">const developer = {`{`}</span>
-                  </div>
-                  <h1 className="text-4xl font-black text-white tracking-wide font-mono ml-6">
-                    {personalInfo.fullName.toUpperCase()}
-                  </h1>
-                  <div className="flex items-center gap-2 mt-1 ml-6">
-                    <span className="text-blue-200 font-mono text-sm">role:</span>
-                    <span className="text-yellow-300 font-mono text-lg font-semibold">
-                      "{experience.length > 0 ? experience[0].jobTitle : 'Software Engineer'}"
+    <div className="w-full max-w-[210mm] mx-auto bg-white shadow-lg overflow-hidden relative print:shadow-none" style={{ width: '210mm', height: '297mm' }}>
+    {/* Technical Header - Simplified */}
+    <div className="relative">
+        <div className="bg-gradient-to-r from-gray-900 via-blue-900 to-indigo-900 text-white p-6" style={{ height: '50mm' }}>
+          <div className="flex items-center justify-between h-full">
+            {/* Profile Section */}
+            <div className="flex items-center gap-6">
+              <ProfileImage
+                src={personalInfo.profileImage || ''}
+                alt={personalInfo.fullName}
+                className="w-16 h-16 rounded-lg border-2 border-white object-cover"
+                fallbackContent={
+                  <div className="w-16 h-16 rounded-lg border-2 border-white bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 flex items-center justify-center">
+                    <span className="text-white text-sm font-bold">
+                      &lt;{personalInfo.fullName.split(' ').map(n => n[0]).join('').slice(0, 2)}/&gt;
                     </span>
                   </div>
-                  <div className="text-blue-200 font-mono text-sm mt-1">{`}`}</div>
-                </div>
-                
-                {/* Tech Stack Badge */}
-                <div className="flex items-center space-x-3">
-                  <div className="h-px w-12 bg-gradient-to-r from-green-400 to-transparent"></div>
-                  <div className="bg-black/30 backdrop-blur-md px-4 py-2 rounded-lg border border-green-400/30">
-                    <span className="text-green-400 text-xs font-mono font-bold tracking-widest">FULL-STACK DEVELOPER</span>
-                  </div>
-                  <div className="h-px w-12 bg-gradient-to-l from-green-400 to-transparent"></div>
-                </div>
+                }
+              />
+              
+              <div>
+                <h1 className="text-2xl font-bold mb-1">{personalInfo.fullName.toUpperCase()}</h1>
+                <p className="text-yellow-300 text-lg font-semibold">
+                  {experience.length > 0 ? experience[0].jobTitle : 'Software Engineer'}
+                </p>
+                <div className="text-green-400 text-xs mt-1">&gt; Full-Stack Developer</div>
               </div>
             </div>
 
-            {/* Right: Contact Terminal */}
-            <div className="bg-black/40 backdrop-blur-md p-6 rounded-lg border border-green-400/30 font-mono text-sm">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="flex gap-1">
-                  <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                  <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                </div>
-                <span className="text-green-400 text-xs">~/contact</span>
-              </div>
-              <div className="space-y-2 text-xs">
-                <div className="text-green-400">$ cat contact.info</div>
-                <div className="text-white">
-                  <span className="text-blue-300">email:</span> <span className="text-yellow-300">"{personalInfo.email}"</span>
-                </div>
-                <div className="text-white">
-                  <span className="text-blue-300">phone:</span> <span className="text-yellow-300">"{personalInfo.phone}"</span>
-                </div>
-                <div className="text-white">
-                  <span className="text-blue-300">location:</span> <span className="text-yellow-300">"{personalInfo.city}, {personalInfo.state}"</span>
-                </div>
-                {personalInfo.linkedin && (
-                  <div className="text-white">
-                    <span className="text-blue-300">linkedin:</span> <span className="text-yellow-300 break-all">"{personalInfo.linkedin}"</span>
-                  </div>
+            {/* Contact Terminal */}
+            <div className="bg-black bg-opacity-40 p-4 rounded border border-green-400 border-opacity-30 text-xs">
+              <div className="text-green-400 mb-2">&gt; contact.info</div>
+              <div className="space-y-1">
+                <div><span className="text-blue-300">email:</span> <span className="text-yellow-300">"{personalInfo.email}"</span></div>
+                <div><span className="text-blue-300">phone:</span> <span className="text-yellow-300">"{personalInfo.phone}"</span></div>
+                <div><span className="text-blue-300">location:</span> <span className="text-yellow-300">"{personalInfo.city}, {personalInfo.state}"</span></div>
+                {personalInfo.linkedin && personalInfo.linkedin.trim() !== '' && (
+                  <div><span className="text-blue-300">linkedin:</span> <span className="text-yellow-300 break-all">"{personalInfo.linkedin}"</span></div>
                 )}
-                {personalInfo.portfolio && (
-                  <div className="text-white">
-                    <span className="text-blue-300">portfolio:</span> <span className="text-yellow-300 break-all">"{personalInfo.portfolio}"</span>
-                  </div>
+                {personalInfo.portfolio && personalInfo.portfolio.trim() !== '' && (
+                  <div><span className="text-blue-300">portfolio:</span> <span className="text-yellow-300 break-all">"{personalInfo.portfolio}"</span></div>
                 )}
               </div>
             </div>
@@ -172,65 +97,61 @@ export const TechnicalTemplate: React.FC<TemplateProps> = ({ data }) => {
       </div>
 
       {/* Main Content Layout */}
-      <div className="relative z-10 flex">
-        {/* Left Technical Sidebar */}
-        <div className="w-80 bg-gradient-to-b from-gray-50 via-blue-50 to-indigo-50 p-6 space-y-6 border-r-2 border-indigo-200">
+      <div className="flex" style={{ height: '247mm' }}>
+        {/* Left Sidebar */}
+        <div className="w-1/3 bg-gradient-to-b from-gray-50 to-blue-50 p-4 border-r-2 border-indigo-200">
           
-          {/* Technical Skills by Category */}
+          {/* Technical Skills Categories */}
           {Object.entries(skillCategories).map(([category, categorySkills]) => (
-            <div key={category} className="bg-white rounded-xl p-6 shadow-lg border border-gray-100/50 relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500"></div>
-              
-              <div className="flex items-center mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg flex items-center justify-center mr-3 shadow-lg">
-                  <span className="text-white text-sm font-mono">
-                    {category === 'Programming Languages' ? '</>' : 
-                     category === 'Frameworks & Libraries' ? '{}' :
-                     category === 'Tools & Technologies' ? '⚙️' :
-                     category === 'Databases' ? '🗄️' : '🔧'}
-                  </span>
+            <div key={category} className="mb-4">
+              <div className="bg-white rounded-lg p-3 shadow-sm border border-gray-200">
+                <div className="flex items-center mb-2">
+                  <div className="w-6 h-6 bg-gradient-to-br from-blue-600 to-indigo-700 rounded flex items-center justify-center mr-2">
+                    <span className="text-white text-xs">
+                      {category === 'Programming Languages' ? '</>' : 
+                       category === 'Frameworks & Libraries' ? '{}' :
+                       category === 'Tools & Technologies' ? '⚙' :
+                       category === 'Databases' ? '🗄' : '🔧'}
+                    </span>
+                  </div>
+                  <h3 className="text-xs font-bold text-gray-800">{category.replace(' & ', ' &\n')}</h3>
                 </div>
-                <h3 className="text-sm font-black text-gray-800 tracking-wide font-mono">{category.toUpperCase()}</h3>
-              </div>
-              
-              <div className="flex flex-wrap gap-2">
-                {categorySkills.map((skill, index) => (
-                  <span 
-                    key={index} 
-                    className="bg-gradient-to-r from-blue-100 via-indigo-100 to-purple-100 text-indigo-800 px-3 py-2 rounded-lg text-xs font-bold border border-indigo-200 hover:shadow-md transition-all duration-200 font-mono"
-                  >
-                    {skill}
-                  </span>
-                ))}
+                
+                <div className="flex flex-wrap gap-1">
+                  {categorySkills.map((skill, index) => (
+                    <span 
+                      key={index} 
+                      className="bg-gradient-to-r from-blue-100 to-indigo-100 text-indigo-800 px-2 py-1 rounded text-xs font-bold border border-indigo-200"
+                    >
+                      {skill}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
           ))}
 
-          {/* Languages Section */}
+          {/* Languages */}
           {languages && languages.length > 0 && (
-            <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100/50 relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 to-emerald-500"></div>
-              
-              <div className="flex items-center mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-green-600 to-emerald-700 rounded-lg flex items-center justify-center mr-3 shadow-lg">
-                  <span className="text-white text-sm">🌍</span>
-                </div>
-                <h3 className="text-sm font-black text-gray-800 tracking-wide font-mono">LANGUAGES</h3>
-              </div>
-              
-              <div className="space-y-3">
+            <div className="mb-4">
+              <div className="bg-white rounded-lg p-3 shadow-sm border border-gray-200">
+                <h3 className="text-xs font-bold text-gray-800 mb-2 flex items-center">
+                  <span className="w-6 h-6 bg-green-600 rounded flex items-center justify-center mr-2 text-white text-xs">🌍</span>
+                  LANGUAGES
+                </h3>
+                
                 {languages.map((language) => (
-                  <div key={language.id} className="flex justify-between items-center bg-gradient-to-r from-gray-50 to-green-50 p-3 rounded-lg border border-gray-100">
-                    <span className="text-xs font-bold text-gray-800 font-mono">{language.name}</span>
-                    <div className="flex space-x-1">
+                  <div key={language.id} className="flex justify-between items-center mb-2 p-2 bg-gray-50 rounded border">
+                    <span className="text-xs font-bold text-gray-800">{language.name}</span>
+                    <div className="flex gap-1">
                       {[1, 2, 3, 4].map((level) => (
                         <div
                           key={level}
-                          className={`w-3 h-3 rounded-sm transition-all duration-300 ${
+                          className={`w-2 h-2 rounded-sm ${
                             level <= (language.proficiency === 'Native' ? 4 : 
                                      language.proficiency === 'Advanced' ? 3 :
                                      language.proficiency === 'Intermediate' ? 2 : 1)
-                              ? 'bg-gradient-to-r from-green-500 to-emerald-500 shadow-sm' 
+                              ? 'bg-green-500' 
                               : 'bg-gray-300'
                           }`}
                         />
@@ -243,149 +164,114 @@ export const TechnicalTemplate: React.FC<TemplateProps> = ({ data }) => {
           )}
         </div>
 
-        {/* Right Main Content */}
-        <div className="flex-1 p-8 space-y-8 bg-white">
+        {/* Main Content */}
+        <div className="flex-1 p-4 overflow-hidden">
           
           {/* Professional Summary */}
           {professionalSummary && (
-            <div className="bg-gradient-to-br from-white to-blue-50 rounded-xl p-8 shadow-lg border-l-4 border-blue-500 relative overflow-hidden">
-              <div className="absolute top-4 right-4 text-blue-200 opacity-30 font-mono text-xs">
-                // Professional Summary
-              </div>
-              
-              <div className="flex items-center mb-6">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl flex items-center justify-center mr-4 shadow-xl">
-                  <span className="text-white text-lg font-mono">{ }</span>
-                </div>
-                <h3 className="text-2xl font-black text-gray-800 tracking-wide font-mono">ABOUT_ME.md</h3>
-              </div>
-              
-              <div className="bg-white/80 backdrop-blur-sm p-6 rounded-lg border border-gray-200 shadow-sm">
-                <p className="text-gray-700 leading-relaxed text-justify font-medium">
-                  {professionalSummary}
-                </p>
+            <div className="mb-4">
+              <div className="bg-gradient-to-br from-white to-blue-50 rounded-lg p-4 border-l-4 border-blue-500">
+                <h3 className="text-lg font-bold text-gray-800 mb-2 flex items-center">
+                  <span className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center mr-2 text-white">{}</span>
+                  ABOUT_ME.md
+                </h3>
+                <p className="text-gray-700 text-sm leading-relaxed">{professionalSummary}</p>
               </div>
             </div>
           )}
 
-          {/* Projects Section - Highlighted for Technical Roles */}
+          {/* Projects Showcase */}
           {projects && projects.length > 0 && (
-            <div className="bg-gradient-to-br from-white to-purple-50 rounded-xl p-8 shadow-lg border-l-4 border-purple-500">
-              <div className="flex items-center mb-6">
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-pink-700 rounded-xl flex items-center justify-center mr-4 shadow-xl">
-                  <span className="text-white text-lg">🚀</span>
-                </div>
-                <h3 className="text-2xl font-black text-gray-800 tracking-wide font-mono">PROJECTS_SHOWCASE</h3>
-              </div>
-              
-              <div className="space-y-6">
-                {projects.map((project, index) => (
-                  <div key={index} className="bg-white/90 backdrop-blur-sm rounded-lg p-6 shadow-md border border-gray-100 hover:shadow-lg transition-all duration-300">
-                    <div className="flex justify-between items-start mb-4">
-                      <div className="flex-1">
-                        <h4 className="text-lg font-bold text-gray-900 mb-2 font-mono">{project.name}</h4>
-                        {project.technologies && project.technologies.length > 0 && (
-                          <div className="flex flex-wrap gap-2 mb-3">
-                            {project.technologies.map((tech, techIndex) => (
-                              <span 
-                                key={techIndex} 
-                                className="bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800 px-2 py-1 rounded text-xs font-bold border border-purple-200 font-mono"
-                              >
-                                {tech}
-                              </span>
-                            ))}
-                          </div>
-                        )}
+            <div className="mb-4">
+              <div className="bg-gradient-to-br from-white to-purple-50 rounded-lg p-4 border-l-4 border-purple-500">
+                <h3 className="text-lg font-bold text-gray-800 mb-3 flex items-center">
+                  <span className="w-8 h-8 bg-purple-600 rounded flex items-center justify-center mr-2 text-white">🚀</span>
+                  PROJECTS
+                </h3>
+                
+                {projects.slice(0, 2).map((project, index) => (
+                  <div key={index} className="mb-3 p-3 bg-white rounded border">
+                    <h4 className="text-sm font-bold text-gray-900 mb-1">{project.name}</h4>
+                    {project.technologies && project.technologies.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mb-2">
+                        {project.technologies.slice(0, 4).map((tech, techIndex) => (
+                          <span 
+                            key={techIndex} 
+                            className="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs font-bold"
+                          >
+                            {tech}
+                          </span>
+                        ))}
                       </div>
-                      {project.link && (
-                        <a 
-                          href={project.link} 
-                          target="_blank" 
-                          rel="noopener noreferrer" 
-                          className="ml-4 bg-gradient-to-r from-purple-500 to-pink-600 text-white font-bold px-4 py-2 rounded-lg hover:shadow-lg transform hover:scale-105 transition-all duration-200 text-xs font-mono"
-                        >
-                          VIEW PROJECT →
-                        </a>
-                      )}
-                    </div>
-                    
-                    <p className="text-gray-700 leading-relaxed font-medium">{project.description}</p>
+                    )}
+                    <p className="text-gray-700 text-xs leading-relaxed">{project.description.substring(0, 120)}...</p>
                   </div>
                 ))}
               </div>
             </div>
           )}
 
-          {/* Education Section */}
+          {/* Education */}
           {education.length > 0 && (
-            <div className="bg-gradient-to-br from-white to-emerald-50 rounded-xl p-8 shadow-lg border-l-4 border-emerald-500">
-              <div className="flex items-center mb-6">
-                <div className="w-12 h-12 bg-gradient-to-br from-emerald-600 to-green-700 rounded-xl flex items-center justify-center mr-4 shadow-xl">
-                  <span className="text-white text-lg">🎓</span>
-                </div>
-                <h3 className="text-2xl font-black text-gray-800 tracking-wide font-mono">EDUCATION_LOG</h3>
-              </div>
-              
-              <div className="space-y-6">
-                {education.map((edu) => (
-                  <div key={edu.id} className="bg-white/90 backdrop-blur-sm rounded-lg p-6 shadow-md border border-gray-100">
+            <div className="mb-4">
+              <div className="bg-gradient-to-br from-white to-emerald-50 rounded-lg p-4 border-l-4 border-emerald-500">
+                <h3 className="text-lg font-bold text-gray-800 mb-3 flex items-center">
+                  <span className="w-8 h-8 bg-emerald-600 rounded flex items-center justify-center mr-2 text-white">🎓</span>
+                  EDUCATION
+                </h3>
+                
+                {education.slice(0, 2).map((edu) => (
+                  <div key={edu.id} className="mb-3 p-3 bg-white rounded border">
                     <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <h4 className="text-lg font-bold text-gray-900 mb-1 font-mono">{edu.degree}</h4>
-                        <p className="text-emerald-600 font-bold mb-1">{edu.institution}</p>
-                        <p className="text-gray-600 font-medium text-sm">{edu.location}</p>
+                      <div>
+                        <h4 className="text-sm font-bold text-gray-900">{edu.degree}</h4>
+                        <p className="text-emerald-600 font-bold text-xs">{edu.institution}</p>
+                        <p className="text-gray-600 text-xs">{edu.location}</p>
                       </div>
-                      <div className="text-right ml-4">
-                        <div className="bg-gradient-to-r from-emerald-100 to-green-100 text-emerald-800 px-3 py-1 rounded-lg font-bold text-xs font-mono shadow-sm">
+                      <div className="text-right">
+                        <div className="bg-emerald-100 text-emerald-800 px-2 py-1 rounded text-xs font-bold">
                           {edu.startDate} - {edu.endDate}
                         </div>
                         {edu.percentage && (
-                          <div className="bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 px-3 py-1 rounded-lg font-bold text-xs mt-2 font-mono shadow-sm">
+                          <div className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs mt-1 font-bold">
                             {edu.percentage}
                           </div>
                         )}
                       </div>
                     </div>
-                    {edu.description && (
-                      <p className="text-gray-700 leading-relaxed mt-4 bg-gray-50 p-4 rounded-lg border border-gray-200 font-medium">
-                        {edu.description}
-                      </p>
-                    )}
                   </div>
                 ))}
               </div>
             </div>
           )}
 
-          {/* Work Experience Section */}
+          {/* Work Experience */}
           {experience.length > 0 && (
-            <div className="bg-gradient-to-br from-white to-orange-50 rounded-xl p-8 shadow-lg border-l-4 border-orange-500">
-              <div className="flex items-center mb-6">
-                <div className="w-12 h-12 bg-gradient-to-br from-orange-600 to-red-700 rounded-xl flex items-center justify-center mr-4 shadow-xl">
-                  <span className="text-white text-lg">💼</span>
-                </div>
-                <h3 className="text-2xl font-black text-gray-800 tracking-wide font-mono">WORK_EXPERIENCE</h3>
-              </div>
-              
-              <div className="space-y-6">
-                {experience.map((exp) => (
-                  <div key={exp.id} className="bg-white/90 backdrop-blur-sm rounded-lg p-6 shadow-md border border-gray-100">
-                    <div className="flex justify-between items-start mb-4">
-                      <div className="flex-1">
-                        <h4 className="text-lg font-bold text-gray-900 mb-1 font-mono">{exp.jobTitle}</h4>
-                        <p className="text-orange-600 font-bold mb-1">{exp.company}</p>
-                        <p className="text-gray-600 font-medium text-sm">{exp.location}</p>
+            <div className="mb-4">
+              <div className="bg-gradient-to-br from-white to-orange-50 rounded-lg p-4 border-l-4 border-orange-500">
+                <h3 className="text-lg font-bold text-gray-800 mb-3 flex items-center">
+                  <span className="w-8 h-8 bg-orange-600 rounded flex items-center justify-center mr-2 text-white">💼</span>
+                  EXPERIENCE
+                </h3>
+                
+                {experience.slice(0, 2).map((exp) => (
+                  <div key={exp.id} className="mb-3 p-3 bg-white rounded border">
+                    <div className="flex justify-between items-start mb-2">
+                      <div>
+                        <h4 className="text-sm font-bold text-gray-900">{exp.jobTitle}</h4>
+                        <p className="text-orange-600 font-bold text-xs">{exp.company}</p>
+                        <p className="text-gray-600 text-xs">{exp.location}</p>
                       </div>
-                      <div className="bg-gradient-to-r from-orange-100 to-red-100 text-orange-800 px-3 py-1 rounded-lg font-bold text-xs ml-4 font-mono shadow-sm">
+                      <div className="bg-orange-100 text-orange-800 px-2 py-1 rounded text-xs font-bold">
                         {exp.startDate} - {exp.current ? 'Present' : exp.endDate}
                       </div>
                     </div>
                     
-                    <div className="space-y-3">
-                      {exp.description.split('\n').map((line, index) => line.trim() && (
-                        <div key={index} className="flex items-start bg-gradient-to-r from-gray-50 to-orange-50 p-3 rounded-lg border border-gray-200 shadow-sm">
-                          <div className="w-2 h-2 bg-gradient-to-r from-orange-500 to-red-500 rounded-full mr-3 mt-2 flex-shrink-0"></div>
-                          <span className="text-gray-700 leading-relaxed font-medium flex-1">{line}</span>
+                    <div className="text-xs text-gray-700 leading-relaxed">
+                      {exp.description.split('\n').slice(0, 2).map((line, index) => line.trim() && (
+                        <div key={index} className="flex items-start mb-1">
+                          <span className="w-1 h-1 bg-orange-500 rounded-full mr-2 mt-1 flex-shrink-0"></span>
+                          <span>{line.substring(0, 80)}...</span>
                         </div>
                       ))}
                     </div>
@@ -395,56 +281,29 @@ export const TechnicalTemplate: React.FC<TemplateProps> = ({ data }) => {
             </div>
           )}
 
-          {/* Certifications Section */}
+          {/* Certifications */}
           {certifications && certifications.length > 0 && (
-            <div className="bg-gradient-to-br from-white to-yellow-50 rounded-xl p-8 shadow-lg border-l-4 border-yellow-500">
-              <div className="flex items-center mb-6">
-                <div className="w-12 h-12 bg-gradient-to-br from-yellow-600 to-orange-700 rounded-xl flex items-center justify-center mr-4 shadow-xl">
-                  <span className="text-white text-lg">🏆</span>
-                </div>
-                <h3 className="text-2xl font-black text-gray-800 tracking-wide font-mono">CERTIFICATIONS</h3>
-              </div>
-              
-              <div className="space-y-6">
-                {certifications.map((cert) => (
-                  <div key={cert.id} className="bg-white/90 backdrop-blur-sm rounded-lg p-6 shadow-md border border-gray-100">
+            <div>
+              <div className="bg-gradient-to-br from-white to-yellow-50 rounded-lg p-4 border-l-4 border-yellow-500">
+                <h3 className="text-lg font-bold text-gray-800 mb-3 flex items-center">
+                  <span className="w-8 h-8 bg-yellow-600 rounded flex items-center justify-center mr-2 text-white">🏆</span>
+                  CERTIFICATIONS
+                </h3>
+                
+                {certifications.slice(0, 2).map((cert) => (
+                  <div key={cert.id} className="mb-2 p-3 bg-white rounded border">
                     <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <h4 className="text-lg font-bold text-gray-900 mb-1 font-mono">{cert.name}</h4>
-                        <p className="text-yellow-600 font-bold mb-1">{cert.issuer}</p>
-                        {cert.credentialId && (
-                          <p className="text-gray-600 font-medium text-sm font-mono">ID: {cert.credentialId}</p>
-                        )}
+                      <div>
+                        <h4 className="text-sm font-bold text-gray-900">{cert.name}</h4>
+                        <p className="text-yellow-600 font-bold text-xs">{cert.issuer}</p>
                       </div>
-                      <div className="text-right ml-4">
-                        <div className="bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 px-3 py-1 rounded-lg text-xs font-bold font-mono shadow-sm">
-                          Issued: {new Date(cert.issueDate).toLocaleDateString('en-US', { 
-                            year: 'numeric', 
-                            month: 'short' 
-                          })}
-                        </div>
-                        {cert.expiryDate && (
-                          <div className="bg-gradient-to-r from-orange-100 to-red-100 text-orange-800 px-3 py-1 rounded-lg text-xs font-bold mt-2 font-mono shadow-sm">
-                            Expires: {new Date(cert.expiryDate).toLocaleDateString('en-US', { 
-                              year: 'numeric', 
-                              month: 'short' 
-                            })}
-                          </div>
-                        )}
+                      <div className="bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-bold">
+                        {new Date(cert.issueDate).toLocaleDateString('en-US', { 
+                          year: 'numeric', 
+                          month: 'short' 
+                        })}
                       </div>
                     </div>
-                    {cert.credentialUrl && (
-                      <div className="mt-4">
-                        <a 
-                          href={cert.credentialUrl} 
-                          target="_blank" 
-                          rel="noopener noreferrer" 
-                          className="inline-flex items-center bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold px-4 py-2 rounded-lg hover:shadow-lg transform hover:scale-105 transition-all duration-200 text-sm font-mono"
-                        >
-                          🔗 VERIFY_CERTIFICATE
-                        </a>
-                      </div>
-                    )}
                   </div>
                 ))}
               </div>

@@ -4,7 +4,6 @@ import { ResumeData } from '@/types'
 export function generateTechnicalTemplateHTML(data: ResumeData): string {
   const { personalInfo, professionalSummary, education, experience, skills, projects, languages, certifications } = data
 
-  // Group skills into categories for better technical display
   const categorizeSkills = (skillsList: string[]) => {
     const categories = {
       'Programming Languages': [] as string[],
@@ -46,7 +45,6 @@ export function generateTechnicalTemplateHTML(data: ResumeData): string {
     <html>
       <head>
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
           * { 
             margin: 0; 
@@ -60,74 +58,43 @@ export function generateTechnicalTemplateHTML(data: ResumeData): string {
           }
           
           body { 
-            font-family: 'Courier New', monospace;
-            line-height: 1.3;
+            font-family: Arial, sans-serif;
+            line-height: 1.4;
             color: #1f2937;
             background: white;
-            font-size: 9px;
+            font-size: 11px;
             width: 210mm;
             height: 297mm;
             margin: 0;
             padding: 0;
             overflow: hidden;
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
+            print-color-adjust: exact !important;
           }
           
           .container {
             width: 210mm;
             height: 297mm;
-            margin: 0;
-            padding: 0;
-            background: white;
-            position: relative;
-            overflow: hidden;
-            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
           }
           
-          /* Technical Background Pattern */
-          .bg-pattern {
-            position: absolute;
-            inset: 0;
-            opacity: 0.01;
-            pointer-events: none;
-            background-image: repeating-linear-gradient(
-              45deg,
-              transparent,
-              transparent 2mm,
-              #1e40af 2mm,
-              #1e40af 2.5mm
-            );
-          }
-          
-          /* Header Section */
+          /* Header Section - Exact match to React component */
           .header {
             background: linear-gradient(135deg, #111827 0%, #1e40af 50%, #4338ca 100%);
             color: white;
-            padding: 12mm 10mm;
-            position: relative;
-            overflow: hidden;
+            padding: 15mm 10mm;
             height: 50mm;
             -webkit-print-color-adjust: exact !important;
             color-adjust: exact !important;
             print-color-adjust: exact !important;
           }
           
-          .header::before {
-            content: '&lt;Developer/&gt;';
-            position: absolute;
-            top: 2mm;
-            right: 3mm;
-            color: #22d3ee;
-            opacity: 0.3;
-            font-size: 6px;
-            font-family: 'Courier New', monospace;
-          }
-          
           .header-content {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            position: relative;
-            z-index: 10;
             height: 100%;
           }
           
@@ -135,271 +102,200 @@ export function generateTechnicalTemplateHTML(data: ResumeData): string {
             display: flex;
             align-items: center;
             gap: 10mm;
-            flex: 1;
           }
           
           .profile-image {
-            width: 15mm;
-            height: 15mm;
+            width: 16mm;
+            height: 16mm;
             border-radius: 2mm;
-            border: 1px solid rgba(255,255,255,0.3);
+            border: 1mm solid white;
             object-fit: cover;
-            box-shadow: 0 1mm 3mm rgba(0,0,0,0.3);
           }
           
           .profile-placeholder {
-            width: 15mm;
-            height: 15mm;
+            width: 16mm;
+            height: 16mm;
             border-radius: 2mm;
-            border: 1px solid rgba(255,255,255,0.3);
-            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%);
+            border: 1mm solid white;
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6, #ec4899);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-size: 8px;
-            font-weight: 900;
-            box-shadow: 0 1mm 3mm rgba(0,0,0,0.3);
+            font-weight: bold;
             -webkit-print-color-adjust: exact !important;
             color-adjust: exact !important;
             print-color-adjust: exact !important;
           }
           
-          .name-section {
-            font-family: 'Courier New', monospace;
-          }
-          
-          .code-comment {
-            color: #22d3ee;
-            font-size: 6px;
-            margin-bottom: 1mm;
-          }
-          
           .name-section h1 {
-            font-size: 12px;
-            font-weight: 900;
-            letter-spacing: 0.3px;
-            margin-bottom: 1mm;
-            font-family: 'Courier New', monospace;
-            line-height: 1.2;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 2mm;
+            color: white;
           }
           
           .job-title {
             color: #fbbf24;
-            font-size: 8px;
+            font-size: 12px;
             font-weight: 600;
-            font-family: 'Courier New', monospace;
+            margin-bottom: 1mm;
           }
           
-          .tech-badge {
-            display: flex;
-            align-items: center;
-            gap: 2mm;
-            margin-top: 2mm;
-          }
-          
-          .badge-line {
-            height: 0.5mm;
-            width: 5mm;
-            background: rgba(34, 211, 238, 0.6);
-          }
-          
-          .badge-text {
-            background: rgba(0,0,0,0.3);
-            padding: 1mm 2mm;
-            border-radius: 1mm;
-            border: 0.5mm solid rgba(34, 211, 238, 0.3);
+          .tech-subtitle {
             color: #22d3ee;
-            font-size: 5px;
-            font-weight: 700;
-            font-family: 'Courier New', monospace;
+            font-size: 8px;
           }
           
           .contact-terminal {
             background: rgba(0,0,0,0.4);
-            padding: 5mm;
+            padding: 4mm;
             border-radius: 2mm;
-            border: 0.5mm solid rgba(34, 211, 238, 0.3);
-            font-family: 'Courier New', monospace;
-            font-size: 6px;
-            min-width: 35mm;
-            max-width: 45mm;
-          }
-          
-          .terminal-header {
-            display: flex;
-            align-items: center;
-            gap: 1mm;
-            margin-bottom: 2mm;
-          }
-          
-          .terminal-dot {
-            width: 1.5mm;
-            height: 1.5mm;
-            border-radius: 50%;
-          }
-          
-          .terminal-dot.red { 
-            background: #ef4444; 
-            -webkit-print-color-adjust: exact !important;
-            color-adjust: exact !important;
-            print-color-adjust: exact !important;
-          }
-          .terminal-dot.yellow { 
-            background: #eab308; 
-            -webkit-print-color-adjust: exact !important;
-            color-adjust: exact !important;
-            print-color-adjust: exact !important;
-          }
-          .terminal-dot.green { 
-            background: #22c55e; 
-            -webkit-print-color-adjust: exact !important;
-            color-adjust: exact !important;
-            print-color-adjust: exact !important;
-          }
-          
-          .terminal-path {
-            color: #22d3ee;
-            font-size: 5px;
-            margin-left: 2mm;
-          }
-          
-          .terminal-line {
-            margin-bottom: 1mm;
-            line-height: 1.2;
+            border: 1px solid rgba(34, 211, 238, 0.3);
+            font-size: 8px;
+            min-width: 40mm;
           }
           
           .terminal-prompt {
             color: #22d3ee;
+            margin-bottom: 2mm;
+            font-weight: bold;
+          }
+          
+          .terminal-line {
+            margin-bottom: 1mm;
+            line-height: 1.3;
+            word-break: break-word;
           }
           
           .terminal-key {
             color: #60a5fa;
+            font-weight: 600;
           }
           
           .terminal-value {
             color: #fbbf24;
-            word-break: break-all;
           }
           
-          /* Main Layout */
+          /* Main Layout - Two Column */
           .main-layout {
             display: flex;
-            gap: 5mm;
-            padding: 5mm;
-            height: calc(297mm - 50mm);
-            overflow: hidden;
+            flex: 1;
+            height: 247mm;
           }
           
           .sidebar {
-            width: 50mm;
+            width: 80mm;
             background: linear-gradient(to bottom, #f8fafc, #f1f5f9);
-            border-radius: 2mm;
-            padding: 4mm;
-            border: 0.3mm solid rgba(226,232,240,0.5);
-            overflow: hidden;
+            padding: 5mm;
+            border-right: 2px solid #e2e8f0;
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
+            print-color-adjust: exact !important;
           }
           
           .main-content {
             flex: 1;
+            width: 130mm;
+            padding: 5mm;
             background: white;
-            overflow: hidden;
           }
           
-          /* Card Styles */
-          .card {
+          /* Skill Cards */
+          .skill-card {
             background: white;
-            border-radius: 2mm;
-            padding: 3mm;
-            margin-bottom: 3mm;
-            box-shadow: 0 0.5mm 2mm rgba(0,0,0,0.05);
-            border-left: 1mm solid #3b82f6;
-            position: relative;
-            break-inside: avoid;
-            page-break-inside: avoid;
+            border-radius: 3mm;
+            padding: 4mm;
+            margin-bottom: 4mm;
+            box-shadow: 0 1mm 3mm rgba(0,0,0,0.1);
+            border-left: 2mm solid #3b82f6;
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
+            print-color-adjust: exact !important;
           }
           
           .card-header {
             display: flex;
             align-items: center;
-            margin-bottom: 2mm;
+            margin-bottom: 3mm;
           }
           
           .card-icon {
-            width: 4mm;
-            height: 4mm;
-            border-radius: 1mm;
+            width: 6mm;
+            height: 6mm;
+            border-radius: 2mm;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 2mm;
+            margin-right: 3mm;
             color: white;
-            font-size: 6px;
-            font-family: 'Courier New', monospace;
+            font-size: 7px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
             -webkit-print-color-adjust: exact !important;
             color-adjust: exact !important;
             print-color-adjust: exact !important;
           }
           
           .card-title {
-            font-size: 6px;
-            font-weight: 900;
+            font-size: 7px;
+            font-weight: bold;
             color: #1f2937;
-            font-family: 'Courier New', monospace;
-            letter-spacing: 0.2px;
-          }
-          
-          /* Technical Skills */
-          .skill-category {
-            margin-bottom: 3mm;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
           }
           
           .skill-tags {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.5mm;
+            gap: 1mm;
           }
           
           .skill-tag {
             background: linear-gradient(135deg, #dbeafe, #bfdbfe);
             color: #1e40af;
-            padding: 0.5mm 1mm;
-            border-radius: 1mm;
-            font-size: 5px;
-            font-weight: 700;
-            border: 0.2mm solid #93c5fd;
-            font-family: 'Courier New', monospace;
+            padding: 1mm 2mm;
+            border-radius: 2mm;
+            font-size: 6px;
+            font-weight: bold;
+            border: 0.5px solid #93c5fd;
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
+            print-color-adjust: exact !important;
           }
           
-          /* Language Items */
+          /* Language Section */
           .language-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1.5mm;
-            margin-bottom: 1mm;
-            background: white;
-            border-radius: 1mm;
-            border: 0.2mm solid rgba(226,232,240,0.8);
-            font-size: 6px;
+            padding: 2mm;
+            margin-bottom: 2mm;
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border-radius: 2mm;
+            border: 0.5px solid #e2e8f0;
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
+            print-color-adjust: exact !important;
           }
           
           .language-name {
-            font-weight: 700;
+            font-weight: bold;
             color: #1f2937;
-            font-family: 'Courier New', monospace;
+            font-size: 7px;
           }
           
           .language-level {
             display: flex;
-            gap: 0.5mm;
+            gap: 1mm;
           }
           
           .level-dot {
-            width: 1mm;
-            height: 1mm;
-            border-radius: 50%;
-            border: 0.1mm solid #e5e7eb;
+            width: 2mm;
+            height: 2mm;
+            border-radius: 1mm;
+            border: 0.5px solid #e5e7eb;
           }
           
           .level-active {
@@ -412,141 +308,137 @@ export function generateTechnicalTemplateHTML(data: ResumeData): string {
           
           .level-inactive {
             background: #f1f5f9;
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
+            print-color-adjust: exact !important;
           }
           
           /* Main Content Sections */
           .section-card {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            border-radius: 2mm;
-            padding: 4mm;
-            margin-bottom: 4mm;
-            box-shadow: 0 0.5mm 2mm rgba(0,0,0,0.05);
-            border-left: 1mm solid #3b82f6;
-            break-inside: avoid;
-            page-break-inside: avoid;
+            background: linear-gradient(135deg, #ffffff, #f8fafc);
+            border-radius: 3mm;
+            padding: 5mm;
+            margin-bottom: 5mm;
+            border-left: 3mm solid #3b82f6;
+            box-shadow: 0 1mm 3mm rgba(0,0,0,0.05);
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
+            print-color-adjust: exact !important;
           }
           
           .section-header {
             display: flex;
             align-items: center;
-            margin-bottom: 3mm;
+            margin-bottom: 4mm;
           }
           
           .section-icon {
-            width: 5mm;
-            height: 5mm;
-            border-radius: 1mm;
+            width: 8mm;
+            height: 8mm;
+            border-radius: 2mm;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 2mm;
+            margin-right: 3mm;
             color: white;
-            font-size: 7px;
-            box-shadow: 0 0.5mm 1mm rgba(59,130,246,0.3);
+            font-size: 10px;
+            font-weight: bold;
+            box-shadow: 0 1mm 2mm rgba(59,130,246,0.3);
             -webkit-print-color-adjust: exact !important;
             color-adjust: exact !important;
             print-color-adjust: exact !important;
           }
           
           .section-title {
-            font-size: 9px;
-            font-weight: 900;
+            font-size: 10px;
+            font-weight: bold;
             color: #1f2937;
-            font-family: 'Courier New', monospace;
-            letter-spacing: 0.2px;
-          }
-          
-          .section-content {
-            background: rgba(255,255,255,0.8);
-            padding: 3mm;
-            border-radius: 1mm;
-            border: 0.2mm solid rgba(226,232,240,0.8);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
           }
           
           .summary-text {
-            font-size: 7px;
+            font-size: 9px;
             color: #374151;
-            line-height: 1.4;
+            line-height: 1.5;
             text-align: justify;
-            font-weight: 500;
           }
           
           /* Timeline Items */
           .timeline-item {
             margin-bottom: 4mm;
-            padding: 3mm;
+            padding: 4mm;
             background: rgba(255,255,255,0.9);
-            border-radius: 1mm;
-            border: 0.2mm solid rgba(226,232,240,0.8);
-            box-shadow: 0 0.3mm 1mm rgba(0,0,0,0.05);
-            break-inside: avoid;
-            page-break-inside: avoid;
+            border-radius: 2mm;
+            border: 0.5px solid #e5e7eb;
+            box-shadow: 0 0.5mm 1mm rgba(0,0,0,0.05);
           }
           
           .item-header {
-            margin-bottom: 2mm;
+            margin-bottom: 3mm;
+            position: relative;
           }
           
           .item-title {
-            font-size: 8px;
-            font-weight: 800;
+            font-size: 9px;
+            font-weight: bold;
             color: #111827;
             margin-bottom: 1mm;
-            font-family: 'Courier New', monospace;
-            line-height: 1.2;
           }
           
           .item-company {
-            font-size: 7px;
-            font-weight: 700;
+            font-size: 8px;
+            font-weight: bold;
             margin-bottom: 1mm;
             color: #3b82f6;
-            font-family: 'Courier New', monospace;
           }
           
           .item-location {
-            font-size: 6px;
+            font-size: 7px;
             color: #6b7280;
-            font-weight: 600;
             margin-bottom: 1mm;
           }
           
           .item-date {
-            display: inline-block;
-            padding: 0.5mm 1mm;
-            border-radius: 1mm;
+            position: absolute;
+            top: 0;
+            right: 0;
             font-size: 6px;
-            font-weight: 700;
+            font-weight: bold;
             background: linear-gradient(135deg, #dbeafe, #bfdbfe);
             color: #1e40af;
-            float: right;
-            margin-top: -2mm;
-            font-family: 'Courier New', monospace;
+            padding: 1mm 2mm;
+            border-radius: 2mm;
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
+            print-color-adjust: exact !important;
           }
           
           .item-description {
-            font-size: 7px;
+            font-size: 8px;
             color: #374151;
-            line-height: 1.3;
+            line-height: 1.4;
           }
           
           .description-point {
             display: flex;
             align-items: flex-start;
-            margin-bottom: 1mm;
+            margin-bottom: 2mm;
             padding: 1mm;
             background: rgba(248,250,252,0.8);
-            border-radius: 0.5mm;
-            border: 0.1mm solid rgba(226,232,240,0.6);
+            border-radius: 1mm;
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
+            print-color-adjust: exact !important;
           }
           
           .point-bullet {
-            width: 0.8mm;
-            height: 0.8mm;
+            width: 1mm;
+            height: 1mm;
             border-radius: 50%;
             background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-            margin-right: 1.5mm;
-            margin-top: 1mm;
+            margin-right: 2mm;
+            margin-top: 1.5mm;
             flex-shrink: 0;
             -webkit-print-color-adjust: exact !important;
             color-adjust: exact !important;
@@ -558,91 +450,58 @@ export function generateTechnicalTemplateHTML(data: ResumeData): string {
             margin-bottom: 3mm;
             padding: 3mm;
             background: rgba(255,255,255,0.9);
-            border-radius: 1mm;
-            border: 0.2mm solid rgba(226,232,240,0.8);
-            box-shadow: 0 0.3mm 1mm rgba(0,0,0,0.05);
-            break-inside: avoid;
-            page-break-inside: avoid;
-          }
-          
-          .project-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: start;
-            margin-bottom: 2mm;
-          }
-          
-          .project-title {
-            font-size: 8px;
-            font-weight: 800;
-            color: #111827;
-            margin-bottom: 1mm;
-            font-family: 'Courier New', monospace;
+            border-radius: 2mm;
+            border: 0.5px solid #e5e7eb;
           }
           
           .project-tech {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.5mm;
-            margin-bottom: 1mm;
+            gap: 1mm;
+            margin-bottom: 2mm;
           }
           
           .tech-tag {
             background: linear-gradient(135deg, #f3e8ff, #e9d5ff);
             color: #7c3aed;
-            padding: 0.5mm 1mm;
-            border-radius: 0.5mm;
-            font-size: 5px;
-            font-weight: 700;
-            border: 0.1mm solid #c4b5fd;
-            font-family: 'Courier New', monospace;
-          }
-          
-          .project-link {
-            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-            color: white;
-            padding: 1mm 2mm;
-            border-radius: 0.5mm;
-            font-size: 5px;
-            font-weight: 700;
-            text-decoration: none;
-            font-family: 'Courier New', monospace;
+            padding: 0.5mm 1.5mm;
+            border-radius: 1mm;
+            font-size: 6px;
+            font-weight: bold;
+            border: 0.5px solid #c4b5fd;
             -webkit-print-color-adjust: exact !important;
             color-adjust: exact !important;
             print-color-adjust: exact !important;
           }
           
           .project-description {
-            font-size: 7px;
+            font-size: 8px;
             color: #374151;
-            line-height: 1.3;
-            font-weight: 500;
+            line-height: 1.4;
           }
+          
+          /* Color-coded sections */
+          .purple-section { border-left-color: #8b5cf6 !important; }
+          .green-section { border-left-color: #10b981 !important; }
+          .orange-section { border-left-color: #f59e0b !important; }
+          .red-section { border-left-color: #ef4444 !important; }
+          
+          .purple-icon { background: linear-gradient(135deg, #8b5cf6, #7c3aed) !important; }
+          .green-icon { background: linear-gradient(135deg, #10b981, #059669) !important; }
+          .orange-icon { background: linear-gradient(135deg, #f59e0b, #d97706) !important; }
+          .red-icon { background: linear-gradient(135deg, #ef4444, #dc2626) !important; }
           
           /* Print Optimization */
           @media print {
             body { 
               margin: 0; 
               padding: 0;
-              font-size: 8px; 
               width: 210mm;
               height: 297mm;
             }
             .container { 
-              box-shadow: none; 
               width: 210mm;
               height: 297mm;
-            }
-            .bg-pattern { display: none; }
-            .card, .timeline-item, .project-item, .section-card { 
-              break-inside: avoid; 
-              page-break-inside: avoid; 
-            }
-            .header {
-              height: 45mm;
-            }
-            .main-layout {
-              height: calc(297mm - 50mm);
             }
             * {
               -webkit-print-color-adjust: exact !important;
@@ -654,8 +513,6 @@ export function generateTechnicalTemplateHTML(data: ResumeData): string {
       </head>
       <body>
         <div class="container">
-          <div class="bg-pattern"></div>
-          
           <!-- Technical Header -->
           <div class="header">
             <div class="header-content">
@@ -669,30 +526,16 @@ export function generateTechnicalTemplateHTML(data: ResumeData): string {
                 `}
                 
                 <div class="name-section">
-                  <div class="code-comment">&gt; const developer = {</div>
                   <h1>${personalInfo.fullName.toUpperCase()}</h1>
-                  <div class="job-title">
-                    role: "${experience.length > 0 ? experience[0].jobTitle : 'Software Engineer'}"
-                  </div>
-                  <div class="code-comment">}</div>
-                  <div class="tech-badge">
-                    <div class="badge-line"></div>
-                    <div class="badge-text">FULL-STACK DEVELOPER</div>
-                    <div class="badge-line"></div>
-                  </div>
+                  <p class="job-title">
+                    ${experience.length > 0 ? experience[0].jobTitle : 'Software Engineer'}
+                  </p>
+                  <div class="tech-subtitle">&gt; Full-Stack Developer</div>
                 </div>
               </div>
               
               <div class="contact-terminal">
-                <div class="terminal-header">
-                  <div class="terminal-dot red"></div>
-                  <div class="terminal-dot yellow"></div>
-                  <div class="terminal-dot green"></div>
-                  <span class="terminal-path">~/contact</span>
-                </div>
-                <div class="terminal-line">
-                  <span class="terminal-prompt">$ cat contact.info</span>
-                </div>
+                <div class="terminal-prompt">&gt; contact.info</div>
                 <div class="terminal-line">
                   <span class="terminal-key">email:</span> <span class="terminal-value">"${personalInfo.email}"</span>
                 </div>
@@ -702,12 +545,12 @@ export function generateTechnicalTemplateHTML(data: ResumeData): string {
                 <div class="terminal-line">
                   <span class="terminal-key">location:</span> <span class="terminal-value">"${personalInfo.city}, ${personalInfo.state}"</span>
                 </div>
-                ${personalInfo.linkedin ? `
+                ${personalInfo.linkedin && personalInfo.linkedin.trim() !== '' ? `
                   <div class="terminal-line">
                     <span class="terminal-key">linkedin:</span> <span class="terminal-value">"${personalInfo.linkedin}"</span>
                   </div>
                 ` : ''}
-                ${personalInfo.portfolio ? `
+                ${personalInfo.portfolio && personalInfo.portfolio.trim() !== '' ? `
                   <div class="terminal-line">
                     <span class="terminal-key">portfolio:</span> <span class="terminal-value">"${personalInfo.portfolio}"</span>
                   </div>
@@ -720,17 +563,16 @@ export function generateTechnicalTemplateHTML(data: ResumeData): string {
           <div class="main-layout">
             <!-- Technical Sidebar -->
             <div class="sidebar">
-              <!-- Technical Skills by Category -->
               ${Object.entries(skillCategories).map(([category, categorySkills]) => `
-                <div class="card">
+                <div class="skill-card">
                   <div class="card-header">
-                    <div class="card-icon" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">
+                    <div class="card-icon">
                       ${category === 'Programming Languages' ? '</>' : 
                         category === 'Frameworks & Libraries' ? '{}' :
                         category === 'Tools & Technologies' ? '⚙' :
                         category === 'Databases' ? '🗄' : '🔧'}
                     </div>
-                    <h3 class="card-title">${category.toUpperCase()}</h3>
+                    <h3 class="card-title">${category.replace(' & ', ' &\n')}</h3>
                   </div>
                   <div class="skill-tags">
                     ${categorySkills.map(skill => `
@@ -740,11 +582,10 @@ export function generateTechnicalTemplateHTML(data: ResumeData): string {
                 </div>
               `).join('')}
 
-              <!-- Languages -->
               ${languages && languages.length > 0 ? `
-                <div class="card">
+                <div class="skill-card">
                   <div class="card-header">
-                    <div class="card-icon" style="background: linear-gradient(135deg, #10b981, #059669);">🌍</div>
+                    <div class="card-icon green-icon">🌍</div>
                     <h3 class="card-title">LANGUAGES</h3>
                   </div>
                   ${languages.map(language => {
@@ -768,80 +609,69 @@ export function generateTechnicalTemplateHTML(data: ResumeData): string {
 
             <!-- Main Content -->
             <div class="main-content">
-              <!-- Professional Summary -->
               ${professionalSummary ? `
                 <div class="section-card">
                   <div class="section-header">
                     <div class="section-icon" style="background: linear-gradient(135deg, #6366f1, #4f46e5);">{ }</div>
                     <h3 class="section-title">ABOUT_ME.md</h3>
                   </div>
-                  <div class="section-content">
-                    <p class="summary-text">${professionalSummary}</p>
-                  </div>
+                  <p class="summary-text">${professionalSummary}</p>
                 </div>
               ` : ''}
 
-              <!-- Projects Showcase -->
               ${projects && projects.length > 0 ? `
-                <div class="section-card" style="border-left-color: #8b5cf6;">
+                <div class="section-card purple-section">
                   <div class="section-header">
-                    <div class="section-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">🚀</div>
+                    <div class="section-icon purple-icon">🚀</div>
                     <h3 class="section-title">PROJECTS_SHOWCASE</h3>
                   </div>
-                  ${projects.map(project => `
+                  ${projects.slice(0, 2).map(project => `
                     <div class="project-item">
-                      <div class="project-header">
-                        <div>
-                          <h4 class="project-title">${project.name}</h4>
-                          ${project.technologies && project.technologies.length > 0 ? `
-                            <div class="project-tech">
-                              ${project.technologies.map(tech => `
-                                <span class="tech-tag">${tech}</span>
-                              `).join('')}
-                            </div>
-                          ` : ''}
+                      <h4 class="item-title">${project.name}</h4>
+                      ${project.technologies && project.technologies.length > 0 ? `
+                        <div class="project-tech">
+                          ${project.technologies.slice(0, 4).map(tech => `
+                            <span class="tech-tag">${tech}</span>
+                          `).join('')}
                         </div>
-                        ${project.link ? `
-                          <a href="${project.link}" class="project-link">VIEW PROJECT →</a>
-                        ` : ''}
-                      </div>
+                      ` : ''}
                       <p class="project-description">${project.description}</p>
                     </div>
                   `).join('')}
                 </div>
               ` : ''}
 
-              <!-- Education -->
               ${education.length > 0 ? `
-                <div class="section-card" style="border-left-color: #10b981;">
+                <div class="section-card green-section">
                   <div class="section-header">
-                    <div class="section-icon" style="background: linear-gradient(135deg, #10b981, #059669);">🎓</div>
+                    <div class="section-icon green-icon">🎓</div>
                     <h3 class="section-title">EDUCATION_LOG</h3>
                   </div>
-                  ${education.map(edu => `
+                  ${education.slice(0, 2).map(edu => `
                     <div class="timeline-item">
                       <div class="item-header">
                         <h4 class="item-title">${edu.degree}</h4>
                         <p class="item-company">${edu.institution}</p>
                         <p class="item-location">${edu.location}</p>
                         <div class="item-date">
-                          ${edu.startDate} - ${edu.endDate}${edu.percentage ? ` • ${edu.percentage}` : ''}
+                          ${edu.startDate} - ${edu.endDate}
                         </div>
                       </div>
-                      ${edu.description ? `<p class="item-description">${edu.description}</p>` : ''}
+                      ${edu.percentage ? `
+                        <p class="item-description">Grade: ${edu.percentage}</p>
+                      ` : ''}
                     </div>
                   `).join('')}
                 </div>
               ` : ''}
 
-              <!-- Work Experience -->
               ${experience.length > 0 ? `
-                <div class="section-card" style="border-left-color: #f59e0b;">
+                <div class="section-card orange-section">
                   <div class="section-header">
-                    <div class="section-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">💼</div>
+                    <div class="section-icon orange-icon">💼</div>
                     <h3 class="section-title">WORK_EXPERIENCE</h3>
                   </div>
-                  ${experience.map(exp => `
+                  ${experience.slice(0, 2).map(exp => `
                     <div class="timeline-item">
                       <div class="item-header">
                         <h4 class="item-title">${exp.jobTitle}</h4>
@@ -852,7 +682,7 @@ export function generateTechnicalTemplateHTML(data: ResumeData): string {
                         </div>
                       </div>
                       <div class="item-description">
-                        ${exp.description.split('\n').map(line => line.trim() ? `
+                        ${exp.description.split('\n').slice(0, 3).map(line => line.trim() ? `
                           <div class="description-point">
                             <span class="point-bullet"></span>
                             <span>${line}</span>
@@ -864,34 +694,26 @@ export function generateTechnicalTemplateHTML(data: ResumeData): string {
                 </div>
               ` : ''}
 
-              <!-- Certifications -->
               ${certifications && certifications.length > 0 ? `
-                <div class="section-card" style="border-left-color: #ef4444;">
+                <div class="section-card red-section">
                   <div class="section-header">
-                    <div class="section-icon" style="background: linear-gradient(135deg, #ef4444, #dc2626);">🏆</div>
+                    <div class="section-icon red-icon">🏆</div>
                     <h3 class="section-title">CERTIFICATIONS</h3>
                   </div>
-                  ${certifications.map(cert => `
+                  ${certifications.slice(0, 2).map(cert => `
                     <div class="timeline-item">
                       <div class="item-header">
                         <h4 class="item-title">${cert.name}</h4>
                         <p class="item-company">${cert.issuer}</p>
-                        ${cert.credentialId ? `<p class="item-location">ID: ${cert.credentialId}</p>` : ''}
                         <div class="item-date">
                           Issued: ${new Date(cert.issueDate).toLocaleDateString('en-US', { 
                             year: 'numeric', 
                             month: 'short' 
                           })}
-                          ${cert.expiryDate ? ` • Expires: ${new Date(cert.expiryDate).toLocaleDateString('en-US', { 
-                            year: 'numeric', 
-                            month: 'short' 
-                          })}` : ''}
                         </div>
                       </div>
-                      ${cert.credentialUrl ? `
-                        <p class="item-description">
-                          <a href="${cert.credentialUrl}" style="color: #3b82f6; font-weight: 700;">🔗 VERIFY_CERTIFICATE</a>
-                        </p>
+                      ${cert.credentialId ? `
+                        <p class="item-description">Credential ID: ${cert.credentialId}</p>
                       ` : ''}
                     </div>
                   `).join('')}

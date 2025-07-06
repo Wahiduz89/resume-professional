@@ -136,44 +136,49 @@ export default function NewResumePage() {
               Select a template that best fits your career level and industry
             </p>
           </div>
-
           <div className="grid md:grid-cols-3 gap-8">
             {TEMPLATE_OPTIONS.map((template) => {
               const PreviewComponent = template.preview
+              
+              // Show simplified image cards for all templates with consistent sizing
               return (
-                <div key={template.id} className="bg-white rounded-lg shadow-sm border overflow-hidden hover:shadow-lg transition-shadow">
-                  <div className="p-6">
-                    <h3 className="text-xl font-semibold mb-2">{template.name}</h3>
-                    <p className="text-gray-600 mb-4">{template.description}</p>
-                    
-                    <div className="space-y-2 mb-4">
-                      {template.features.map((feature, index) => (
-                        <div key={index} className="flex items-center text-sm text-gray-700">
-                          <span className="w-2 h-2 bg-blue-600 rounded-full mr-3"></span>
-                          {feature}
+                <div key={template.id} className="bg-white rounded-lg shadow-sm border overflow-hidden hover:shadow-lg transition-shadow flex flex-col h-[600px]">
+                  {/* Full Resume Preview - Fixed height to maintain card size */}
+                  <div className="relative flex-1">
+                    <div className="w-full h-[540px] relative overflow-hidden bg-white">
+                      <img 
+                        src={`/assets/${template.id}-template.png`}
+                        alt={template.name}
+                        className="w-full h-full object-cover object-top"
+                        onError={(e) => {
+                          // Fallback to component preview if image not found
+                          const target = e.currentTarget;
+                          target.style.display = 'none';
+                          const fallback = target.nextElementSibling as HTMLElement;
+                          if (fallback) {
+                            fallback.style.display = 'flex';
+                          }
+                        }}
+                      />
+                      {/* Fallback - Full Resume Component Preview */}
+                      <div className="w-full h-full bg-white hidden items-center justify-center p-2">
+                        <div className="w-full h-full border border-gray-200 rounded overflow-hidden">
+                          <div className="transform scale-[0.25] origin-top-left w-[400%] h-[400%]">
+                            <PreviewComponent data={INITIAL_DATA} />
+                          </div>
                         </div>
-                      ))}
+                      </div>
                     </div>
-
-                    <div className="mb-4 p-3 bg-blue-50 rounded-lg">
-                      <p className="text-sm text-blue-800">
-                        <span className="font-medium">Best for:</span> {template.bestFor}
-                      </p>
-                    </div>
-
-                    <Button 
-                      onClick={() => selectTemplate(template.id)}
-                      className="w-full mb-4"
-                    >
-                      Select This Template
-                    </Button>
                   </div>
                   
-                  <div className="bg-gray-50 p-4">
-                    <p className="text-sm text-gray-600 mb-3">Preview:</p>
-                    <div className="transform scale-[0.12] origin-top-left h-40 overflow-hidden border rounded">
-                      <PreviewComponent data={INITIAL_DATA} />
-                    </div>
+                  {/* Button Section - Fixed height */}
+                  <div className="p-0 h-[60px] flex items-center">
+                    <Button 
+                      onClick={() => selectTemplate(template.id)}
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 rounded-none rounded-b-lg h-full"
+                    >
+                      Choose Template
+                    </Button>
                   </div>
                 </div>
               )
