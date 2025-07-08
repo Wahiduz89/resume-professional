@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Navbar } from '@/components/layout/navbar'
 import { GraduationCap, Briefcase, CheckCircle, Star, FileText, Upload, ArrowRight, Sparkles, Code } from 'lucide-react'
+import { CLIENT_SUBSCRIPTION_PLANS } from '@/lib/subscription-config'
 
 export default function HomePage() {
   const router = useRouter()
@@ -126,8 +127,8 @@ export default function HomePage() {
         </div>
       </div>
 
-{/* Templates Preview */}
-<div id="templates" className="py-16 bg-white">
+      {/* Templates Preview */}
+      <div id="templates" className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-4">
             Templates Designed for Campus Placements
@@ -139,12 +140,12 @@ export default function HomePage() {
           <div className="grid md:grid-cols-3 gap-8">
             {/* General Template */}
             <div className="bg-white rounded-lg shadow-sm border overflow-hidden hover:shadow-lg transition-shadow flex flex-col h-[600px]">
-              <div 
+              <div
                 className="relative flex-1 cursor-pointer"
                 onClick={() => router.push('/register')}
               >
                 <div className="w-full h-[540px] relative overflow-hidden bg-white">
-                  <img 
+                  <img
                     src="/assets/general-template.png"
                     alt="General Professional Template"
                     className="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-300"
@@ -166,25 +167,25 @@ export default function HomePage() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="p-0 h-[60px] flex items-center">
                 <button
                   onClick={() => router.push('/register')}
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 rounded-none rounded-b-lg h-full transition-colors"
                 >
-                  Choose Template
+                  Choose General Template
                 </button>
               </div>
             </div>
 
             {/* Fresher Template */}
             <div className="bg-white rounded-lg shadow-sm border overflow-hidden hover:shadow-lg transition-shadow flex flex-col h-[600px]">
-              <div 
+              <div
                 className="relative flex-1 cursor-pointer"
                 onClick={() => router.push('/register')}
               >
                 <div className="w-full h-[540px] relative overflow-hidden bg-white">
-                  <img 
+                  <img
                     src="/assets/fresher-template.png"
                     alt="Fresher Template"
                     className="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-300"
@@ -210,25 +211,25 @@ export default function HomePage() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="p-0 h-[60px] flex items-center">
                 <button
                   onClick={() => router.push('/register')}
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 rounded-none rounded-b-lg h-full transition-colors"
                 >
-                  Choose Template
+                  Choose FresherTemplate
                 </button>
               </div>
             </div>
 
             {/* Technical Template */}
             <div className="bg-white rounded-lg shadow-sm border overflow-hidden hover:shadow-lg transition-shadow flex flex-col h-[600px]">
-              <div 
+              <div
                 className="relative flex-1 cursor-pointer"
                 onClick={() => router.push('/register')}
               >
                 <div className="w-full h-[540px] relative overflow-hidden bg-white">
-                  <img 
+                  <img
                     src="/assets/technical-template.png"
                     alt="Technical Engineering Template"
                     className="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-300"
@@ -257,13 +258,13 @@ export default function HomePage() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="p-0 h-[60px] flex items-center">
                 <button
                   onClick={() => router.push('/register')}
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 rounded-none rounded-b-lg h-full transition-colors"
                 >
-                  Choose Template
+                  Choose Technical Template
                 </button>
               </div>
             </div>
@@ -271,16 +272,61 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Pricing Section - Updated with Technical Template mention */}
+
+
       <div id="pricing" className="py-16 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-4">
+        <div className="max-w-6xl mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">
             Simple, Student-Friendly Pricing
           </h2>
 
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid md:grid-cols-3 gap-6">
+            {/* Student Basic Plan */}
+            <div className="bg-white p-6 rounded-lg shadow-sm border">
+              <div className="text-center mb-6">
+                <h3 className="text-2xl font-bold mb-2">Student Basic</h3>
+                <div className="text-4xl font-bold text-green-600">
+                  {CLIENT_SUBSCRIPTION_PLANS.student_basic_monthly.amount === 0 ? (
+                    <>
+                      Free
+                      <span className="text-lg text-gray-600 font-normal"> Forever</span>
+                    </>
+                  ) : (
+                    <>
+                      ₹{CLIENT_SUBSCRIPTION_PLANS.student_basic_monthly.amount / 100}
+                      <span className="text-lg text-gray-600 font-normal">/month</span>
+                    </>
+                  )}
+                </div>
+                <p className="text-gray-600 mt-2">Essential resume building</p>
+              </div>
+
+              <ul className="space-y-3 mb-8">
+                {['Unlimited Fresher Template Downloads', 'ATS-Friendly PDF Export', 'Basic Resume Builder', 'Email Support', 'No AI Features'].map((feature, index) => (
+                  <li key={index} className="flex items-center gap-2">
+                    <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <Button
+                variant="outline"
+                className="w-full border-green-600 text-green-600 hover:bg-green-50"
+                onClick={() => router.push('/register')}
+              >
+                Get Started
+              </Button>
+            </div>
+
             {/* Student Starter Plan */}
-            <div className="bg-white p-8 rounded-lg shadow-sm border">
+            <div className="bg-white p-6 rounded-lg shadow-sm border-2 border-blue-500 relative">
+              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                <span className="bg-blue-500 text-white px-4 py-1 rounded-full text-sm font-medium">
+                  Popular Choice
+                </span>
+              </div>
+
               <div className="text-center mb-6">
                 <h3 className="text-2xl font-bold mb-2">Student Starter</h3>
                 <div className="text-4xl font-bold text-blue-600">
@@ -291,7 +337,7 @@ export default function HomePage() {
               </div>
 
               <ul className="space-y-3 mb-8">
-                {['Fresher Resume Template', 'ATS-Friendly Formats', '1 AI-Enhanced Download', 'PDF Export', 'Email Support'].map((feature, index) => (
+                {['Unlimited Fresher Template Downloads', '1 AI-Enhanced Download', 'ATS-Friendly Formats', 'PDF Export', 'Email Support'].map((feature, index) => (
                   <li key={index} className="flex items-center gap-2">
                     <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
                     <span className="text-gray-700">{feature}</span>
@@ -300,8 +346,7 @@ export default function HomePage() {
               </ul>
 
               <Button
-                variant="outline"
-                className="w-full"
+                className="w-full bg-blue-600 hover:bg-blue-700"
                 onClick={() => router.push('/register')}
               >
                 Get Started
@@ -309,7 +354,7 @@ export default function HomePage() {
             </div>
 
             {/* Student Pro Plan */}
-            <div className="bg-white p-8 rounded-lg shadow-sm border-2 border-blue-500">
+            <div className="bg-white p-6 rounded-lg shadow-sm border">
               <div className="text-center mb-6">
                 <h3 className="text-2xl font-bold mb-2">Student Pro</h3>
                 <div className="text-4xl font-bold">
@@ -329,12 +374,19 @@ export default function HomePage() {
               </ul>
 
               <Button
-                className="w-full bg-blue-600 hover:bg-blue-700"
+                variant="outline"
+                className="w-full border-purple-600 text-purple-600 hover:bg-purple-50"
                 onClick={() => router.push('/register')}
               >
                 Get Started
               </Button>
             </div>
+          </div>
+
+          <div className="text-center mt-8">
+            <p className="text-sm text-gray-600">
+              All plans include ATS-friendly formats and secure payment processing. Cancel anytime.
+            </p>
           </div>
         </div>
       </div>

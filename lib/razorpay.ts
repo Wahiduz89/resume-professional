@@ -1,4 +1,4 @@
-// lib/razorpay.ts - Updated server-side Razorpay configuration with technical template
+// lib/razorpay.ts - Updated server-side Razorpay configuration with student basic plan
 import Razorpay from 'razorpay'
 import crypto from 'crypto'
 
@@ -21,20 +21,39 @@ export function verifyPaymentSignature(
   return generatedSignature === signature
 }
 
-// Server-side subscription plans with limits - Updated with technical template
+// Server-side subscription plans with limits - Updated with student basic plan
 export const SUBSCRIPTION_PLANS = {
+  student_basic_monthly: {
+    name: 'Student Basic',
+    amount: 0, // Free plan
+    currency: 'INR',
+    description: 'Free plan for students to get started with resume building',
+    features: [
+      'Unlimited Fresher Template Downloads',
+      'Basic Resume Builder',
+      'ATS-Friendly PDF Export',
+      'Email Support',
+      'No AI Features'
+    ],
+    limits: {
+      templates: ['fresher'], // Only fresher template
+      unlimitedDownloads: ['fresher'], // Unlimited basic downloads for fresher
+      aiEnhancedDownloads: 0, // No AI features
+      totalDownloads: null // No limit on basic downloads
+    }
+  },
   student_starter_monthly: {
     name: 'Student Starter',
     amount: 9900, // ₹99
     currency: 'INR',
-    description: 'Perfect for getting started with basic features',
+    description: 'Perfect for getting started with AI-enhanced features',
     features: [
       'Unlimited Fresher Template Downloads',
       '1 AI-Enhanced Resume Download',
       'ATS-Friendly Formats',
       'PDF Export',
       'Email Support',
-      'Basic Resume Builder'
+      'AI Content Enhancement'
     ],
     limits: {
       templates: ['fresher'], // Only fresher template
