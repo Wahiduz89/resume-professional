@@ -1,10 +1,12 @@
-// components/resume/form-steps/personal-info.tsx - Fixed version
-import React, { useState, useRef } from 'react'
+// components/resume/form-steps/personal-info.tsx - Updated with guest Cloudinary support
+import React, { useState, useRef, useEffect } from 'react'
+import { useSession } from 'next-auth/react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { PersonalInfo } from '@/types'
-import { Upload, X, User } from 'lucide-react'
+import { Upload, X, User, Clock, CheckCircle } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { nanoid } from 'nanoid'
 
 interface PersonalInfoStepProps {
   data: { personalInfo: PersonalInfo }
@@ -15,9 +17,36 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
   data, 
   onChange 
 }) => {
+  const { data: session } = useSession()
   const [uploading, setUploading] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const [sessionId, setSessionId] = useState<string>('')
+  const [isGuestImage, setIsGuestImage] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  // Initialize session ID for guest users
+  useEffect(() => {
+    if (!session && !sessionId) {
+      const storedSessionId = localStorage.getItem('guest_session_id')
+      if (storedSessionId) {
+        setSessionId(storedSessionId)
+      } else {
+        const newSessionId = nanoid()
+        setSessionId(newSessionId)
+        localStorage.setItem('guest_session_id', newSessionId)
+      }
+    }
+  }, [session, sessionId])
+
+  // Check if current image is a guest image
+  useEffect(() => {
+    const checkIfGuestImage = () => {
+      if (data.personalInfo?.profileImagePublicId) {
+        setIsGuestImage(data.personalInfo.profileImagePublicId.includes('guest_'))
+      }
+    }
+    checkIfGuestImage()
+  }, [data.personalInfo?.profileImagePublicId])
 
   const handleChange = (field: keyof PersonalInfo, value: string) => {
     onChange({ 
@@ -28,7 +57,6 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
     })
   }
 
-  // Fixed function to handle multiple fields in a single update
   const handleMultipleChanges = (updates: Partial<PersonalInfo>) => {
     onChange({ 
       personalInfo: { 
@@ -48,7 +76,7 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
       return
     }
 
-    // Validate file size (max 5MB for Cloudinary)
+    // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
       toast.error('Image size should be less than 5MB')
       return
@@ -58,27 +86,35 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
     try {
       const formData = new FormData()
       formData.append('file', file)
+      
+      let uploadUrl = '/api/upload/profile-image'
+      
+      // Use guest upload for non-authenticated users
+      if (!session) {
+        uploadUrl = '/api/upload/guest-image'
+        formData.append('sessionId', sessionId)
+      }
 
-      const response = await fetch('/api/upload/profile-image', {
+      const response = await fetch(uploadUrl, {
         method: 'POST',
         body: formData
       })
 
       if (response.ok) {
-        const { url, publicId } = await response.json()
+        const result = await response.json()
         
-        // Fixed: Update both fields in a single state update
         handleMultipleChanges({
-          profileImage: url,
-          profileImagePublicId: publicId
+          profileImage: result.url,
+          profileImagePublicId: result.publicId
         })
         
-        toast.success('Profile image uploaded successfully!')
-        
-        // Force a small delay to ensure state is updated before re-render
-        setTimeout(() => {
-          console.log('Profile image updated:', url) // Debug log
-        }, 100)
+        if (!session) {
+          setIsGuestImage(true)
+          toast.success('Profile image uploaded! (Sign in to make it permanent)')
+        } else {
+          setIsGuestImage(false)
+          toast.success('Profile image uploaded successfully!')
+        }
       } else {
         const error = await response.json()
         toast.error(error.error || 'Failed to upload image')
@@ -92,12 +128,12 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
   }
 
   const removeImage = async () => {
-    // If there's a publicId, delete from Cloudinary
     if (data.personalInfo?.profileImagePublicId) {
       setDeleting(true)
       try {
+        const deleteUrl = session ? '/api/upload/profile-image' : '/api/upload/guest-image'
         const response = await fetch(
-          `/api/upload/profile-image?publicId=${encodeURIComponent(data.personalInfo.profileImagePublicId)}`,
+          `${deleteUrl}?publicId=${encodeURIComponent(data.personalInfo.profileImagePublicId)}`,
           {
             method: 'DELETE'
           }
@@ -105,21 +141,20 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
 
         if (!response.ok) {
           console.error('Failed to delete image from Cloudinary')
-          // Continue with removal even if deletion fails
         }
       } catch (error) {
         console.error('Error deleting image:', error)
-        // Continue with removal even if deletion fails
       } finally {
         setDeleting(false)
       }
     }
     
-    // Fixed: Clear both image fields in a single update
     handleMultipleChanges({
       profileImage: '',
       profileImagePublicId: ''
     })
+    
+    setIsGuestImage(false)
     
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
@@ -127,6 +162,45 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
 
     toast.success('Profile image removed')
   }
+
+  const transferGuestImage = async () => {
+    if (!session || !data.personalInfo?.profileImagePublicId || !isGuestImage) {
+      return
+    }
+
+    try {
+      const response = await fetch('/api/upload/transfer-guest-image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          guestPublicId: data.personalInfo.profileImagePublicId
+        })
+      })
+
+      if (response.ok) {
+        const result = await response.json()
+        
+        handleMultipleChanges({
+          profileImage: result.url,
+          profileImagePublicId: result.publicId
+        })
+        
+        setIsGuestImage(false)
+        toast.success('Profile image transferred to your account!')
+      } else {
+        console.error('Failed to transfer guest image')
+      }
+    } catch (error) {
+      console.error('Error transferring guest image:', error)
+    }
+  }
+
+  // Transfer guest image when user signs in
+  useEffect(() => {
+    if (session && isGuestImage && data.personalInfo?.profileImagePublicId) {
+      transferGuestImage()
+    }
+  }, [session, isGuestImage])
 
   // Ensure all values are strings to prevent controlled/uncontrolled switching
   const safeData = {
@@ -143,11 +217,6 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
     profileImagePublicId: data.personalInfo?.profileImagePublicId || '',
   }
 
-  // Debug log to track state changes
-  React.useEffect(() => {
-    console.log('PersonalInfo profileImage updated:', safeData.profileImage)
-  }, [safeData.profileImage])
-
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold mb-4">Personal Information</h2>
@@ -155,6 +224,7 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
       {/* Profile Image Upload Section */}
       <div className="bg-gray-50 p-4 rounded-lg">
         <h3 className="text-lg font-semibold mb-3">Profile Photo</h3>
+        
         <div className="flex items-center gap-4">
           <div className="relative">
             {safeData.profileImage ? (
@@ -165,17 +235,28 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
                   className="w-20 h-20 rounded-full object-cover border-2 border-gray-300"
                   onError={(e) => {
                     console.error('Image failed to load:', safeData.profileImage)
-                    // Show error to user and revert to placeholder
                     toast.error('Failed to load profile image')
                     handleMultipleChanges({
                       profileImage: '',
                       profileImagePublicId: ''
                     })
                   }}
-                  onLoad={() => {
-                    console.log('Image loaded successfully:', safeData.profileImage)
-                  }}
                 />
+                
+                {/* Guest Image Indicator */}
+                {isGuestImage && (
+                  <div className="absolute -bottom-1 -right-1 bg-orange-500 text-white rounded-full p-1" title="Temporary guest image">
+                    <Clock className="w-3 h-3" />
+                  </div>
+                )}
+                
+                {/* Authenticated Image Indicator */}
+                {!isGuestImage && session && (
+                  <div className="absolute -bottom-1 -right-1 bg-green-500 text-white rounded-full p-1" title="Saved to your account">
+                    <CheckCircle className="w-3 h-3" />
+                  </div>
+                )}
+                
                 <button
                   onClick={removeImage}
                   disabled={deleting}
@@ -215,13 +296,30 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
               <Upload className="w-4 h-4 mr-2" />
               {uploading ? 'Uploading...' : 'Upload Photo'}
             </Button>
+            
             <p className="text-sm text-gray-600">
               Recommended: Square image, max 5MB (JPG, PNG, WebP)
             </p>
+            
+            {/* Image Status Messages */}
             {safeData.profileImage && (
-              <p className="text-xs text-green-600 mt-1">
-                ✓ Image uploaded and ready for PDF generation
-              </p>
+              <div className="mt-2">
+                {isGuestImage ? (
+                  <p className="text-xs text-orange-600 flex items-center gap-1">
+                    <Clock className="w-3 h-3" />
+                    Temporary image - Sign in to make it permanent
+                  </p>
+                ) : session ? (
+                  <p className="text-xs text-green-600 flex items-center gap-1">
+                    <CheckCircle className="w-3 h-3" />
+                    Image saved to your account
+                  </p>
+                ) : (
+                  <p className="text-xs text-blue-600">
+                    Image uploaded successfully
+                  </p>
+                )}
+              </div>
             )}
           </div>
         </div>

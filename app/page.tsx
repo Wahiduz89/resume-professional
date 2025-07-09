@@ -1,4 +1,4 @@
-// app/page.tsx - Updated with technical template mention
+// app/page.tsx - Updated homepage to allow direct resume creation
 'use client'
 
 import { useRouter } from 'next/navigation'
@@ -61,7 +61,7 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
             <Button
               size="lg"
-              onClick={() => router.push('/register')}
+              onClick={() => router.push('/builder/new')}
               className="bg-blue-600 hover:bg-blue-700 text-white px-8"
             >
               <FileText className="w-5 h-5 mr-2" />
@@ -71,7 +71,7 @@ export default function HomePage() {
             <Button
               size="lg"
               variant="outline"
-              onClick={() => router.push('/dashboard')}
+              onClick={() => router.push('/builder/new')}
               className="border-blue-600 text-blue-600 hover:bg-blue-50 px-8"
             >
               <Upload className="w-5 h-5 mr-2" />
@@ -80,7 +80,7 @@ export default function HomePage() {
           </div>
 
           <p className="text-sm text-gray-500">
-            ✨ Special student pricing: Only ₹99/month • No credit card required
+            ✨ Try it free • No account required to start • Save when ready
           </p>
         </div>
       </div>
@@ -142,7 +142,7 @@ export default function HomePage() {
             <div className="bg-white rounded-lg shadow-sm border overflow-hidden hover:shadow-lg transition-shadow flex flex-col h-[600px]">
               <div
                 className="relative flex-1 cursor-pointer"
-                onClick={() => router.push('/register')}
+                onClick={() => router.push('/builder/new?template=general')}
               >
                 <div className="w-full h-[540px] relative overflow-hidden bg-white">
                   <img
@@ -158,7 +158,6 @@ export default function HomePage() {
                       }
                     }}
                   />
-                  {/* Fallback content */}
                   <div className="w-full h-full bg-gray-100 hidden items-center justify-center p-4">
                     <div className="text-center">
                       <h3 className="text-lg font-semibold mb-2">General Professional</h3>
@@ -170,7 +169,7 @@ export default function HomePage() {
 
               <div className="p-0 h-[60px] flex items-center">
                 <button
-                  onClick={() => router.push('/register')}
+                  onClick={() => router.push('/builder/new?template=general')}
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 rounded-none rounded-b-lg h-full transition-colors"
                 >
                   Choose General Template
@@ -182,7 +181,7 @@ export default function HomePage() {
             <div className="bg-white rounded-lg shadow-sm border overflow-hidden hover:shadow-lg transition-shadow flex flex-col h-[600px]">
               <div
                 className="relative flex-1 cursor-pointer"
-                onClick={() => router.push('/register')}
+                onClick={() => router.push('/builder/new?template=fresher')}
               >
                 <div className="w-full h-[540px] relative overflow-hidden bg-white">
                   <img
@@ -198,7 +197,6 @@ export default function HomePage() {
                       }
                     }}
                   />
-                  {/* Fallback content */}
                   <div className="w-full h-full bg-gray-100 hidden items-center justify-center p-4">
                     <div className="text-center">
                       <h3 className="text-lg font-semibold mb-2">Fresher Template</h3>
@@ -214,10 +212,10 @@ export default function HomePage() {
 
               <div className="p-0 h-[60px] flex items-center">
                 <button
-                  onClick={() => router.push('/register')}
+                  onClick={() => router.push('/builder/new?template=fresher')}
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 rounded-none rounded-b-lg h-full transition-colors"
                 >
-                  Choose FresherTemplate
+                  Choose Fresher Template
                 </button>
               </div>
             </div>
@@ -226,7 +224,7 @@ export default function HomePage() {
             <div className="bg-white rounded-lg shadow-sm border overflow-hidden hover:shadow-lg transition-shadow flex flex-col h-[600px]">
               <div
                 className="relative flex-1 cursor-pointer"
-                onClick={() => router.push('/register')}
+                onClick={() => router.push('/builder/new?template=technical')}
               >
                 <div className="w-full h-[540px] relative overflow-hidden bg-white">
                   <img
@@ -242,7 +240,6 @@ export default function HomePage() {
                       }
                     }}
                   />
-                  {/* Fallback content */}
                   <div className="w-full h-full bg-gray-100 hidden items-center justify-center p-4">
                     <div className="text-center">
                       <div className="flex items-center justify-center gap-2 mb-2">
@@ -261,7 +258,7 @@ export default function HomePage() {
 
               <div className="p-0 h-[60px] flex items-center">
                 <button
-                  onClick={() => router.push('/register')}
+                  onClick={() => router.push('/builder/new?template=technical')}
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 rounded-none rounded-b-lg h-full transition-colors"
                 >
                   Choose Technical Template
@@ -272,8 +269,7 @@ export default function HomePage() {
         </div>
       </div>
 
-
-
+      {/* Pricing Section */}
       <div id="pricing" className="py-16 bg-gray-50">
         <div className="max-w-6xl mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">
@@ -313,7 +309,7 @@ export default function HomePage() {
               <Button
                 variant="outline"
                 className="w-full border-green-600 text-green-600 hover:bg-green-50"
-                onClick={() => router.push('/register')}
+                onClick={() => router.push('/builder/new')}
               >
                 Get Started
               </Button>
@@ -347,7 +343,7 @@ export default function HomePage() {
 
               <Button
                 className="w-full bg-blue-600 hover:bg-blue-700"
-                onClick={() => router.push('/register')}
+                onClick={() => router.push('/builder/new')}
               >
                 Get Started
               </Button>
@@ -376,7 +372,7 @@ export default function HomePage() {
               <Button
                 variant="outline"
                 className="w-full border-purple-600 text-purple-600 hover:bg-purple-50"
-                onClick={() => router.push('/register')}
+                onClick={() => router.push('/builder/new')}
               >
                 Get Started
               </Button>
@@ -403,7 +399,7 @@ export default function HomePage() {
           <div className="flex justify-center">
             <Button
               size="lg"
-              onClick={() => router.push('/register')}
+              onClick={() => router.push('/builder/new')}
               className="bg-white text-blue-600 hover:bg-gray-100"
             >
               Create Your Resume Now

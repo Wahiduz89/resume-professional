@@ -1,10 +1,11 @@
-// components/resume/download-button.tsx - Resume download functionality
+// components/resume/download-button.tsx - Updated with authentication check
 'use client'
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 import { Button } from '@/components/ui/button'
-import { Download, Crown, AlertCircle, CheckCircle, Loader2 } from 'lucide-react'
+import { Download, Crown, AlertCircle, CheckCircle, Loader2, LogIn } from 'lucide-react'
 import { ResumeData } from '@/types'
 import toast from 'react-hot-toast'
 
@@ -33,19 +34,21 @@ export function DownloadButton({
   variant = 'primary' 
 }: DownloadButtonProps) {
   const router = useRouter()
+  const { data: session } = useSession()
   const [downloading, setDownloading] = useState(false)
   const [checking, setChecking] = useState(false)
   const [eligibility, setEligibility] = useState<DownloadEligibility | null>(null)
+  const [savingFirst, setSavingFirst] = useState(false)
 
   // Check download eligibility when component mounts or resumeId changes
   useEffect(() => {
-    if (resumeId) {
+    if (resumeId && session) {
       checkDownloadEligibility()
     }
-  }, [resumeId])
+  }, [resumeId, session])
 
   const checkDownloadEligibility = async () => {
-    if (!resumeId) return
+    if (!resumeId || !session) return
 
     setChecking(true)
     try {
@@ -71,11 +74,74 @@ export function DownloadButton({
     }
   }
 
+  const handleAuthenticationRequired = () => {
+    // Save current resume data to localStorage for post-auth restoration
+    try {
+      localStorage.setItem('temp_resume_data', JSON.stringify(resumeData))
+      localStorage.setItem('temp_resume_template', resumeData.template)
+    } catch (error) {
+      console.error('Error saving temporary data:', error)
+    }
+
+    toast.error('Please sign in to download your resume')
+    router.push('/login?callbackUrl=' + encodeURIComponent(window.location.pathname))
+  }
+
+  const saveResumeFirst = async (): Promise<string | null> => {
+    if (!session) {
+      handleAuthenticationRequired()
+      return null
+    }
+
+    setSavingFirst(true)
+    try {
+      const response = await fetch('/api/resume', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(resumeData)
+      })
+
+      if (response.ok) {
+        const { id } = await response.json()
+        
+        // Clear temporary data since we've saved it
+        try {
+          localStorage.removeItem('temp_resume_data')
+          localStorage.removeItem('temp_resume_template')
+        } catch (error) {
+          console.error('Error clearing temporary data:', error)
+        }
+        
+        toast.success('Resume saved successfully!')
+        return id
+      } else {
+        const errorData = await response.json()
+        toast.error(errorData.error || 'Failed to save resume')
+        return null
+      }
+    } catch (error) {
+      toast.error('Failed to save resume')
+      return null
+    } finally {
+      setSavingFirst(false)
+    }
+  }
+
   const handleDownload = async () => {
-    // For new resumes without ID, save first then download
-    if (!resumeId) {
-      await saveAndDownload()
+    // Check authentication first
+    if (!session) {
+      handleAuthenticationRequired()
       return
+    }
+
+    let currentResumeId = resumeId
+
+    // If no resume ID, save the resume first
+    if (!currentResumeId) {
+      currentResumeId = await saveResumeFirst()
+      if (!currentResumeId) {
+        return // Save failed
+      }
     }
 
     // Check eligibility if not already checked
@@ -87,7 +153,7 @@ export function DownloadButton({
     // Handle payment redirect if needed
     if (!eligibility.canDownload && eligibility.redirectToPayment) {
       const planType = eligibility.suggestedPlan || 'student_starter_monthly'
-      router.push(`/subscription?plan=${planType}&resumeId=${resumeId}`)
+      router.push(`/subscription?plan=${planType}&resumeId=${currentResumeId}`)
       return
     }
 
@@ -98,27 +164,23 @@ export function DownloadButton({
     }
 
     // Proceed with download
-    await downloadPDF()
+    await downloadPDF(currentResumeId)
   }
 
-  const saveAndDownload = async () => {
+  const downloadPDF = async (downloadResumeId: string) => {
     setDownloading(true)
     try {
-      // Create resume and initiate download through subscription system
       const response = await fetch('/api/resume/export', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          resumeData: resumeData,
-          requiresPayment: false 
-        })
+        body: JSON.stringify({ resumeId: downloadResumeId, requiresPayment: false })
       })
 
       if (!response.ok) {
         const errorData = await response.json()
         if (errorData.redirectToPayment) {
           const planType = errorData.suggestedPlan || 'student_starter_monthly'
-          router.push(`/subscription?plan=${planType}`)
+          router.push(`/subscription?plan=${planType}&resumeId=${downloadResumeId}`)
           return
         }
         throw new Error(errorData.error || 'Download failed')
@@ -136,21 +198,6 @@ export function DownloadButton({
       window.URL.revokeObjectURL(url)
       
       toast.success('Resume downloaded successfully!')
-    } catch (error) {
-      console.error('Download error:', error)
-      toast.error('Download failed. Please try again.')
-    } finally {
-      setDownloading(false)
-    }
-  }
-
-  const downloadPDF = async () => {
-    if (!resumeId) return
-
-    setDownloading(true)
-    try {
-      await downloadResumeById(resumeId)
-      toast.success('Resume downloaded successfully!')
       
       // Refresh eligibility after download
       await checkDownloadEligibility()
@@ -162,39 +209,12 @@ export function DownloadButton({
     }
   }
 
-  const downloadResumeById = async (id: string) => {
-    const response = await fetch('/api/resume/export', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ resumeId: id, requiresPayment: false })
-    })
-
-    if (!response.ok) {
-      const errorData = await response.json()
-      if (errorData.redirectToPayment) {
-        const planType = errorData.suggestedPlan || 'student_starter_monthly'
-        router.push(`/subscription?plan=${planType}&resumeId=${id}`)
-        return
-      }
-      throw new Error(errorData.error || 'Download failed')
-    }
-
-    // Handle file download
-    const blob = await response.blob()
-    const url = window.URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `resume-${resumeData.personalInfo.fullName.replace(/\s+/g, '-')}.pdf`
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    window.URL.revokeObjectURL(url)
-  }
-
   const getButtonText = () => {
+    if (savingFirst) return 'Saving...'
     if (downloading) return 'Downloading...'
     if (checking) return 'Checking...'
     
+    if (!session) return 'Sign in to Download'
     if (!resumeId) return 'Save & Download'
     
     if (!eligibility) return 'Download Resume'
@@ -210,12 +230,29 @@ export function DownloadButton({
   }
 
   const getButtonVariant = () => {
+    if (!session) return 'outline'
     if (!eligibility || eligibility.canDownload) return variant
     if (eligibility.redirectToPayment) return 'primary'
     return 'outline'
   }
 
-  const isDisabled = downloading || checking || 
+  const getButtonIcon = () => {
+    if (savingFirst || downloading || checking) {
+      return <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+    }
+    
+    if (!session) {
+      return <LogIn className="w-4 h-4 mr-2" />
+    }
+    
+    if (eligibility?.redirectToPayment) {
+      return <Crown className="w-4 h-4 mr-2" />
+    }
+    
+    return <Download className="w-4 h-4 mr-2" />
+  }
+
+  const isDisabled = savingFirst || downloading || checking || 
     (!resumeData.personalInfo.fullName || !resumeData.personalInfo.email)
 
   return (
@@ -228,18 +265,12 @@ export function DownloadButton({
           eligibility?.redirectToPayment ? 'bg-purple-600 hover:bg-purple-700' : ''
         }`}
       >
-        {downloading || checking ? (
-          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-        ) : eligibility?.redirectToPayment ? (
-          <Crown className="w-4 h-4 mr-2" />
-        ) : (
-          <Download className="w-4 h-4 mr-2" />
-        )}
+        {getButtonIcon()}
         {getButtonText()}
       </Button>
 
       {/* Status Information */}
-      {eligibility && (
+      {session && eligibility && (
         <div className="text-xs">
           {eligibility.canDownload ? (
             <div className="flex items-center gap-1 text-green-600">
@@ -263,6 +294,14 @@ export function DownloadButton({
               AI downloads remaining: {eligibility.remainingAiDownloads}
             </div>
           )}
+        </div>
+      )}
+
+      {/* Authentication Required Notice */}
+      {!session && (
+        <div className="text-xs text-blue-600 flex items-center gap-1">
+          <AlertCircle className="w-3 h-3" />
+          <span>Authentication required to download</span>
         </div>
       )}
 

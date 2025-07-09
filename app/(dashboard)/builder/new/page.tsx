@@ -1,8 +1,9 @@
-// app/(dashboard)/builder/new/page.tsx - Updated with download functionality
+// app/(dashboard)/builder/new/page.tsx - Updated for public access with authentication on save/download
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 import { Button } from '@/components/ui/button'
 import { PersonalInfoStep } from '@/components/resume/form-steps/personal-info'
 import { EducationStep } from '@/components/resume/form-steps/education'
@@ -49,7 +50,8 @@ const TEMPLATE_OPTIONS = [
     description: 'Perfect for experienced professionals and mid-level careers',
     preview: GeneralTemplate,
     features: ['Modern curved design', 'Sidebar layout', 'Skills visualization', 'ATS-friendly structure'],
-    bestFor: 'Experienced professionals, MBA graduates, management roles'
+    bestFor: 'Experienced professionals, MBA graduates, management roles',
+    requiresAuth: false
   },
   {
     id: 'fresher',
@@ -57,7 +59,8 @@ const TEMPLATE_OPTIONS = [
     description: 'Ideal for students and recent graduates',
     preview: FresherTemplate,
     features: ['Clean design', 'Education focus', 'Project highlights', 'Entry-level friendly'],
-    bestFor: 'Fresh graduates, internship seekers, first-time job applicants'
+    bestFor: 'Fresh graduates, internship seekers, first-time job applicants',
+    requiresAuth: false
   },
   {
     id: 'technical',
@@ -65,16 +68,24 @@ const TEMPLATE_OPTIONS = [
     description: 'Designed specifically for engineering and tech students',
     preview: TechnicalTemplate,
     features: ['Code-themed design', 'Technical skills categorization', 'Project showcase', 'GitHub integration'],
-    bestFor: 'Engineering students, software developers, technical roles'
+    bestFor: 'Engineering students, software developers, technical roles',
+    requiresAuth: false
   }
 ]
 
+// Local Storage Keys
+const TEMP_RESUME_KEY = 'temp_resume_data'
+const TEMP_TEMPLATE_KEY = 'temp_resume_template'
+
 export default function NewResumePage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const { data: session } = useSession()
   const [currentStep, setCurrentStep] = useState(-1)
   const [resumeData, setResumeData] = useState<ResumeData>(INITIAL_DATA)
   const [loading, setLoading] = useState(false)
   const [savedResumeId, setSavedResumeId] = useState<string | undefined>(undefined)
+  const [showAuthPrompt, setShowAuthPrompt] = useState(false)
 
   const steps = [
     { title: 'Personal Info', component: PersonalInfoStep },
@@ -85,8 +96,63 @@ export default function NewResumePage() {
     { title: 'Certifications', component: CertificationsStep },
   ]
 
+  // Initialize resume data and template from URL params or localStorage
+  useEffect(() => {
+    try {
+      // Check for template parameter in URL
+      const templateParam = searchParams?.get('template')
+      const validTemplate = TEMPLATE_OPTIONS.find(t => t.id === templateParam)
+      
+      // Check for saved temporary data
+      const savedData = localStorage.getItem(TEMP_RESUME_KEY)
+      const savedTemplate = localStorage.getItem(TEMP_TEMPLATE_KEY)
+      
+      if (savedData) {
+        try {
+          const parsedData = JSON.parse(savedData)
+          setResumeData(parsedData)
+          setCurrentStep(0) // Skip template selection if we have saved data
+        } catch (error) {
+          console.error('Error parsing saved resume data:', error)
+          localStorage.removeItem(TEMP_RESUME_KEY)
+        }
+      } else if (validTemplate) {
+        // Set template from URL parameter
+        setResumeData({ ...INITIAL_DATA, template: validTemplate.id as ResumeData['template'] })
+        setCurrentStep(0)
+      } else if (savedTemplate) {
+        // Set template from localStorage
+        setResumeData({ ...INITIAL_DATA, template: savedTemplate as ResumeData['template'] })
+        setCurrentStep(0)
+      }
+    } catch (error) {
+      console.error('Error initializing resume data:', error)
+    }
+  }, [searchParams])
+
+  // Save resume data to localStorage whenever it changes
+  useEffect(() => {
+    if (currentStep >= 0) {
+      try {
+        localStorage.setItem(TEMP_RESUME_KEY, JSON.stringify(resumeData))
+        localStorage.setItem(TEMP_TEMPLATE_KEY, resumeData.template)
+      } catch (error) {
+        console.error('Error saving resume data to localStorage:', error)
+      }
+    }
+  }, [resumeData, currentStep])
+
+  // Handle post-authentication resume creation
+  useEffect(() => {
+    if (session && showAuthPrompt) {
+      setShowAuthPrompt(false)
+      handleAuthenticatedSave()
+    }
+  }, [session, showAuthPrompt])
+
   const selectTemplate = (templateId: string) => {
-    setResumeData({ ...resumeData, template: templateId as ResumeData['template'] })
+    const newResumeData = { ...resumeData, template: templateId as ResumeData['template'] }
+    setResumeData(newResumeData)
     setCurrentStep(0)
   }
 
@@ -104,7 +170,9 @@ export default function NewResumePage() {
     }
   }
 
-  const handleSave = async () => {
+  const handleAuthenticatedSave = async () => {
+    if (!session) return
+    
     setLoading(true)
     try {
       const response = await fetch('/api/resume', {
@@ -112,10 +180,15 @@ export default function NewResumePage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(resumeData)
       })
-  
+
       if (response.ok) {
         const { id } = await response.json()
         setSavedResumeId(id)
+        
+        // Clear temporary data
+        localStorage.removeItem(TEMP_RESUME_KEY)
+        localStorage.removeItem(TEMP_TEMPLATE_KEY)
+        
         toast.success('Resume saved successfully!')
         router.push(`/builder/${id}`)
       } else {
@@ -128,6 +201,39 @@ export default function NewResumePage() {
     }
   }
 
+  const handleSaveWithAuth = () => {
+    if (!session) {
+      setShowAuthPrompt(true)
+      toast.error('Please sign in to save your resume')
+      router.push('/login?callbackUrl=' + encodeURIComponent(window.location.pathname))
+      return
+    }
+    
+    handleAuthenticatedSave()
+  }
+
+  const handleDownloadWithAuth = () => {
+    if (!session) {
+      setShowAuthPrompt(true)
+      toast.error('Please sign in to download your resume')
+      router.push('/login?callbackUrl=' + encodeURIComponent(window.location.pathname))
+      return
+    }
+    
+    // If user is authenticated but resume not saved, save first
+    if (!savedResumeId) {
+      handleAuthenticatedSave()
+    }
+  }
+
+  const clearTemporaryData = () => {
+    localStorage.removeItem(TEMP_RESUME_KEY)
+    localStorage.removeItem(TEMP_TEMPLATE_KEY)
+    setResumeData(INITIAL_DATA)
+    setCurrentStep(-1)
+    setSavedResumeId(undefined)
+  }
+
   // Template Selection View
   if (currentStep === -1) {
     return (
@@ -136,9 +242,10 @@ export default function NewResumePage() {
           <div className="mb-8">
             <h1 className="text-3xl font-bold mb-2">Choose Your Resume Template</h1>
             <p className="text-gray-600">
-              Select a template that best fits your career level and industry
+              Select a template that best fits your career level and industry. No account required to get started.
             </p>
           </div>
+          
           <div className="grid md:grid-cols-3 gap-8">
             {TEMPLATE_OPTIONS.map((template) => {
               const PreviewComponent = template.preview
@@ -201,6 +308,25 @@ export default function NewResumePage() {
             <p className="text-gray-600">
               Using {selectedTemplate?.name} template - Fill out each section to build your professional resume.
             </p>
+            
+            {/* Authentication Status */}
+            {!session && (
+              <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <p className="text-sm text-blue-800">
+                  <span className="font-medium">No account required to build your resume.</span> 
+                  You'll need to sign in when you're ready to save or download.
+                </p>
+              </div>
+            )}
+            
+            {session && (
+              <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                <p className="text-sm text-green-800">
+                  <span className="font-medium">Signed in as {session.user?.email}</span> 
+                  Your resume will be saved automatically.
+                </p>
+              </div>
+            )}
           </div>
 
           <div className="mb-8">
@@ -243,18 +369,30 @@ export default function NewResumePage() {
                 {currentStep === steps.length - 1 ? (
                   <div className="flex gap-3">
                     <Button
-                      onClick={handleSave}
+                      onClick={handleSaveWithAuth}
                       disabled={loading}
                       variant="outline"
                     >
-                      {loading ? 'Saving...' : 'Save Resume'}
+                      {loading ? 'Saving...' : session ? 'Save Resume' : 'Sign in to Save'}
                     </Button>
                     
-                    <DownloadButton
-                      resumeData={resumeData}
-                      resumeId={savedResumeId}
+                    <Button
+                      onClick={handleDownloadWithAuth}
+                      disabled={loading}
                       className="min-w-[140px]"
-                    />
+                    >
+                      {session ? 'Download Resume' : 'Sign in to Download'}
+                    </Button>
+                    
+                    {!session && (
+                      <Button
+                        variant="outline"
+                        onClick={clearTemporaryData}
+                        className="text-red-600 hover:text-red-700"
+                      >
+                        Clear Data
+                      </Button>
+                    )}
                   </div>
                 ) : (
                   <Button onClick={handleNext}>
@@ -268,7 +406,17 @@ export default function NewResumePage() {
 
         <div className="hidden lg:block bg-gray-100 p-8 overflow-y-auto">
           <div className="sticky top-0">
-            <h3 className="text-xl font-semibold mb-4">Live Preview</h3>
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-semibold">Live Preview</h3>
+              
+              {/* Info about authentication */}
+              {!session && (
+                <div className="text-xs text-gray-600 bg-gray-50 px-2 py-1 rounded">
+                  Sign in to download
+                </div>
+              )}
+            </div>
+            
             <div className="transform scale-75 origin-top">
               <PreviewComponent data={resumeData} />
             </div>
