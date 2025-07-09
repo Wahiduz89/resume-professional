@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { Toaster } from 'react-hot-toast'
 import { NextAuthSessionProvider } from '@/components/providers/session-provider'
+import { Footer } from '@/components/layout/footer'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -27,6 +28,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <NextAuthSessionProvider>
           {children}
+          <Footer />
           <Toaster 
             position="top-center"
             toastOptions={{

@@ -1,4 +1,4 @@
-// app/(dashboard)/builder/[id]/page.tsx - Updated with technical template support
+// app/(dashboard)/builder/[id]/page.tsx - Updated with download functionality
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -10,6 +10,7 @@ import { ExperienceStep } from '@/components/resume/form-steps/experience'
 import { SkillsStep } from '@/components/resume/form-steps/skills'
 import { LanguagesStep } from '@/components/resume/form-steps/languages'
 import { CertificationsStep } from '@/components/resume/form-steps/certifications'
+import { DownloadButton } from '@/components/resume/download-button'
 import { CorporateTemplate } from '@/components/resume/templates/corporate'
 import { FresherTemplate } from '@/components/resume/templates/fresher'
 import { GeneralTemplate } from '@/components/resume/templates/general'
@@ -42,13 +43,12 @@ const INITIAL_DATA: ResumeData = {
   template: 'corporate'
 }
 
-// Template mapping for dynamic selection - Updated with technical template
 const TEMPLATE_COMPONENTS = {
   'corporate': CorporateTemplate,
   'fresher': FresherTemplate,
   'general': GeneralTemplate,
   'technical': TechnicalTemplate,
-  'internship': FresherTemplate // fallback to fresher
+  'internship': FresherTemplate
 }
 
 export default function EditResumePage() {
@@ -80,7 +80,6 @@ export default function EditResumePage() {
           const data = await response.json()
           const content = data.content
           
-          // Ensure new fields exist in existing resume data
           const updatedContent = {
             ...content,
             personalInfo: {
@@ -90,7 +89,7 @@ export default function EditResumePage() {
             },
             languages: content.languages || [],
             certifications: content.certifications || [],
-            projects: content.projects || [], // Ensure projects field exists
+            projects: content.projects || [],
           }
           
           setResumeData(updatedContent)
@@ -132,7 +131,6 @@ export default function EditResumePage() {
 
       if (response.ok) {
         toast.success('Resume updated successfully!')
-        router.push('/dashboard')
       } else {
         toast.error('Failed to update resume')
       }
@@ -141,6 +139,10 @@ export default function EditResumePage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleBackToDashboard = () => {
+    router.push('/dashboard')
   }
 
   if (initialLoading) {
@@ -155,8 +157,6 @@ export default function EditResumePage() {
   }
 
   const CurrentStepComponent = steps[currentStep].component
-  
-  // Dynamically select the correct template component with technical template support
   const TemplateComponent = TEMPLATE_COMPONENTS[resumeData.template as keyof typeof TEMPLATE_COMPONENTS] || GeneralTemplate
 
   return (
@@ -214,24 +214,33 @@ export default function EditResumePage() {
 
               <div className="flex gap-3">
                 {currentStep === steps.length - 1 ? (
-                  <Button
-                    onClick={handleSave}
-                    disabled={loading}
-                  >
-                    {loading ? 'Saving...' : 'Save Changes'}
-                  </Button>
+                  <div className="flex gap-3">
+                    <Button
+                      onClick={handleSave}
+                      disabled={loading}
+                      variant="outline"
+                    >
+                      {loading ? 'Saving...' : 'Save Changes'}
+                    </Button>
+                    
+                    <DownloadButton
+                      resumeData={resumeData}
+                      resumeId={resumeId}
+                      className="min-w-[140px]"
+                    />
+                    
+                    <Button
+                      variant="outline"
+                      onClick={handleBackToDashboard}
+                    >
+                      Back to Dashboard
+                    </Button>
+                  </div>
                 ) : (
                   <Button onClick={handleNext}>
                     Next
                   </Button>
                 )}
-                
-                <Button
-                  variant="outline"
-                  onClick={() => router.push('/dashboard')}
-                >
-                  Cancel
-                </Button>
               </div>
             </div>
           </div>
@@ -239,7 +248,18 @@ export default function EditResumePage() {
 
         <div className="hidden lg:block bg-gray-100 p-8 overflow-y-auto">
           <div className="sticky top-0">
-            <h3 className="text-xl font-semibold mb-4">Live Preview</h3>
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-semibold">Live Preview</h3>
+              
+              {/* Quick Download Button for Preview Section */}
+              <DownloadButton
+                resumeData={resumeData}
+                resumeId={resumeId}
+                variant="outline"
+                className="text-sm"
+              />
+            </div>
+            
             <div className="transform scale-75 origin-top">
               <TemplateComponent data={resumeData} />
             </div>

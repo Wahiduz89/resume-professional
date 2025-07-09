@@ -1,4 +1,4 @@
-// Update for app/(dashboard)/builder/new/page.tsx - Add technical template selection
+// app/(dashboard)/builder/new/page.tsx - Updated with download functionality
 'use client'
 
 import { useState } from 'react'
@@ -10,6 +10,7 @@ import { ExperienceStep } from '@/components/resume/form-steps/experience'
 import { SkillsStep } from '@/components/resume/form-steps/skills'
 import { LanguagesStep } from '@/components/resume/form-steps/languages'
 import { CertificationsStep } from '@/components/resume/form-steps/certifications'
+import { DownloadButton } from '@/components/resume/download-button'
 import { FresherTemplate } from '@/components/resume/templates/fresher'
 import { GeneralTemplate } from '@/components/resume/templates/general'
 import { TechnicalTemplate } from '@/components/resume/templates/technical'
@@ -38,7 +39,7 @@ const INITIAL_DATA: ResumeData = {
   achievements: [],
   coursework: [],
   languages: [],
-  template: 'fresher' // Default to fresher template for students
+  template: 'fresher'
 }
 
 const TEMPLATE_OPTIONS = [
@@ -70,9 +71,10 @@ const TEMPLATE_OPTIONS = [
 
 export default function NewResumePage() {
   const router = useRouter()
-  const [currentStep, setCurrentStep] = useState(-1) // Start with template selection
+  const [currentStep, setCurrentStep] = useState(-1)
   const [resumeData, setResumeData] = useState<ResumeData>(INITIAL_DATA)
   const [loading, setLoading] = useState(false)
+  const [savedResumeId, setSavedResumeId] = useState<string | undefined>(undefined)
 
   const steps = [
     { title: 'Personal Info', component: PersonalInfoStep },
@@ -98,7 +100,7 @@ export default function NewResumePage() {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1)
     } else if (currentStep === 0) {
-      setCurrentStep(-1) // Go back to template selection
+      setCurrentStep(-1)
     }
   }
 
@@ -113,8 +115,9 @@ export default function NewResumePage() {
   
       if (response.ok) {
         const { id } = await response.json()
+        setSavedResumeId(id)
         toast.success('Resume saved successfully!')
-        router.push('/dashboard')
+        router.push(`/builder/${id}`)
       } else {
         toast.error('Failed to save resume')
       }
@@ -140,10 +143,8 @@ export default function NewResumePage() {
             {TEMPLATE_OPTIONS.map((template) => {
               const PreviewComponent = template.preview
               
-              // Show simplified image cards for all templates with consistent sizing
               return (
                 <div key={template.id} className="bg-white rounded-lg shadow-sm border overflow-hidden hover:shadow-lg transition-shadow flex flex-col h-[600px]">
-                  {/* Full Resume Preview - Fixed height to maintain card size */}
                   <div className="relative flex-1">
                     <div className="w-full h-[540px] relative overflow-hidden bg-white">
                       <img 
@@ -151,7 +152,6 @@ export default function NewResumePage() {
                         alt={template.name}
                         className="w-full h-full object-cover object-top"
                         onError={(e) => {
-                          // Fallback to component preview if image not found
                           const target = e.currentTarget;
                           target.style.display = 'none';
                           const fallback = target.nextElementSibling as HTMLElement;
@@ -160,7 +160,6 @@ export default function NewResumePage() {
                           }
                         }}
                       />
-                      {/* Fallback - Full Resume Component Preview */}
                       <div className="w-full h-full bg-white hidden items-center justify-center p-2">
                         <div className="w-full h-full border border-gray-200 rounded overflow-hidden">
                           <div className="transform scale-[0.25] origin-top-left w-[400%] h-[400%]">
@@ -171,7 +170,6 @@ export default function NewResumePage() {
                     </div>
                   </div>
                   
-                  {/* Button Section - Fixed height */}
                   <div className="p-0 h-[60px] flex items-center">
                     <Button 
                       onClick={() => selectTemplate(template.id)}
@@ -241,18 +239,29 @@ export default function NewResumePage() {
                 {currentStep === 0 ? 'Change Template' : 'Previous'}
               </Button>
 
-              {currentStep === steps.length - 1 ? (
-                <Button
-                  onClick={handleSave}
-                  disabled={loading}
-                >
-                  {loading ? 'Saving...' : 'Save Resume'}
-                </Button>
-              ) : (
-                <Button onClick={handleNext}>
-                  Next
-                </Button>
-              )}
+              <div className="flex gap-3">
+                {currentStep === steps.length - 1 ? (
+                  <div className="flex gap-3">
+                    <Button
+                      onClick={handleSave}
+                      disabled={loading}
+                      variant="outline"
+                    >
+                      {loading ? 'Saving...' : 'Save Resume'}
+                    </Button>
+                    
+                    <DownloadButton
+                      resumeData={resumeData}
+                      resumeId={savedResumeId}
+                      className="min-w-[140px]"
+                    />
+                  </div>
+                ) : (
+                  <Button onClick={handleNext}>
+                    Next
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
         </div>
