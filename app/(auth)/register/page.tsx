@@ -1,4 +1,4 @@
-// app/(auth)/register/page.tsx - Updated with callback URL support for resume flow
+// app/(auth)/register/page.tsx - Updated with removed Resume Builder context and guest option
 'use client'
 
 import { useState } from 'react'
@@ -65,16 +65,6 @@ export default function RegisterPage() {
           </p>
         </div>
 
-        {/* Resume Builder Context */}
-        {callbackUrl.includes('/builder/new') && (
-          <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-            <h3 className="font-medium text-green-900 mb-2">Resume Builder</h3>
-            <p className="text-sm text-green-800">
-              Your resume progress is saved temporarily. After creating your account, you'll be able to save and download your resume according to your subscription plan.
-            </p>
-          </div>
-        )}
-
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
             type="text"
@@ -109,7 +99,7 @@ export default function RegisterPage() {
           </Button>
         </form>
 
-        <div className="text-center space-y-4">
+        <div className="text-center">
           <p className="text-sm text-gray-600">
             Already have an account?{' '}
             <Link 
@@ -119,25 +109,6 @@ export default function RegisterPage() {
               Sign in here
             </Link>
           </p>
-
-          {/* Resume Builder Alternative */}
-          {callbackUrl.includes('/builder/new') && (
-            <div className="border-t pt-4">
-              <p className="text-sm text-gray-600 mb-3">
-                Or continue building your resume without an account
-              </p>
-              <Button
-                variant="outline"
-                onClick={() => router.push('/builder/new')}
-                className="w-full"
-              >
-                Continue as Guest
-              </Button>
-              <p className="text-xs text-gray-500 mt-2">
-                You can create an account later to save and download your resume
-              </p>
-            </div>
-          )}
         </div>
       </div>
     </div>

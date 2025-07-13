@@ -99,6 +99,7 @@ export const EducationStep: React.FC<EducationStepProps> = ({
       location: '',
       startDate: '',
       endDate: '',
+      current: false,
       percentage: '',
       description: ''
     }
@@ -202,12 +203,27 @@ export const EducationStep: React.FC<EducationStepProps> = ({
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   End Date
                 </label>
-                <Input
-                  type="month"
-                  placeholder="End Date"
-                  value={edu.endDate || ''}
-                  onChange={(e) => updateEducation(edu.id, { endDate: e.target.value })}
-                />
+                <div className="space-y-2">
+                  <Input
+                    type="month"
+                    placeholder="End Date"
+                    value={edu.endDate || ''}
+                    onChange={(e) => updateEducation(edu.id, { endDate: e.target.value })}
+                    disabled={edu.current}
+                  />
+                  <label className="flex items-center text-sm">
+                    <input
+                      type="checkbox"
+                      checked={edu.current || false}
+                      onChange={(e) => updateEducation(edu.id, { 
+                        current: e.target.checked,
+                        endDate: e.target.checked ? '' : edu.endDate
+                      })}
+                      className="mr-2"
+                    />
+                    Currently studying here
+                  </label>
+                </div>
               </div>
               
               <div>
@@ -254,7 +270,8 @@ export const EducationStep: React.FC<EducationStepProps> = ({
             <p>• List your most recent education first</p>
             <p>• Include your CGPA or percentage if it strengthens your application</p>
             <p>• Mention relevant coursework, projects, or achievements in additional details</p>
-            <p>• For ongoing education, leave the end date empty or mention "Expected [Year]"</p>
+            <p>• For ongoing education, check "Currently studying here" and leave end date empty</p>
+            <p>• Use "Expected [Year]" in additional details for anticipated graduation dates</p>
           </div>
         </div>
       )}

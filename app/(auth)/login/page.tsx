@@ -1,4 +1,4 @@
-// app/(auth)/login/page.tsx - Updated with callback URL support for resume flow
+// app/(auth)/login/page.tsx - Updated with removed Resume Builder context box
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -65,16 +65,6 @@ export default function LoginPage() {
           </p>
         </div>
 
-        {/* Resume Builder Context */}
-        {callbackUrl.includes('/builder/new') && (
-          <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-            <h3 className="font-medium text-blue-900 mb-2">Resume Builder</h3>
-            <p className="text-sm text-blue-800">
-              Your resume progress is saved temporarily. After signing in, you'll be able to save and download your resume according to your subscription plan.
-            </p>
-          </div>
-        )}
-
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
             type="email"
@@ -112,24 +102,7 @@ export default function LoginPage() {
             </Link>
           </p>
 
-          {/* Resume Builder Alternative */}
-          {callbackUrl.includes('/builder/new') && (
-            <div className="border-t pt-4">
-              <p className="text-sm text-gray-600 mb-3">
-                Or continue building your resume without an account
-              </p>
-              <Button
-                variant="outline"
-                onClick={() => router.push('/builder/new')}
-                className="w-full"
-              >
-                Continue as Guest
-              </Button>
-              <p className="text-xs text-gray-500 mt-2">
-                You can sign in later to save and download your resume
-              </p>
-            </div>
-          )}
+
         </div>
       </div>
     </div>

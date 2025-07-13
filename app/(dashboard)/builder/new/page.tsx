@@ -1,4 +1,4 @@
-// app/(dashboard)/builder/new/page.tsx - Updated for public access with authentication on save/download
+// app/(dashboard)/builder/new/page.tsx - Corrected to ensure template selection always displays
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -81,11 +81,13 @@ export default function NewResumePage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { data: session } = useSession()
-  const [currentStep, setCurrentStep] = useState(-1)
+  const [currentStep, setCurrentStep] = useState(-1) // Always start with template selection
   const [resumeData, setResumeData] = useState<ResumeData>(INITIAL_DATA)
   const [loading, setLoading] = useState(false)
   const [savedResumeId, setSavedResumeId] = useState<string | undefined>(undefined)
   const [showAuthPrompt, setShowAuthPrompt] = useState(false)
+  const [mounted, setMounted] = useState(false)
+  const [hasSavedWork, setHasSavedWork] = useState(false)
 
   const steps = [
     { title: 'Personal Info', component: PersonalInfoStep },
@@ -96,43 +98,40 @@ export default function NewResumePage() {
     { title: 'Certifications', component: CertificationsStep },
   ]
 
-  // Initialize resume data and template from URL params or localStorage
+  // Check for existing work on mount
   useEffect(() => {
+    setMounted(true)
+    
+    // Check if there is meaningful saved work
     try {
-      // Check for template parameter in URL
-      const templateParam = searchParams?.get('template')
-      const validTemplate = TEMPLATE_OPTIONS.find(t => t.id === templateParam)
-      
-      // Check for saved temporary data
       const savedData = localStorage.getItem(TEMP_RESUME_KEY)
-      const savedTemplate = localStorage.getItem(TEMP_TEMPLATE_KEY)
-      
       if (savedData) {
-        try {
-          const parsedData = JSON.parse(savedData)
-          setResumeData(parsedData)
-          setCurrentStep(0) // Skip template selection if we have saved data
-        } catch (error) {
-          console.error('Error parsing saved resume data:', error)
-          localStorage.removeItem(TEMP_RESUME_KEY)
-        }
-      } else if (validTemplate) {
-        // Set template from URL parameter
-        setResumeData({ ...INITIAL_DATA, template: validTemplate.id as ResumeData['template'] })
-        setCurrentStep(0)
-      } else if (savedTemplate) {
-        // Set template from localStorage
-        setResumeData({ ...INITIAL_DATA, template: savedTemplate as ResumeData['template'] })
-        setCurrentStep(0)
+        const parsedData = JSON.parse(savedData)
+        const hasContent = parsedData.personalInfo?.fullName || 
+                         parsedData.education?.length > 0 || 
+                         parsedData.experience?.length > 0 ||
+                         parsedData.skills?.length > 0 ||
+                         parsedData.professionalSummary
+
+        setHasSavedWork(hasContent)
       }
     } catch (error) {
-      console.error('Error initializing resume data:', error)
+      console.error('Error checking saved work:', error)
+      localStorage.removeItem(TEMP_RESUME_KEY)
+      localStorage.removeItem(TEMP_TEMPLATE_KEY)
+    }
+
+    // Handle direct template selection from URL
+    const templateParam = searchParams?.get('template')
+    if (templateParam && TEMPLATE_OPTIONS.find(t => t.id === templateParam)) {
+      setResumeData({ ...INITIAL_DATA, template: templateParam as ResumeData['template'] })
+      setCurrentStep(0)
     }
   }, [searchParams])
 
-  // Save resume data to localStorage whenever it changes
+  // Save resume data to localStorage when it changes (only after template selection)
   useEffect(() => {
-    if (currentStep >= 0) {
+    if (mounted && currentStep >= 0) {
       try {
         localStorage.setItem(TEMP_RESUME_KEY, JSON.stringify(resumeData))
         localStorage.setItem(TEMP_TEMPLATE_KEY, resumeData.template)
@@ -140,7 +139,7 @@ export default function NewResumePage() {
         console.error('Error saving resume data to localStorage:', error)
       }
     }
-  }, [resumeData, currentStep])
+  }, [resumeData, currentStep, mounted])
 
   // Handle post-authentication resume creation
   useEffect(() => {
@@ -154,6 +153,29 @@ export default function NewResumePage() {
     const newResumeData = { ...resumeData, template: templateId as ResumeData['template'] }
     setResumeData(newResumeData)
     setCurrentStep(0)
+  }
+
+  const continueSavedWork = () => {
+    try {
+      const savedData = localStorage.getItem(TEMP_RESUME_KEY)
+      if (savedData) {
+        const parsedData = JSON.parse(savedData)
+        setResumeData(parsedData)
+        setCurrentStep(0)
+      }
+    } catch (error) {
+      console.error('Error loading saved work:', error)
+      clearSavedWork()
+    }
+  }
+
+  const clearSavedWork = () => {
+    localStorage.removeItem(TEMP_RESUME_KEY)
+    localStorage.removeItem(TEMP_TEMPLATE_KEY)
+    setHasSavedWork(false)
+    setResumeData(INITIAL_DATA)
+    setCurrentStep(-1)
+    setSavedResumeId(undefined)
   }
 
   const handleNext = () => {
@@ -188,6 +210,7 @@ export default function NewResumePage() {
         // Clear temporary data
         localStorage.removeItem(TEMP_RESUME_KEY)
         localStorage.removeItem(TEMP_TEMPLATE_KEY)
+        setHasSavedWork(false)
         
         toast.success('Resume saved successfully!')
         router.push(`/builder/${id}`)
@@ -226,15 +249,19 @@ export default function NewResumePage() {
     }
   }
 
-  const clearTemporaryData = () => {
-    localStorage.removeItem(TEMP_RESUME_KEY)
-    localStorage.removeItem(TEMP_TEMPLATE_KEY)
-    setResumeData(INITIAL_DATA)
-    setCurrentStep(-1)
-    setSavedResumeId(undefined)
+  // Show loading state while mounting
+  if (!mounted) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading resume builder...</p>
+        </div>
+      </div>
+    )
   }
 
-  // Template Selection View
+  // Template Selection View - Always shows unless user has selected a template
   if (currentStep === -1) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -242,8 +269,40 @@ export default function NewResumePage() {
           <div className="mb-8">
             <h1 className="text-3xl font-bold mb-2">Choose Your Resume Template</h1>
             <p className="text-gray-600">
-              Select a template that best fits your career level and industry. No account required to get started.
+              Select a template that best fits your career level and industry.
             </p>
+            
+            {/* Show continue option only if there is meaningful saved work */}
+            {hasSavedWork && (
+              <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-medium text-amber-900 mb-1">Resume in Progress</h3>
+                    <p className="text-sm text-amber-800">
+                      You have unsaved work from a previous session. Would you like to continue or start fresh?
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={continueSavedWork}
+                      className="bg-amber-100 border-amber-300 text-amber-800 hover:bg-amber-200"
+                    >
+                      Continue Work
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={clearSavedWork}
+                      className="text-gray-600 hover:text-gray-800"
+                    >
+                      Start Fresh
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
@@ -383,16 +442,6 @@ export default function NewResumePage() {
                     >
                       {session ? 'Download Resume' : 'Sign in to Download'}
                     </Button>
-                    
-                    {!session && (
-                      <Button
-                        variant="outline"
-                        onClick={clearTemporaryData}
-                        className="text-red-600 hover:text-red-700"
-                      >
-                        Clear Data
-                      </Button>
-                    )}
                   </div>
                 ) : (
                   <Button onClick={handleNext}>
@@ -408,13 +457,6 @@ export default function NewResumePage() {
           <div className="sticky top-0">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-semibold">Live Preview</h3>
-              
-              {/* Info about authentication */}
-              {!session && (
-                <div className="text-xs text-gray-600 bg-gray-50 px-2 py-1 rounded">
-                  Sign in to download
-                </div>
-              )}
             </div>
             
             <div className="transform scale-75 origin-top">

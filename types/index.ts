@@ -1,4 +1,4 @@
-// types/index.ts - Updated with technical template support
+// types/index.ts - Updated with current field for ongoing education
 export interface PersonalInfo {
   fullName: string
   email: string
@@ -20,6 +20,7 @@ export interface Education {
   location: string
   startDate: string
   endDate: string
+  current?: boolean // Added for ongoing education
   percentage?: string
   description?: string
 }
