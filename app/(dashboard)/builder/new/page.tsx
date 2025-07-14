@@ -101,17 +101,17 @@ export default function NewResumePage() {
   // Check for existing work on mount
   useEffect(() => {
     setMounted(true)
-    
+
     // Check if there is meaningful saved work
     try {
       const savedData = localStorage.getItem(TEMP_RESUME_KEY)
       if (savedData) {
         const parsedData = JSON.parse(savedData)
-        const hasContent = parsedData.personalInfo?.fullName || 
-                         parsedData.education?.length > 0 || 
-                         parsedData.experience?.length > 0 ||
-                         parsedData.skills?.length > 0 ||
-                         parsedData.professionalSummary
+        const hasContent = parsedData.personalInfo?.fullName ||
+          parsedData.education?.length > 0 ||
+          parsedData.experience?.length > 0 ||
+          parsedData.skills?.length > 0 ||
+          parsedData.professionalSummary
 
         setHasSavedWork(hasContent)
       }
@@ -194,7 +194,7 @@ export default function NewResumePage() {
 
   const handleAuthenticatedSave = async () => {
     if (!session) return
-    
+
     setLoading(true)
     try {
       const response = await fetch('/api/resume', {
@@ -206,12 +206,12 @@ export default function NewResumePage() {
       if (response.ok) {
         const { id } = await response.json()
         setSavedResumeId(id)
-        
+
         // Clear temporary data
         localStorage.removeItem(TEMP_RESUME_KEY)
         localStorage.removeItem(TEMP_TEMPLATE_KEY)
         setHasSavedWork(false)
-        
+
         toast.success('Resume saved successfully!')
         router.push(`/builder/${id}`)
       } else {
@@ -231,7 +231,7 @@ export default function NewResumePage() {
       router.push('/login?callbackUrl=' + encodeURIComponent(window.location.pathname))
       return
     }
-    
+
     handleAuthenticatedSave()
   }
 
@@ -242,7 +242,7 @@ export default function NewResumePage() {
       router.push('/login?callbackUrl=' + encodeURIComponent(window.location.pathname))
       return
     }
-    
+
     // If user is authenticated but resume not saved, save first
     if (!savedResumeId) {
       handleAuthenticatedSave()
@@ -271,7 +271,7 @@ export default function NewResumePage() {
             <p className="text-gray-600">
               Select a template that best fits your career level and industry.
             </p>
-            
+
             {/* Show continue option only if there is meaningful saved work */}
             {hasSavedWork && (
               <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
@@ -304,16 +304,16 @@ export default function NewResumePage() {
               </div>
             )}
           </div>
-          
+
           <div className="grid md:grid-cols-3 gap-8">
             {TEMPLATE_OPTIONS.map((template) => {
               const PreviewComponent = template.preview
-              
+
               return (
                 <div key={template.id} className="bg-white rounded-lg shadow-sm border overflow-hidden hover:shadow-lg transition-shadow flex flex-col h-[600px]">
                   <div className="relative flex-1">
                     <div className="w-full h-[540px] relative overflow-hidden bg-white">
-                      <img 
+                      <img
                         src={`/assets/${template.id}-template.png`}
                         alt={template.name}
                         className="w-full h-full object-cover object-top"
@@ -335,9 +335,9 @@ export default function NewResumePage() {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="p-0 h-[60px] flex items-center">
-                    <Button 
+                    <Button
                       onClick={() => selectTemplate(template.id)}
                       className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 rounded-none rounded-b-lg h-full"
                     >
@@ -367,22 +367,13 @@ export default function NewResumePage() {
             <p className="text-gray-600">
               Using {selectedTemplate?.name} template - Fill out each section to build your professional resume.
             </p>
-            
+
             {/* Authentication Status */}
             {!session && (
               <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                 <p className="text-sm text-blue-800">
-                  <span className="font-medium">No account required to build your resume.</span> 
+                  <span className="font-medium">No account required to build your resume.</span>
                   You'll need to sign in when you're ready to save or download.
-                </p>
-              </div>
-            )}
-            
-            {session && (
-              <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
-                <p className="text-sm text-green-800">
-                  <span className="font-medium">Signed in as {session.user?.email}</span> 
-                  Your resume will be saved automatically.
                 </p>
               </div>
             )}
@@ -394,16 +385,15 @@ export default function NewResumePage() {
                 <button
                   key={index}
                   onClick={() => setCurrentStep(index)}
-                  className={`cursor-pointer hover:text-blue-700 px-2 py-1 whitespace-nowrap ${
-                    index === currentStep ? 'text-blue-600 font-medium' : 'text-gray-400'
-                  }`}
+                  className={`cursor-pointer hover:text-blue-700 px-2 py-1 whitespace-nowrap ${index === currentStep ? 'text-blue-600 font-medium' : 'text-gray-400'
+                    }`}
                 >
                   {step.title}
                 </button>
               ))}
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
-              <div 
+              <div
                 className="bg-blue-600 h-2 rounded-full transition-all duration-300"
                 style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
               />
@@ -434,7 +424,7 @@ export default function NewResumePage() {
                     >
                       {loading ? 'Saving...' : session ? 'Save Resume' : 'Sign in to Save'}
                     </Button>
-                    
+
                     <Button
                       onClick={handleDownloadWithAuth}
                       disabled={loading}
@@ -458,7 +448,7 @@ export default function NewResumePage() {
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-semibold">Live Preview</h3>
             </div>
-            
+
             <div className="transform scale-75 origin-top">
               <PreviewComponent data={resumeData} />
             </div>
