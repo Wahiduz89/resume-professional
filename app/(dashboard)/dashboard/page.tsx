@@ -1,10 +1,11 @@
-// app/(dashboard)/dashboard/page.tsx - Updated with delete resume functionality
+// app/(dashboard)/dashboard/page.tsx - Updated with upload resume functionality removed from UI
 'use client'
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { UploadResume } from '@/components/resume/upload-resume'
+// Keep import for future use - commented out for now
+// import { UploadResume } from '@/components/resume/upload-resume'
 import { Plus, Download, Edit, FileText, AlertCircle, Crown, Trash2 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { formatDate } from '@/lib/utils'
@@ -34,7 +35,8 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true)
   const [exporting, setExporting] = useState<string | null>(null)
   const [deleting, setDeleting] = useState<string | null>(null)
-  const [showUpload, setShowUpload] = useState(false)
+  // Keep state for future use - commented out for now
+  // const [showUpload, setShowUpload] = useState(false)
   const [downloadChecks, setDownloadChecks] = useState<Record<string, DownloadCheck>>({})
 
   useEffect(() => {
@@ -167,10 +169,11 @@ export default function DashboardPage() {
     }
   }
 
-  const handleUploadComplete = (parsedData: any) => {
-    setShowUpload(false)
-    fetchResumes()
-  }
+  // Keep function for future use - commented out for now
+  // const handleUploadComplete = (parsedData: any) => {
+  //   setShowUpload(false)
+  //   fetchResumes()
+  // }
 
   const getDownloadButtonText = (resume: Resume) => {
     const check = downloadChecks[resume.id]
@@ -268,12 +271,6 @@ export default function DashboardPage() {
           <p className="text-gray-600 mt-1">Create, edit, and manage your professional resumes</p>
         </div>
         <div className="flex gap-3">
-          <Button 
-            variant="outline"
-            onClick={() => setShowUpload(!showUpload)}
-          >
-            <FileText className="w-4 h-4 mr-2" /> Upload Resume
-          </Button>
           <Button onClick={() => router.push('/builder/new')}>
             <Plus className="w-4 h-4 mr-2" /> Create New Resume
           </Button>
@@ -300,25 +297,19 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Upload Section */}
-      {showUpload && (
+      {/* Upload Section - Commented out for future use */}
+      {/* {showUpload && (
         <div className="mb-8">
           <UploadResume onUploadComplete={handleUploadComplete} />
         </div>
-      )}
+      )} */}
 
       {resumes.length === 0 ? (
         <div className="text-center py-12 bg-gray-50 rounded-lg">
           <FileText className="w-16 h-16 text-gray-400 mx-auto mb-4" />
           <h3 className="text-xl font-semibold mb-2">No resumes yet</h3>
-          <p className="text-gray-600 mb-6">Create your first professional resume or upload an existing one</p>
+          <p className="text-gray-600 mb-6">Create your first professional resume to get started</p>
           <div className="flex gap-3 justify-center">
-            <Button 
-              variant="outline"
-              onClick={() => setShowUpload(true)}
-            >
-              Upload Resume
-            </Button>
             <Button onClick={() => router.push('/builder/new')}>
               Create New Resume
             </Button>

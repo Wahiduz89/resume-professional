@@ -1,10 +1,10 @@
-// app/page.tsx - Updated homepage to allow direct resume creation
+// app/page.tsx - Updated homepage to remove upload resume button
 'use client'
 
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Navbar } from '@/components/layout/navbar'
-import { GraduationCap, Briefcase, CheckCircle, Star, FileText, Upload, ArrowRight, Sparkles, Code } from 'lucide-react'
+import { GraduationCap, Briefcase, CheckCircle, Star, FileText, ArrowRight, Sparkles, Code } from 'lucide-react'
 import { CLIENT_SUBSCRIPTION_PLANS } from '@/lib/subscription-config'
 
 export default function HomePage() {
@@ -24,7 +24,7 @@ export default function HomePage() {
     {
       title: 'One-Click Export',
       description: 'Download your resume in PDF format instantly',
-      icon: Upload,
+      icon: FileText,
     },
   ]
 
@@ -67,15 +67,6 @@ export default function HomePage() {
               <FileText className="w-5 h-5 mr-2" />
               Create New Resume
               <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              onClick={() => router.push('/builder/new')}
-              className="border-blue-600 text-blue-600 hover:bg-blue-50 px-8"
-            >
-              <Upload className="w-5 h-5 mr-2" />
-              Upload Resume
             </Button>
           </div>
 
