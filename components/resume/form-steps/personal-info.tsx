@@ -1,10 +1,10 @@
-// components/resume/form-steps/personal-info.tsx - Updated with guest Cloudinary support
+// components/resume/form-steps/personal-info.tsx - Updated with success messages removed
 import React, { useState, useRef, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { PersonalInfo } from '@/types'
-import { Upload, X, User, Clock, CheckCircle } from 'lucide-react'
+import { Upload, X, User, Clock } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { nanoid } from 'nanoid'
 
@@ -110,10 +110,8 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
         
         if (!session) {
           setIsGuestImage(true)
-          toast.success('Profile image uploaded! (Sign in to make it permanent)')
         } else {
           setIsGuestImage(false)
-          toast.success('Profile image uploaded successfully!')
         }
       } else {
         const error = await response.json()
@@ -186,7 +184,6 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
         })
         
         setIsGuestImage(false)
-        toast.success('Profile image transferred to your account!')
       } else {
         console.error('Failed to transfer guest image')
       }
@@ -250,13 +247,6 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
                   </div>
                 )}
                 
-                {/* Authenticated Image Indicator */}
-                {!isGuestImage && session && (
-                  <div className="absolute -bottom-1 -right-1 bg-green-500 text-white rounded-full p-1" title="Saved to your account">
-                    <CheckCircle className="w-3 h-3" />
-                  </div>
-                )}
-                
                 <button
                   onClick={removeImage}
                   disabled={deleting}
@@ -300,27 +290,6 @@ export const PersonalInfoStep: React.FC<PersonalInfoStepProps> = ({
             <p className="text-sm text-gray-600">
               Recommended: Square image, max 5MB (JPG, PNG, WebP)
             </p>
-            
-            {/* Image Status Messages */}
-            {safeData.profileImage && (
-              <div className="mt-2">
-                {isGuestImage ? (
-                  <p className="text-xs text-orange-600 flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
-                    Temporary image - Sign in to make it permanent
-                  </p>
-                ) : session ? (
-                  <p className="text-xs text-green-600 flex items-center gap-1">
-                    <CheckCircle className="w-3 h-3" />
-                    Image saved to your account
-                  </p>
-                ) : (
-                  <p className="text-xs text-blue-600">
-                    Image uploaded successfully
-                  </p>
-                )}
-              </div>
-            )}
           </div>
         </div>
       </div>

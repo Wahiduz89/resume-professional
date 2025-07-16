@@ -1,4 +1,4 @@
-// app/(dashboard)/builder/new/page.tsx - Corrected to ensure template selection always displays
+// app/(dashboard)/builder/new/page.tsx - Updated with Resume in Progress notification removed
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -87,7 +87,6 @@ export default function NewResumePage() {
   const [savedResumeId, setSavedResumeId] = useState<string | undefined>(undefined)
   const [showAuthPrompt, setShowAuthPrompt] = useState(false)
   const [mounted, setMounted] = useState(false)
-  const [hasSavedWork, setHasSavedWork] = useState(false)
 
   const steps = [
     { title: 'Personal Info', component: PersonalInfoStep },
@@ -98,28 +97,9 @@ export default function NewResumePage() {
     { title: 'Certifications', component: CertificationsStep },
   ]
 
-  // Check for existing work on mount
+  // Initialize component
   useEffect(() => {
     setMounted(true)
-
-    // Check if there is meaningful saved work
-    try {
-      const savedData = localStorage.getItem(TEMP_RESUME_KEY)
-      if (savedData) {
-        const parsedData = JSON.parse(savedData)
-        const hasContent = parsedData.personalInfo?.fullName ||
-          parsedData.education?.length > 0 ||
-          parsedData.experience?.length > 0 ||
-          parsedData.skills?.length > 0 ||
-          parsedData.professionalSummary
-
-        setHasSavedWork(hasContent)
-      }
-    } catch (error) {
-      console.error('Error checking saved work:', error)
-      localStorage.removeItem(TEMP_RESUME_KEY)
-      localStorage.removeItem(TEMP_TEMPLATE_KEY)
-    }
 
     // Handle direct template selection from URL
     const templateParam = searchParams?.get('template')
@@ -155,29 +135,6 @@ export default function NewResumePage() {
     setCurrentStep(0)
   }
 
-  const continueSavedWork = () => {
-    try {
-      const savedData = localStorage.getItem(TEMP_RESUME_KEY)
-      if (savedData) {
-        const parsedData = JSON.parse(savedData)
-        setResumeData(parsedData)
-        setCurrentStep(0)
-      }
-    } catch (error) {
-      console.error('Error loading saved work:', error)
-      clearSavedWork()
-    }
-  }
-
-  const clearSavedWork = () => {
-    localStorage.removeItem(TEMP_RESUME_KEY)
-    localStorage.removeItem(TEMP_TEMPLATE_KEY)
-    setHasSavedWork(false)
-    setResumeData(INITIAL_DATA)
-    setCurrentStep(-1)
-    setSavedResumeId(undefined)
-  }
-
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1)
@@ -210,7 +167,6 @@ export default function NewResumePage() {
         // Clear temporary data
         localStorage.removeItem(TEMP_RESUME_KEY)
         localStorage.removeItem(TEMP_TEMPLATE_KEY)
-        setHasSavedWork(false)
 
         toast.success('Resume saved successfully!')
         router.push(`/builder/${id}`)
@@ -271,38 +227,6 @@ export default function NewResumePage() {
             <p className="text-gray-600">
               Select a template that best fits your career level and industry.
             </p>
-
-            {/* Show continue option only if there is meaningful saved work */}
-            {hasSavedWork && (
-              <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-medium text-amber-900 mb-1">Resume in Progress</h3>
-                    <p className="text-sm text-amber-800">
-                      You have unsaved work from a previous session. Would you like to continue or start fresh?
-                    </p>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={continueSavedWork}
-                      className="bg-amber-100 border-amber-300 text-amber-800 hover:bg-amber-200"
-                    >
-                      Continue Work
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={clearSavedWork}
-                      className="text-gray-600 hover:text-gray-800"
-                    >
-                      Start Fresh
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
