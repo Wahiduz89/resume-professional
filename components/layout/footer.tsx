@@ -46,7 +46,7 @@ export function Footer() {
         {/* Bottom Section */}
         <div className="border-t border-gray-800 mt-8 pt-6 text-center">
           <p className="text-sm text-gray-400">
-            © 2025 ResumeAI Pro. All rights reserved. Made for Indian students and professionals.
+            © 2025 ResumeAI Pro. All rights reserved. Made for students and professionals.
           </p>
         </div>
       </div>

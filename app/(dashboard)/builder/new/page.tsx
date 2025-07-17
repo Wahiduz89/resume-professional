@@ -169,7 +169,7 @@ export default function NewResumePage() {
         localStorage.removeItem(TEMP_TEMPLATE_KEY)
 
         toast.success('Resume saved successfully!')
-        
+
         // FIXED: Navigate to dashboard instead of edit page
         router.push('/dashboard')
       } else {
@@ -238,11 +238,14 @@ export default function NewResumePage() {
               return (
                 <div key={template.id} className="bg-white rounded-lg shadow-sm border overflow-hidden hover:shadow-lg transition-shadow flex flex-col h-[600px]">
                   <div className="relative flex-1">
-                    <div className="w-full h-[540px] relative overflow-hidden bg-white">
+                    <div
+                      className="w-full h-[540px] relative overflow-hidden bg-white cursor-pointer"
+                      onClick={() => selectTemplate(template.id)}
+                    >
                       <img
                         src={`/assets/${template.id}-template.png`}
                         alt={template.name}
-                        className="w-full h-full object-cover object-top"
+                        className="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-300"
                         onError={(e) => {
                           const target = e.currentTarget;
                           target.style.display = 'none';
@@ -267,7 +270,7 @@ export default function NewResumePage() {
                       onClick={() => selectTemplate(template.id)}
                       className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 rounded-none rounded-b-lg h-full"
                     >
-                      Choose Template
+                      Choose {template.name} Template
                     </Button>
                   </div>
                 </div>
@@ -370,7 +373,7 @@ export default function NewResumePage() {
         <div className="hidden lg:block bg-gray-100 p-8 overflow-y-auto">
           <div className="sticky top-0">
             <h3 className="text-xl font-semibold mb-4">Live Preview</h3>
-            
+
             <div className="transform scale-75 origin-top">
               <PreviewComponent data={resumeData} />
             </div>
