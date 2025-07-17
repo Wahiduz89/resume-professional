@@ -1,4 +1,4 @@
-// app/page.tsx - Updated homepage to remove upload resume button
+// app/page.tsx - Updated homepage with duplicate footer removed
 'use client'
 
 import { useRouter } from 'next/navigation'
@@ -399,20 +399,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-gray-300 py-8">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex items-center space-x-2 mb-4 md:mb-0">
-              <FileText className="w-6 h-6 text-blue-400" />
-              <span className="text-lg font-semibold">ResumeAI Pro</span>
-            </div>
-            <p className="text-sm">
-              © 2025 ResumeAI Pro. Made with ❤️ for Indian students.
-            </p>
-          </div>
-        </div>
-      </footer>
+      {/* Footer is now handled by the global Footer component in layout.tsx */}
     </div>
   )
 }
