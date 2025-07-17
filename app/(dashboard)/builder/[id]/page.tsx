@@ -15,6 +15,7 @@ import { CorporateTemplate } from '@/components/resume/templates/corporate'
 import { FresherTemplate } from '@/components/resume/templates/fresher'
 import { GeneralTemplate } from '@/components/resume/templates/general'
 import { TechnicalTemplate } from '@/components/resume/templates/technical'
+import { FileText, X } from 'lucide-react'
 import { ResumeData } from '@/types'
 import toast from 'react-hot-toast'
 
@@ -55,11 +56,12 @@ export default function EditResumePage() {
   const router = useRouter()
   const params = useParams()
   const resumeId = params.id as string
-  
+
   const [currentStep, setCurrentStep] = useState(0)
   const [resumeData, setResumeData] = useState<ResumeData>(INITIAL_DATA)
   const [loading, setLoading] = useState(false)
   const [initialLoading, setInitialLoading] = useState(true)
+  const [showMobilePreview, setShowMobilePreview] = useState(false)
 
   const steps = [
     { title: 'Personal Info', component: PersonalInfoStep },
@@ -79,7 +81,7 @@ export default function EditResumePage() {
         if (response.ok) {
           const data = await response.json()
           const content = data.content
-          
+
           const updatedContent = {
             ...content,
             personalInfo: {
@@ -91,7 +93,7 @@ export default function EditResumePage() {
             certifications: content.certifications || [],
             projects: content.projects || [],
           }
-          
+
           setResumeData(updatedContent)
         } else {
           toast.error('Failed to load resume data')
@@ -141,10 +143,6 @@ export default function EditResumePage() {
     }
   }
 
-  const handleBackToDashboard = () => {
-    router.push('/dashboard')
-  }
-
   if (initialLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -161,7 +159,41 @@ export default function EditResumePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Mobile Preview Toggle */}
+      <div className="lg:hidden bg-white border-b border-gray-200 p-4 sticky top-0 z-10">
+        <Button
+          variant="outline"
+          onClick={() => setShowMobilePreview(!showMobilePreview)}
+          className="w-full flex items-center justify-center gap-2 h-12"
+          type="button"
+        >
+          <FileText className="w-4 h-4" />
+          {showMobilePreview ? 'Hide Preview' : 'Show Live Preview'}
+        </Button>
+      </div>
+
+      {/* Mobile Preview Slide Panel */}
+      <div className={`lg:hidden transition-all duration-300 ease-in-out ${showMobilePreview ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+        } overflow-hidden bg-gray-100 border-b border-gray-200`}>
+        <div className="p-4">
+          <div className="bg-white rounded shadow-sm p-2">
+            <div className="overflow-auto" style={{ maxHeight: '350px' }}>
+              <div style={{
+                transform: 'scale(0.3)',
+                transformOrigin: 'top left',
+                width: '333%',
+                height: 'auto'
+              }}>
+                <TemplateComponent data={resumeData} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Desktop Layout */}
       <div className="lg:grid lg:grid-cols-2 min-h-screen">
+        {/* Form Section */}
         <div className="p-4 lg:p-8 overflow-y-auto">
           <div className="mb-6">
             <h1 className="text-2xl font-bold mb-4">Edit Resume</h1>
@@ -181,16 +213,15 @@ export default function EditResumePage() {
                 <button
                   key={index}
                   onClick={() => setCurrentStep(index)}
-                  className={`cursor-pointer hover:text-blue-700 px-2 py-1 whitespace-nowrap ${
-                    index === currentStep ? 'text-blue-600 font-medium' : 'text-gray-400'
-                  }`}
+                  className={`cursor-pointer hover:text-blue-700 px-2 py-1 whitespace-nowrap ${index === currentStep ? 'text-blue-600 font-medium' : 'text-gray-400'
+                    }`}
                 >
                   {step.title}
                 </button>
               ))}
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
-              <div 
+              <div
                 className="bg-blue-600 h-2 rounded-full transition-all duration-300"
                 style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
               />
@@ -222,19 +253,12 @@ export default function EditResumePage() {
                     >
                       {loading ? 'Saving...' : 'Save Changes'}
                     </Button>
-                    
+
                     <DownloadButton
                       resumeData={resumeData}
                       resumeId={resumeId}
                       className="min-w-[140px]"
                     />
-                    
-                    <Button
-                      variant="outline"
-                      onClick={handleBackToDashboard}
-                    >
-                      Back to Dashboard
-                    </Button>
                   </div>
                 ) : (
                   <Button onClick={handleNext}>
@@ -246,20 +270,13 @@ export default function EditResumePage() {
           </div>
         </div>
 
+        {/* Desktop Preview Section */}
         <div className="hidden lg:block bg-gray-100 p-8 overflow-y-auto">
           <div className="sticky top-0">
-            <div className="flex justify-between items-center mb-4">
+            <div className="mb-4">
               <h3 className="text-xl font-semibold">Live Preview</h3>
-              
-              {/* Quick Download Button for Preview Section */}
-              <DownloadButton
-                resumeData={resumeData}
-                resumeId={resumeId}
-                variant="outline"
-                className="text-sm"
-              />
             </div>
-            
+
             <div className="transform scale-75 origin-top">
               <TemplateComponent data={resumeData} />
             </div>
