@@ -1,4 +1,4 @@
-// app/api/resume/export/route.ts - Updated with student basic plan support
+// app/api/resume/export/route.ts - Updated with improved template validation and messaging
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
@@ -6,6 +6,15 @@ import { prisma } from '@/lib/db'
 import puppeteer from 'puppeteer'
 import { generateTemplateHTML } from '@/lib/pdf-templates'
 import { getSubscriptionLimits, SUBSCRIPTION_PLANS } from '@/lib/razorpay'
+
+// Template to plan mapping for clear messaging
+const TEMPLATE_PLAN_REQUIREMENTS = {
+  'fresher': 'student_basic_monthly',
+  'general': 'student_pro_monthly',
+  'technical': 'student_pro_monthly',
+  'corporate': 'student_pro_monthly',
+  'internship': 'student_basic_monthly'
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -35,38 +44,34 @@ export async function POST(req: NextRequest) {
     const resume = user.resumes[0]
     const resumeData = resume.content as any
 
-    // Check if user has active subscription (including free plans)
+    // Check if user has active subscription
     if (!user.subscription || 
         user.subscription.status !== 'active' ||
-        (user.subscription.expiresAt && new Date(user.subscription.expiresAt) < new Date())) {
+        (user.subscription.expiresAt && new Date(user.subscription.expiresAt) <= new Date())) {
+      const requiredPlan = TEMPLATE_PLAN_REQUIREMENTS[resumeData.template as keyof typeof TEMPLATE_PLAN_REQUIREMENTS] || 'student_starter_monthly'
+      
       return NextResponse.json({
         error: 'Active subscription required',
         redirectToPayment: true,
-        suggestedPlan: 'student_basic_monthly' // Suggest free plan first
+        suggestedPlan: requiredPlan,
+        message: `Please subscribe to download ${resumeData.template} template resumes`
       }, { status: 403 })
     }
 
+    // At this point, TypeScript knows user.subscription is not null
     const planLimits = getSubscriptionLimits(user.subscription.planType)
     
     // Check if template is allowed in current plan
     if (!planLimits.templates.includes(resumeData.template)) {
-      // Determine appropriate suggestion based on template and current plan
-      let suggestedPlan = 'student_pro_monthly' // Default for general/technical templates
+      const requiredPlan = TEMPLATE_PLAN_REQUIREMENTS[resumeData.template as keyof typeof TEMPLATE_PLAN_REQUIREMENTS]
+      const requiredPlanName = SUBSCRIPTION_PLANS[requiredPlan as keyof typeof SUBSCRIPTION_PLANS]?.name || 'Higher Plan'
       
-      if (resumeData.template === 'fresher') {
-        suggestedPlan = 'student_basic_monthly'
-      } else if (resumeData.template === 'general') {
-        suggestedPlan = 'student_pro_monthly'
-      } else if (resumeData.template === 'technical') {
-        suggestedPlan = 'student_pro_monthly'
-      }
-
       return NextResponse.json({
-        error: 'Template not available in your plan',
+        error: `${resumeData.template.charAt(0).toUpperCase() + resumeData.template.slice(1)} template requires ${requiredPlanName}`,
         redirectToPayment: true,
-        suggestedPlan,
+        suggestedPlan: requiredPlan,
         currentTemplate: resumeData.template,
-        message: `${resumeData.template} template requires a higher plan`
+        message: `Please upgrade to ${requiredPlanName} to download ${resumeData.template} template resumes`
       }, { status: 403 })
     }
 
@@ -76,111 +81,84 @@ export async function POST(req: NextRequest) {
     // If AI enhanced, check AI download limits
     if (aiEnhanced) {
       if (planLimits.aiEnhancedDownloads === 0) {
-        // Student basic plan - no AI features allowed
         return NextResponse.json({
-          error: 'AI features not available in your plan',
+          error: 'AI features not available in your current plan',
           redirectToPayment: true,
-          currentPlan: user.subscription.planType,
           suggestedPlan: 'student_starter_monthly',
           message: 'AI enhancement requires Student Starter plan or higher'
         }, { status: 403 })
       }
       
       if (user.subscription.aiDownloadsUsed >= planLimits.aiEnhancedDownloads) {
-        // Determine upgrade suggestion based on current plan
-        let suggestedPlan = null
-        if (user.subscription.planType === 'student_starter_monthly') {
-          suggestedPlan = 'student_pro_monthly'
-        }
-
+        const nextPlan = user.subscription.planType === 'student_starter_monthly' ? 'student_pro_monthly' : null
+        
         return NextResponse.json({
-          error: 'AI download limit exceeded',
-          redirectToPayment: suggestedPlan ? true : false,
-          currentPlan: user.subscription.planType,
-          suggestedPlan,
-          message: `You have used all ${planLimits.aiEnhancedDownloads} AI-enhanced downloads for this month`
+          error: `AI download limit exceeded (${planLimits.aiEnhancedDownloads} per month)`,
+          redirectToPayment: !!nextPlan,
+          suggestedPlan: nextPlan,
+          message: nextPlan 
+            ? `Upgrade to Student Pro for more AI downloads (${SUBSCRIPTION_PLANS.student_pro_monthly.limits.aiEnhancedDownloads} per month)`
+            : 'You have reached your AI download limit for this month'
         }, { status: 403 })
       }
     }
 
-    // If this is the actual download request (not just a check)
-    if (!requiresPayment) {
-      // Generate PDF using Puppeteer
-      const html = generateTemplateHTML(resumeData.template, resumeData)
+    // Generate PDF using Puppeteer
+    const html = generateTemplateHTML(resumeData.template, resumeData)
 
-      const browser = await puppeteer.launch({
-        headless: true,
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
-      })
-      
-      const page = await browser.newPage()
-      await page.setContent(html, { waitUntil: 'networkidle0' })
-      
-      const pdf = await page.pdf({
-        format: 'A4',
-        printBackground: true,
-        margin: {
-          top: '10mm',
-          right: '10mm',
-          bottom: '10mm',
-          left: '10mm'
-        }
-      })
-      
-      await browser.close()
-
-      // Track the download
-      await prisma.download.create({
-        data: {
-          userId: user.id,
-          resumeId: resumeId,
-          template: resumeData.template,
-          aiEnhanced: aiEnhanced,
-          planType: user.subscription.planType
-        }
-      })
-
-      // Update subscription usage if AI enhanced
-      if (aiEnhanced) {
-        await prisma.subscription.update({
-          where: { userId: user.id },
-          data: {
-            aiDownloadsUsed: {
-              increment: 1
-            },
-            totalDownloads: {
-              increment: 1
-            }
-          }
-        })
-      } else {
-        await prisma.subscription.update({
-          where: { userId: user.id },
-          data: {
-            totalDownloads: {
-              increment: 1
-            }
-          }
-        })
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    })
+    
+    const page = await browser.newPage()
+    await page.setContent(html, { waitUntil: 'networkidle0' })
+    
+    const pdf = await page.pdf({
+      format: 'A4',
+      printBackground: true,
+      margin: {
+        top: '10mm',
+        right: '10mm',
+        bottom: '10mm',
+        left: '10mm'
       }
+    })
+    
+    await browser.close()
 
-      // Return PDF response
-      return new NextResponse(pdf, {
-        headers: {
-          'Content-Type': 'application/pdf',
-          'Content-Disposition': `attachment; filename="resume-${resumeId}.pdf"`
-        }
-      })
-    } else {
-      // This is a check request - return success
-      return NextResponse.json({
-        success: true,
-        canDownload: true,
-        aiEnhanced,
-        planType: user.subscription.planType,
-        remainingAiDownloads: Math.max(0, planLimits.aiEnhancedDownloads - user.subscription.aiDownloadsUsed)
-      })
+    // Track the download
+    await prisma.download.create({
+      data: {
+        userId: user.id,
+        resumeId: resumeId,
+        template: resumeData.template,
+        aiEnhanced: aiEnhanced,
+        planType: user.subscription.planType
+      }
+    })
+
+    // Update subscription usage
+    const updateData: any = {
+      totalDownloads: { increment: 1 }
     }
+
+    if (aiEnhanced) {
+      updateData.aiDownloadsUsed = { increment: 1 }
+    }
+
+    await prisma.subscription.update({
+      where: { userId: user.id },
+      data: updateData
+    })
+
+    // Return PDF response
+    return new NextResponse(pdf, {
+      headers: {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment; filename="${resumeData.personalInfo.fullName.replace(/\s+/g, '-')}-resume.pdf"`
+      }
+    })
 
   } catch (error) {
     console.error('PDF export error:', error)
@@ -191,7 +169,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// Updated endpoint to check download eligibility for all plans including student basic
+// GET endpoint to check download eligibility
 export async function GET(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
@@ -227,31 +205,32 @@ export async function GET(req: NextRequest) {
     // Check subscription status
     if (!user.subscription || 
         user.subscription.status !== 'active' ||
-        new Date(user.subscription.expiresAt!) < new Date()) {
+        (user.subscription.expiresAt && new Date(user.subscription.expiresAt) <= new Date())) {
+      const requiredPlan = TEMPLATE_PLAN_REQUIREMENTS[resumeData.template as keyof typeof TEMPLATE_PLAN_REQUIREMENTS] || 'student_starter_monthly'
+      
       return NextResponse.json({
         canDownload: false,
         reason: 'No active subscription',
         redirectToPayment: true,
-        suggestedPlan: 'student_basic_monthly'
+        suggestedPlan: requiredPlan,
+        currentTemplate: resumeData.template
       })
     }
 
+    // At this point, TypeScript knows user.subscription is not null
     const planLimits = getSubscriptionLimits(user.subscription.planType)
     const aiEnhanced = resumeData.aiEnhanced || false
 
     // Check template availability
     if (!planLimits.templates.includes(resumeData.template)) {
-      let suggestedPlan = 'student_pro_monthly'
+      const requiredPlan = TEMPLATE_PLAN_REQUIREMENTS[resumeData.template as keyof typeof TEMPLATE_PLAN_REQUIREMENTS]
+      const requiredPlanName = SUBSCRIPTION_PLANS[requiredPlan as keyof typeof SUBSCRIPTION_PLANS]?.name || 'Higher Plan'
       
-      if (resumeData.template === 'fresher') {
-        suggestedPlan = 'student_basic_monthly'
-      }
-
       return NextResponse.json({
         canDownload: false,
-        reason: 'Template not available in current plan',
+        reason: `${resumeData.template.charAt(0).toUpperCase() + resumeData.template.slice(1)} template requires ${requiredPlanName}`,
         redirectToPayment: true,
-        suggestedPlan,
+        suggestedPlan: requiredPlan,
         currentTemplate: resumeData.template
       })
     }
@@ -259,26 +238,22 @@ export async function GET(req: NextRequest) {
     // Check AI limits
     if (aiEnhanced) {
       if (planLimits.aiEnhancedDownloads === 0) {
-        // Student basic plan
         return NextResponse.json({
           canDownload: false,
-          reason: 'AI features not available in current plan',
+          reason: 'AI features not available in your current plan',
           redirectToPayment: true,
-          suggestedPlan: 'student_starter_monthly',
-          currentPlan: user.subscription.planType
+          suggestedPlan: 'student_starter_monthly'
         })
       }
       
       if (user.subscription.aiDownloadsUsed >= planLimits.aiEnhancedDownloads) {
+        const nextPlan = user.subscription.planType === 'student_starter_monthly' ? 'student_pro_monthly' : null
+        
         return NextResponse.json({
           canDownload: false,
-          reason: 'AI download limit exceeded',
-          redirectToPayment: user.subscription.planType === 'student_starter_monthly',
-          suggestedPlan: user.subscription.planType === 'student_starter_monthly' 
-            ? 'student_pro_monthly' 
-            : null,
-          aiDownloadsUsed: user.subscription.aiDownloadsUsed,
-          aiDownloadsLimit: planLimits.aiEnhancedDownloads
+          reason: `AI download limit exceeded (${user.subscription.aiDownloadsUsed}/${planLimits.aiEnhancedDownloads} used)`,
+          redirectToPayment: !!nextPlan,
+          suggestedPlan: nextPlan
         })
       }
     }

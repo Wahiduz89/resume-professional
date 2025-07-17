@@ -1,11 +1,11 @@
-// components/resume/download-button.tsx - Updated with authentication check
+// components/resume/download-button.tsx - Cleaned up UI and improved UX
 'use client'
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { Button } from '@/components/ui/button'
-import { Download, Crown, AlertCircle, CheckCircle, Loader2, LogIn } from 'lucide-react'
+import { Download, Crown, LogIn, Loader2 } from 'lucide-react'
 import { ResumeData } from '@/types'
 import toast from 'react-hot-toast'
 
@@ -112,7 +112,6 @@ export function DownloadButton({
           console.error('Error clearing temporary data:', error)
         }
         
-        toast.success('Resume saved successfully!')
         return id
       } else {
         const errorData = await response.json()
@@ -142,29 +141,56 @@ export function DownloadButton({
       if (!currentResumeId) {
         return // Save failed
       }
+      // After saving, we need to check eligibility
+      setChecking(true)
+      try {
+        const response = await fetch(`/api/resume/export?resumeId=${currentResumeId}`)
+        if (response.ok) {
+          const data = await response.json()
+          setEligibility(data)
+        }
+      } catch (error) {
+        console.error('Failed to check download eligibility:', error)
+      } finally {
+        setChecking(false)
+      }
     }
 
     // Check eligibility if not already checked
-    if (!eligibility) {
+    if (!eligibility && currentResumeId) {
       await checkDownloadEligibility()
       return
     }
 
     // Handle payment redirect if needed
-    if (!eligibility.canDownload && eligibility.redirectToPayment) {
+    if (eligibility && !eligibility.canDownload && eligibility.redirectToPayment) {
       const planType = eligibility.suggestedPlan || 'student_starter_monthly'
+      
+      // Show specific message based on template and current plan
+      if (eligibility.currentTemplate === 'general') {
+        toast.error('General template requires Student Pro plan. Redirecting to upgrade...')
+      } else if (eligibility.currentTemplate === 'technical') {
+        toast.error('Technical template requires Student Pro plan. Redirecting to upgrade...')
+      } else if (eligibility.reason?.includes('AI')) {
+        toast.error('AI enhancement requires a paid plan. Redirecting to upgrade...')
+      } else {
+        toast.error('This template requires a subscription. Redirecting to plans...')
+      }
+      
       router.push(`/subscription?plan=${planType}&resumeId=${currentResumeId}`)
       return
     }
 
-    // Show error if cannot download
-    if (!eligibility.canDownload) {
+    // Show error if cannot download for other reasons
+    if (eligibility && !eligibility.canDownload) {
       toast.error(eligibility.reason || 'Cannot download this resume')
       return
     }
 
-    // Proceed with download
-    await downloadPDF(currentResumeId)
+    // Proceed with automatic download
+    if (currentResumeId) {
+      await downloadPDF(currentResumeId)
+    }
   }
 
   const downloadPDF = async (downloadResumeId: string) => {
@@ -191,7 +217,7 @@ export function DownloadButton({
       const url = window.URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
-      a.download = `resume-${resumeData.personalInfo.fullName.replace(/\s+/g, '-')}.pdf`
+      a.download = `${resumeData.personalInfo.fullName.replace(/\s+/g, '-')}-resume.pdf`
       document.body.appendChild(a)
       a.click()
       document.body.removeChild(a)
@@ -215,9 +241,9 @@ export function DownloadButton({
     if (checking) return 'Checking...'
     
     if (!session) return 'Sign in to Download'
-    if (!resumeId) return 'Save & Download'
+    if (!resumeId) return 'Download'
     
-    if (!eligibility) return 'Download Resume'
+    if (!eligibility) return 'Download'
     
     if (!eligibility.canDownload) {
       if (eligibility.redirectToPayment) {
@@ -226,7 +252,7 @@ export function DownloadButton({
       return 'Cannot Download'
     }
     
-    return 'Download Resume'
+    return 'Download'
   }
 
   const getButtonVariant = () => {
@@ -256,62 +282,16 @@ export function DownloadButton({
     (!resumeData.personalInfo.fullName || !resumeData.personalInfo.email)
 
   return (
-    <div className="space-y-2">
-      <Button
-        onClick={handleDownload}
-        disabled={isDisabled}
-        variant={getButtonVariant()}
-        className={`${className} ${
-          eligibility?.redirectToPayment ? 'bg-purple-600 hover:bg-purple-700' : ''
-        }`}
-      >
-        {getButtonIcon()}
-        {getButtonText()}
-      </Button>
-
-      {/* Status Information */}
-      {session && eligibility && (
-        <div className="text-xs">
-          {eligibility.canDownload ? (
-            <div className="flex items-center gap-1 text-green-600">
-              <CheckCircle className="w-3 h-3" />
-              <span>Ready to download</span>
-              {eligibility.aiEnhanced && (
-                <span className="ml-2 bg-yellow-100 text-yellow-800 px-2 py-1 rounded">
-                  AI Enhanced
-                </span>
-              )}
-            </div>
-          ) : (
-            <div className="flex items-center gap-1 text-amber-600">
-              <AlertCircle className="w-3 h-3" />
-              <span>{eligibility.reason}</span>
-            </div>
-          )}
-          
-          {eligibility.remainingAiDownloads !== undefined && eligibility.canDownload && (
-            <div className="text-gray-500 mt-1">
-              AI downloads remaining: {eligibility.remainingAiDownloads}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Authentication Required Notice */}
-      {!session && (
-        <div className="text-xs text-blue-600 flex items-center gap-1">
-          <AlertCircle className="w-3 h-3" />
-          <span>Authentication required to download</span>
-        </div>
-      )}
-
-      {/* Requirements Notice */}
-      {(!resumeData.personalInfo.fullName || !resumeData.personalInfo.email) && (
-        <div className="text-xs text-red-600 flex items-center gap-1">
-          <AlertCircle className="w-3 h-3" />
-          <span>Please fill in your name and email to download</span>
-        </div>
-      )}
-    </div>
+    <Button
+      onClick={handleDownload}
+      disabled={isDisabled}
+      variant={getButtonVariant()}
+      className={`${className} ${
+        eligibility?.redirectToPayment ? 'bg-purple-600 hover:bg-purple-700' : ''
+      }`}
+    >
+      {getButtonIcon()}
+      {getButtonText()}
+    </Button>
   )
 }

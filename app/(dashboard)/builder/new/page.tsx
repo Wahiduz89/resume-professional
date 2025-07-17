@@ -1,4 +1,4 @@
-// app/(dashboard)/builder/new/page.tsx - Updated with Resume in Progress notification removed
+// app/(dashboard)/builder/new/page.tsx - Fixed save and redirect logic
 'use client'
 
 import { useState, useEffect } from 'react'
@@ -81,7 +81,7 @@ export default function NewResumePage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { data: session } = useSession()
-  const [currentStep, setCurrentStep] = useState(-1) // Always start with template selection
+  const [currentStep, setCurrentStep] = useState(-1)
   const [resumeData, setResumeData] = useState<ResumeData>(INITIAL_DATA)
   const [loading, setLoading] = useState(false)
   const [savedResumeId, setSavedResumeId] = useState<string | undefined>(undefined)
@@ -169,7 +169,9 @@ export default function NewResumePage() {
         localStorage.removeItem(TEMP_TEMPLATE_KEY)
 
         toast.success('Resume saved successfully!')
-        router.push(`/builder/${id}`)
+        
+        // FIXED: Navigate to dashboard instead of edit page
+        router.push('/dashboard')
       } else {
         toast.error('Failed to save resume')
       }
@@ -199,7 +201,7 @@ export default function NewResumePage() {
       return
     }
 
-    // If user is authenticated but resume not saved, save first
+    // If user is authenticated but resume not saved, save first then download
     if (!savedResumeId) {
       handleAuthenticatedSave()
     }
@@ -217,7 +219,7 @@ export default function NewResumePage() {
     )
   }
 
-  // Template Selection View - Always shows unless user has selected a template
+  // Template Selection View
   if (currentStep === -1) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -349,13 +351,11 @@ export default function NewResumePage() {
                       {loading ? 'Saving...' : session ? 'Save Resume' : 'Sign in to Save'}
                     </Button>
 
-                    <Button
-                      onClick={handleDownloadWithAuth}
-                      disabled={loading}
+                    <DownloadButton
+                      resumeData={resumeData}
+                      resumeId={savedResumeId}
                       className="min-w-[140px]"
-                    >
-                      {session ? 'Download Resume' : 'Sign in to Download'}
-                    </Button>
+                    />
                   </div>
                 ) : (
                   <Button onClick={handleNext}>
@@ -369,10 +369,8 @@ export default function NewResumePage() {
 
         <div className="hidden lg:block bg-gray-100 p-8 overflow-y-auto">
           <div className="sticky top-0">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-semibold">Live Preview</h3>
-            </div>
-
+            <h3 className="text-xl font-semibold mb-4">Live Preview</h3>
+            
             <div className="transform scale-75 origin-top">
               <PreviewComponent data={resumeData} />
             </div>
