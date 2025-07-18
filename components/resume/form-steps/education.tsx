@@ -1,4 +1,5 @@
-import React from 'react'
+// components/resume/form-steps/education.tsx - Fixed to show form by default
+import React, { useEffect } from 'react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Education } from '@/types'
@@ -91,6 +92,24 @@ export const EducationStep: React.FC<EducationStepProps> = ({
   data, 
   onChange 
 }) => {
+  // Initialize with one empty education entry if none exist
+  useEffect(() => {
+    if (data.education.length === 0) {
+      const initialEducation: Education = {
+        id: Date.now().toString(),
+        degree: '',
+        institution: '',
+        location: '',
+        startDate: '',
+        endDate: '',
+        current: false,
+        percentage: '',
+        description: ''
+      }
+      onChange({ education: [initialEducation] })
+    }
+  }, [data.education.length, onChange])
+
   const addEducation = () => {
     const newEducation: Education = {
       id: Date.now().toString(),
@@ -115,9 +134,26 @@ export const EducationStep: React.FC<EducationStepProps> = ({
   }
 
   const deleteEducation = (id: string) => {
-    onChange({
-      education: data.education.filter(edu => edu.id !== id)
-    })
+    // Prevent deleting the last education entry
+    if (data.education.length > 1) {
+      onChange({
+        education: data.education.filter(edu => edu.id !== id)
+      })
+    } else {
+      // Reset the single entry instead of deleting it
+      const resetEducation: Education = {
+        id: Date.now().toString(),
+        degree: '',
+        institution: '',
+        location: '',
+        startDate: '',
+        endDate: '',
+        current: false,
+        percentage: '',
+        description: ''
+      }
+      onChange({ education: [resetEducation] })
+    }
   }
 
   return (
@@ -134,13 +170,8 @@ export const EducationStep: React.FC<EducationStepProps> = ({
         </Button>
       </div>
 
-      {data.education.length === 0 ? (
-        <div className="text-center py-8 bg-gray-50 rounded-lg">
-          <p className="text-gray-600 mb-4">No education added yet</p>
-          <Button onClick={addEducation}>Add Your Education</Button>
-        </div>
-      ) : (
-        data.education.map((edu) => (
+      <div className="space-y-4">
+        {data.education.map((edu) => (
           <div key={edu.id} className="border rounded-lg p-4 space-y-3">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div>
@@ -254,27 +285,26 @@ export const EducationStep: React.FC<EducationStepProps> = ({
                   variant="outline"
                   onClick={() => deleteEducation(edu.id)}
                   className="text-red-600 hover:text-red-700"
+                  disabled={data.education.length === 1}
                 >
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>
             </div>
           </div>
-        ))
-      )}
+        ))}
+      </div>
 
-      {data.education.length > 0 && (
-        <div className="bg-green-50 p-4 rounded-lg">
-          <h4 className="font-medium text-green-900 mb-2">Education Tips:</h4>
-          <div className="text-sm text-green-800 space-y-1">
-            <p>• List your most recent education first</p>
-            <p>• Include your CGPA or percentage if it strengthens your application</p>
-            <p>• Mention relevant coursework, projects, or achievements in additional details</p>
-            <p>• For ongoing education, check "Currently studying here" and leave end date empty</p>
-            <p>• Use "Expected [Year]" in additional details for anticipated graduation dates</p>
-          </div>
+      <div className="bg-green-50 p-4 rounded-lg">
+        <h4 className="font-medium text-green-900 mb-2">Education Tips:</h4>
+        <div className="text-sm text-green-800 space-y-1">
+          <p>• List your most recent education first</p>
+          <p>• Include your CGPA or percentage if it strengthens your application</p>
+          <p>• Mention relevant coursework, projects, or achievements in additional details</p>
+          <p>• For ongoing education, check "Currently studying here" and leave end date empty</p>
+          <p>• Use "Expected [Year]" in additional details for anticipated graduation dates</p>
         </div>
-      )}
+      </div>
     </div>
   )
 }
